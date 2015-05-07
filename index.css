@@ -1,0 +1,33 @@
+body {
+  	background: url("img/back.jpg") center center no-repeat fixed;
+  	background-size:cover;
+}
+
+html, body {
+    max-width: 100%;
+    overflow: hidden;
+}
+
+#BER {
+	position:absolute;
+	left:50%;
+	top:10%;
+}
+
+#MOB {
+	position:absolute;
+	left:40%;
+	top:80%;
+}
+
+#STA {
+	position:absolute;
+	left:13%;
+	top:28%;
+}
+
+#COR {
+	position:absolute;
+	left:30%;
+	top:15%;
+}
