@@ -4036,3 +4036,11 @@
   opacity: 1;
   visibility: visible;
 }
+
+.inline-color {
+	color:#ffffff;
+}
+
+.inline-color switchinline {
+	color:#8C1515;
+}
