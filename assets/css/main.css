@@ -2499,6 +2499,17 @@
 				width: 100%;
 			}
 
+		.image.fitsmall {
+			display: block;
+			margin: auto;
+			width: 75%;
+		}
+
+			.image.fitsmall img {
+				width: 100%;
+			}
+
+
 /* List */
 
 	ol {
