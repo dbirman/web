@@ -2742,10 +2742,21 @@
 		input[type="reset"]:active,
 		input[type="button"]:hover,
 		input[type="button"]:active,
-		.button:hover,
-		.button:active {
-			box-shadow: inset 0 0 0 1px #e44c65;
-			color: #e44c65 !important;
+		.button.blu:hover,
+		.butto.blu:active {
+			box-shadow: inset 0 0 0 1px #5480f1;
+			color: #5480f1 !important;
+		}
+
+		input[type="submit"]:hover, input[type="submit"]:active,
+		input[type="reset"]:hover,
+		input[type="reset"]:active,
+		input[type="button"]:hover,
+		input[type="button"]:active,
+		.button.grn:hover,
+		.button.grn:active {
+			box-shadow: inset 0 0 0 1px #39c088;
+			color: #39c088 !important;
 		}
 
 		input[type="submit"]:active,
