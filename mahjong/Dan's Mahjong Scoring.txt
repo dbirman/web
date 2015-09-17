@@ -1,0 +1,101 @@
+Dan's Mahjong Scoring (simplified Zung Jung)
+--------------------------------------------
+
+You can score once per category, and can have multiple categories. A zero point hand is worth 1. Limit of 80 points. Winning score is 3x hand. If won on discard, the discarder pays the total minus 6 for each other player, scores under 6 are split equally. 
+
+The six basic hands:
+----------------
+All pairs
+All pungs and 3x concealed pung
+One suit + honors
+Three similar (straights, or small similar triplets)
+Nine tile straight
+Terminal in each
+
+Trivial
+----------------
+All chi - 1
+---
+Concealed - 1
+---
+No terminals or honors (2 to 8) - 1
+
+One-Suit
+----------------
+Mixed one-suit + honors - 8
+Pure one-suit - 20 
+---
+Nine gates (1112345678999) - 80
+
+Honor Tiles
+----------------
+Seat wind or dragon pung  - 2
+---
+Small three dragons - 6
+Big three dragons - 26 (Three philosophers)
+---
+Small three winds - 5
+Big three winds - 24
+Small four winds - 64
+Big four winds - 80
+---
+All honors - 64	
+ 
+Triplets and Kongs
+----------------
+All pung - 6
+---
+2x Concealed pung - 1
+3x Concealed pung - 6
+4x Concealed pung - 25
+---
+Kong - 1
+2x Kong - 4
+3x Kong - 24
+All Kong - 96
+
+Identical 
+----------------
+2x Sequences - 2
+2x + 2x Sequences- 11
+3x - 24
+4x - 96
+
+Similar
+----------------
+3x Similar - 7 (across suits)
+---
+Small 3x pung - 6 (across suits)
+Big 3x pung - 24 (across suits)
+
+Consecutive Sets
+----------------
+Nine-tile straight - 8 (suited)
+---
+Three consecutive pungs - 20 (suited)
+Four consectutive pungs - 40 (suited)
+
+Terminals
+----------------
+All sets include terminals + honors - 8
+All sets include terminals - 10
+All terminals + honors - 20
+All terminals - 80
+---
+Thirteen Terminals - 32
+
+Incidentals
+----------------
+Sky-win - 31
+Earth-win - 31
+Seven pairs - 6
+Seabed - 2
+Riverbed - 2
+Win on Kong - 2 (i.e. off the tile you pull from the kong box)
+
+
+1C = circles
+1B = bamboos
+1R = numbers
+NW = winds
+RD = dragons
