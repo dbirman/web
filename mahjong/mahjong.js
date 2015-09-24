@@ -29,10 +29,34 @@ for (var i=1;i<=9;i++) {
 	settings.tiles.push(i + 'C');
 }
 
+preset = function(num) {
+	switch (num) {
+		case 1:
+			imageVals = [9,10,11,12,13,14,15,16,17,18,18,18,5,5];
+			update();
+			break;
+		case 2:
+			imageVals = [0,0,0,1,1,1,2,2,2,16,16,16,6,6];
+			update(); 
+			break;
+		case 3:
+			imageVals = [28,29,30,28,29,30,28,29,30,28,29,30,2,2];
+			update();
+			break;
+		case 4:
+			imageVals = [18,18,18,19,19,19,20,20,20,7,7,7,6,6];
+			update();
+			break;
+	}
+}
+
 // dragons: 0-2
 // winds 6-9
 // reds: 10-17
-var imageVals = [9,10,11,12,13,14,15,16,17,18,2,3,4,5];
+var imageVals = [];
+for (var i =0; i< 14; i++) {
+	imageVals.push(Math.floor((Math.random() * 35) + 1));
+}
 
 findVal = function(val) {
 	return(settings.tiles[val]);
@@ -203,7 +227,7 @@ update = function() {
 	updateSrc();
 	updateAll();
 	deck.hand = [one, two, thr, fur, pr];
-	printHand();
+	// printHand();
 	getDeckInfo();
 	deck.allSuits = getAllSuits();
 	score();
@@ -421,7 +445,8 @@ score = function() {
 
 	//Nine gates//
 	if (deck.chiCount==3 && pr.terminals) {
-		print('not functional');
+		if(false){}
+		// print('not functional');
 		// nine gates can be formed by: 11 123 345 678 999 or the flip
 
 		// if the pair has terminals, there has to be a pung of terminals
