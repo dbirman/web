@@ -29,7 +29,10 @@ for (var i=1;i<=9;i++) {
 	settings.tiles.push(i + 'C');
 }
 
-var imageVals = [0,1,2,3,4,5,6,7,8,9,10,11,12,13];
+// dragons: 0-2
+// winds 6-9
+// reds: 10-17
+var imageVals = [9,10,11,12,13,14,15,16,17,18,2,3,4,5];
 
 findVal = function(val) {
 	return(settings.tiles[val]);
@@ -204,6 +207,7 @@ update = function() {
 	getDeckInfo();
 	deck.allSuits = getAllSuits();
 	score();
+	print('<br>');
 }
 
 updateSrc = function() {
@@ -293,6 +297,7 @@ getDeckInfo = function() {
 	var kungCount = 0;
 	var pungCount = 0;
 	var concPungCount = 0;
+	var chiCount =0;
 
 	for (var ni = 0; ni < names.length; ni++) {
 		deck[names[ni] + 'Count'] = 0;
@@ -305,6 +310,7 @@ getDeckInfo = function() {
 	}
 
 	for (var di = 0; di < deck.hand.length-1; di++) {
+		if (deck.hand[di].chi) {chiCount++;}
 		if (deck.hand[di].kung) {kungCount++;}
 		if (deck.hand[di].pung) {pungCount++;}
 		if (deck.hand[di].pung && deck.hand[di].concealed) {concPungCount++;}
@@ -312,6 +318,7 @@ getDeckInfo = function() {
 	deck.kungCount = kungCount;
 	deck.pungCount = pungCount;
 	deck.concPungCount = concPungCount;
+	deck.chiCount = chiCount;
 
 	// now we get fucking fancy, find identical sequences
 	var idCount = 0;
@@ -324,13 +331,12 @@ getDeckInfo = function() {
 	}
 	deck.idCount = idCount;
 
-
 	var terminalPungs = 0;
 	var terminalChis = 0;
 	var terminalPr = deck.hand[deck.hand.length-1].terminals;
 	for (var di = 0; di < deck.hand.length-1; di++) {
 		if (deck.hand[di].pung && deck.hand[di].terminals) {terminalPungs++;}
-		if (deck.hand[di].chi && deck.hand[di].terminals) {terminalPungs++;}
+		if (deck.hand[di].chi && deck.hand[di].terminals) {terminalChis++;}
 	}
 	deck.terminalPungs = terminalPungs;
 	deck.terminalChis = terminalChis;
@@ -414,8 +420,12 @@ score = function() {
 	///// ONE SUIT /////
 
 	//Nine gates//
-	if (false) {
+	if (deck.chiCount==3 && pr.terminals) {
+		print('not functional');
+		// nine gates can be formed by: 11 123 345 678 999 or the flip
 
+		// if the pair has terminals, there has to be a pung of terminals
+		// if (one.pung && one.terminals | two.terminals)
 	}
 	//Pure One Suit
 	else if (deck.bambooCount==14 || deck.redsCount==14 || deck.circlesCount==14) {
@@ -520,17 +530,47 @@ score = function() {
 	}
 
 	///// CONSECUTIVE SETS /////
-	if (false) {
-		print('Nine Tile Straight');
-		val = val + 8;
+	if (deck.chiCount >= 3) {
+		//we have 3 chis and at least 9 of one suit, check for 1->9
+		var tList = [];
+		var suit = '';
+
+		if (deck.bamboosCount >= 9) {
+			suit = 'B';
+		} else if (deck.redsCount >= 9) {
+			suit = 'R';
+		} else if (deck.circlesCount >= 9) {
+			suit = 'C';
+		}
+
+		if (suit != '') {
+			for (var di=0; di < 4; di++) {
+				if (deck.hand[di].chi && deck.hand[di].cards[0][1]==suit) {
+					tList = tList.concat(deck.hand[di].cards);
+				}
+			}
+
+			var find19 = [0,0,0,0,0,0,0,0,0]
+			for (var ti=0; ti < tList.length; ti++) {
+				tList[ti] = parseInt(tList[ti][0]);
+				find19[tList[ti]-1] = 1;
+			}
+
+			if (all(find19)) {
+				print('Nine Tile Straight');
+				val = val + 8;
+			}
+		}
 	}
 
 	///// TERMINALS /////
 	if (deck.terminalPungs == 4 && deck.terminalPr) {
 		print('All Terminals');
 		val = val + 80;
-	} else if (false) {
+	} else if (one.pung && two.pung && thr. pung && fur.pung && (one.terminals || one.honors) && (two.honors || two.terminals) && (thr.honors || thr.terminals) && (fur.honors || fur.terminals) && (pr.terminals || pr.honors)) {
 		// terminal + honors
+		print('All Terminals + Honors');
+		val = val + 20;
 	} else if (one.terminals && two.terminals && thr.terminals && fur.terminals && pr.terminals) {
 		// all include terminals
 		print('All Sets Include Terminals');
@@ -553,6 +593,22 @@ score = function() {
 
 	print('Score: ' + val);
 	return(val);
+}
+
+all = function(array) {
+	var ret = true;
+	for (var i = 0; i < array.length; i++) {
+		if (!array[i]) {ret = false; return(ret);}
+	}
+	return(ret);
+}
+
+any = function(array) {
+	var ret = false;
+	for (var i = 0; i < array.length; i++) {
+		if (array[i]) {ret = true; return(ret);}
+	}
+	return(ret);
 }
 
 var rotator = [0,0,0,0];
@@ -585,9 +641,22 @@ rotate = function(num) {
 	update();
 }
 
+disp = function(tArray) {
+	var html = '';
+	for (var i = tArray.length-1; i > 0; i-- ){
+		html = html + tArray[i] + "<br>";
+	}
+	document.getElementById('output').innerHTML = html;
+}
+
+var cText = []; var mL = 14;
 print = function(text) {
 	if (settings.verbose) {
-		console.log(text);
+		cText.push(text);
+		while (cText.length > mL) {
+			cText.shift();
+		}
+		disp(cText);
 	}
 	log.push(text);
 }
