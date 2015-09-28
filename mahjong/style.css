@@ -1,6 +1,7 @@
 .tile {
 	width:55;
 	height:77;
+	/*display:inline-block;*/
 }
 .bar {
 	width:10;

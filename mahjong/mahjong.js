@@ -147,6 +147,7 @@ selecting = function(img) {
 			select2(img);
 			break;
 	}
+	moveS(curSelImg);
 }
 
 select1 = function(img) {
@@ -185,6 +186,16 @@ startSelecting = function(img) {
 	curSelImg = parseInt(img.id);
 	selPhase = 0;
 	setS('def');
+	moveS(curSelImg);
+}
+
+moveS = function(num) {
+	// shift the selection div, movegroup, according to num
+	calcPos = document.getElementById(num).x-(selIDs.length*55/2);
+
+	if (calcPos < 0) { calcPos = 0; }
+
+	document.getElementById("movegroup").style.marginLeft = calcPos + "px";
 }
 
 showS = function(num) {
@@ -682,16 +693,10 @@ score = function() {
 		val = val + 8;
 	}
 
-	////// INCIDENTALS //////
-
-// Thirteen Terminals - 32
-// Sky-win - 31
-// Earth-win - 31
-// Seven pairs - 6
-// Seabed - 2
-// Riverbed - 2
-// Win on Kong - 2 (i.e. off the tile you pull from the kong box)
-
+	if (val==0) {
+		print('Chicken Hand');
+		val = val + 1;
+	}
 	print('Score: ' + val);
 	return(val);
 }
