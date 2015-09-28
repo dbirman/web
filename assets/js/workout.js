@@ -19,12 +19,22 @@ toMMSS = function  (num) {
     return time;
 }
 
-var len = [15,60,60]
-var breaks = 15;
+var main = 4;
+var breaks = 1;
+var bigbreak = 5;
 var pos = 0;
 var cbreak = false;
 var rep = 0;
-var text = ['Starting!','Jumping Jacks','Goblet Squat',]
+var nreps = 3;
+var text = ['Jumping Jacks','Goblet Squat','Mountain Climbers','One-Arm Dumbell','T-Pushup','Burpee','2-DB Row','Side Lunge','Pushup Row','Lunge','2-DB Press'];
+var rtext = [];
+var len = [];
+for (var i = 0; i < text.length-1; i++) {
+    rtext.push(text[i]);
+    rtext.push('Break! Next: ' + text[i+1]);
+    len.push(main*1000); len.push(breaks*1000);
+}
+rtext.push(text[i]);
 
 var done = false;
 
@@ -32,7 +42,7 @@ var tid;
 
 function timer() {
     if (done) {
-        cancelTimeout(tid);
+        clearTimeout(tid);
         finish();
         return;
     }
@@ -41,15 +51,23 @@ function timer() {
     update();
 }
 
+var celapsed = 0;
 function update() {
     // Start by checking if we jumped segments
-    var celapsed = celapsed + elapsed;
-    if (celapsed > len[pos]) {
+    if (rep == nreps) {
+        done = true;
+        return;
+    } else if (pos >= len.length && ) {
+        // we finished a repetition
+    }
+    if ((elapsed - celapsed) > len[pos]) {
         //we did, jump seg
         pos = pos + 1;
         cbreak = !cbreak;
+        celapsed = elapsed;
     }
-    document.getElementById("ttext").innerHTML = toMMSS(celapsed/1000);
+    document.getElementById("wtext").innerHTML = rtext[pos];
+    document.getElementById("ttext").innerHTML = toMMSS(elapsed/1000);
 }
 
 function finish() {

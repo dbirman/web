@@ -47,6 +47,10 @@ preset = function(num) {
 			imageVals = [18,18,18,19,19,19,20,20,20,7,7,7,6,6];
 			update();
 			break;
+		case 5:
+			imageVals = [18,18,18,19,19,19,20,20,20,21,21,21,6,6];
+			update();
+			break;
 	}
 }
 
@@ -323,6 +327,36 @@ getDeckInfo = function() {
 	var concPungCount = 0;
 	var chiCount =0;
 
+	// calculate consecutive pungs
+	consecPungs = 0;
+	numsuits = [];
+	for (var di = 0; di < deck.hand.length-1; di++) {
+		if (deck.hand[di].pung) {
+			numsuits.push(deck.hand[di].cards[0]);
+		}
+	}
+	numsuits.sort();
+	// check for a chi within numsuits
+	if ((numsuits.length == 3) &&
+	 (parseInt(numsuits[0][0])==parseInt(numsuits[1][0])-1 && parseInt(numsuits[0][0])==parseInt(numsuits[2][0]-2)) &&
+	 (numsuits[0][1]==numsuits[1][1] && numsuits[0][1]==numsuits[2][1])) {
+			consecPungs = 1;
+	} else if (numsuits.length == 4) {
+		// have to check both 1 2 3 and 2 3 4
+		if ((parseInt(numsuits[0][0])+1==parseInt(numsuits[1][0]) && parseInt(numsuits[0][0])+2==parseInt(numsuits[2][0]) && parseInt(numsuits[0][0])+3==parseInt(numsuits[3][0])) &&
+	 (numsuits[0][1]==numsuits[1][1] && numsuits[0][1]==numsuits[2][1] && numsuits[0][1]==numsuits[3][1])) {
+			consecPungs = 3;
+		}
+		else if (((parseInt(numsuits[0][0])+1==parseInt(numsuits[1][0]) && parseInt(numsuits[0][0])+2==parseInt(numsuits[2][0])) &&
+	 (numsuits[0][1]==numsuits[1][1] && numsuits[0][1]==numsuits[2][1])) ||
+			((parseInt(numsuits[1][0])==parseInt(numsuits[2][0])-1 && parseInt(numsuits[1][0])==parseInt(numsuits[3][0]-2)) &&
+	 (numsuits[1][1]==numsuits[2][1] && numsuits[1][1]==numsuits[3][1]))) {
+			consecPungs = 2;
+		}
+	}
+
+	deck.consecPungs = consecPungs;
+
 	for (var ni = 0; ni < names.length; ni++) {
 		deck[names[ni] + 'Count'] = 0;
 		for (var di = 0; di < deck.hand.length; di++ ) {
@@ -417,12 +451,46 @@ unique = function(array) {
 }
 
 score = function() {
-	one = deck.hand[0]; two = deck.hand[1]; thr = deck.hand[2]; pr = deck.hand[3];
+	one = deck.hand[0]; two = deck.hand[1]; thr = deck.hand[2]; fur = deck.hand[3]; pr = deck.hand[4];
 
 	var val = 0;
 
 	var allSuits = unique(getAllSuits);
 
+	if (document.getElementById("wok").checked) {
+		print('Win on Kung');
+		val = val + 1;
+	}
+	
+	if (document.getElementById("skw").checked) {
+		print('Sky Win');
+		val = val + 31;
+	}
+	if (document.getElementById("eaw").checked) {
+		print('Earth Win');
+		val = val + 31;
+	}
+	if (document.getElementById("spw").checked) {
+		print('Seven Pairs: Not Yet Implemented');
+		val = val + 6;
+		print('Score: ' + val);
+		return(val);
+	}
+	if (document.getElementById("sew").checked) {
+		print('Seabed (last discard)');
+		val = val + 2;
+	}
+
+	if (document.getElementById("riw").checked) {
+		print('Riverbed (last wall tile)');
+		val = val + 2;
+	}
+	if (document.getElementById("ttw").checked) {
+		print('Thirteen Terminals');
+		val = val + 32;
+		print('Score: ' + val);
+		return(val);
+	}
 	// start scoring, check each sequence
 
 	// all chi
@@ -552,6 +620,14 @@ score = function() {
 	} else if (deck.idCount==1) {
 		print('Two Identical');
 		val = val + 2;
+	}
+
+	if (deck.consecPungs==1 || deck.consecPungs==2) {
+		print('Three Consecutive Pungs');
+		val = val + 20;
+	} else if (deck.consecPungs==3) {
+		print('Four Consecutive Pungs');
+		val = val +40;
 	}
 
 	///// CONSECUTIVE SETS /////
