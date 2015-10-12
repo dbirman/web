@@ -14,7 +14,7 @@ for (var i=1;i<=36;i++) {
 	tile = 'images/tiles';
 	if (i<10) {tile = tile + '_0' + i;}
 	else {tile = tile + '_' + i;}
-	if (i>1) {tile = tile + '.gif';}
+	if (i>0) {tile = tile + '.gif';}
 	else {tile = tile + '.png';}
 	settings.images.push(tile);
 }
