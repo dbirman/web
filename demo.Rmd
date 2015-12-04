@@ -1,0 +1,291 @@
+---
+title: "Demo, Homework 5"
+output:
+  html_document:
+    highlight: pygments
+    theme: flatly
+    toc: yes
+    toc_depth: 4
+---
+
+<!-- due 12/2 -->
+
+```{r load libraries, echo=F, message=F, warning=F}
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(grid)
+library(ggthemes)
+library(languageR)
+library(psych)
+library(lme4)
+library(lmerTest)
+library(diagram)
+options(digits=3)
+
+printp = function(p) {
+  if (p<0.001) {
+    return('p<0.001')
+  } else {
+    return(sprintf('p=%.3f', p))
+  }
+}
+
+printmodelcomp = function(rs) {
+  p = rs[['Pr(>F)']][2]
+  if (p>0.05) {
+    printp(p)
+  } else {
+    return(paste(
+      sprintf('F(%.0f,', rs$Df[2]),
+      sprintf('%.0f)', rs$Res.Df[2]),
+      sprintf('=%.3f', rs$F[2]),
+      ', ',
+      printp(p),
+      sep=''
+    ))
+  }
+}
+
+printanova = function(rs) {
+  p = rs[['Pr(>F)']][1]
+  if (p<0.05) {
+    return(paste(
+      sprintf('F(%.0f,', rs$Df[1]),
+      sprintf('%.0f)', rs$Df[2]),
+      sprintf('=%.3f', rs$F[1]),
+      ', ',
+      printp(p),
+      sep=''
+    ))
+  } else {
+    return(printp(p))
+  }
+}
+printcoef = function(rs, coef) {
+  p = summary(rs)$coefficients[coef, "Pr(>|t|)"]
+  if (p<0.05) {
+    return(paste(
+      sprintf('b=%.3f', rs$coefficients[[coef]]),
+      ', ',
+      sprintf('t(%.0f)', rs$df),
+      sprintf('=%.3f', summary(rs)$coefficients[coef, 't value']),
+      ', ',
+      printp(p), sep=''
+    ))
+  } else {
+    return(printp(p))
+  }
+}
+report_lmer = function(rs, coef) {
+  p = summary(rs)$coefficients[coef, 'Pr(>|t|)']
+  b = summary(rs)$coefficients[coef, 'Estimate']
+  df = summary(rs)$coefficients[coef, 'df']
+  tval = summary(rs)$coefficients[coef, 't value']
+  if (p > 0.05) {
+    return(printp(p))
+  } else {
+    return(paste(
+      sprintf('b=%.3f', b),
+      ', ',
+      sprintf('t(%.0f)', df),
+      sprintf('=%.3f', tval),
+      ', ',
+      printp(p), sep=''
+    ))
+  }
+}
+printcomparelmer = function(rs) {
+  p = rs['Pr(>Chisq)'][2,1]
+  if (p<0.05) {
+    return(
+      paste('(',
+            rs['Chi Df'][2,1],
+            sprintf(')=%.2f', rs$Chisq[2]),
+            ' ',
+            printp(p),
+            sep='')
+    )
+  } else {
+    return(printp(p))
+  }
+}
+med = function(lmc, lma, lmc.b) {
+  alpha = 0.05
+  type = 'goodman'
+  pc = summary(lmc)$coefficients[[2, 'Pr(>|t|)']]
+  pa = summary(lma)$coefficients[[2, 'Pr(>|t|)']]
+  pb = summary(lmc.b)$coefficients[[2, 'Pr(>|t|)']]
+  pvals = c(c=pc, a=pa, b=pb)
+#   if (mean(pvals < alpha)==1) {
+    c = summary(lmc)$coefficients[[2, 'Estimate']]
+    a = summary(lma)$coefficients[[2, 'Estimate']]
+    b = summary(lmc.b)$coefficients[[2, 'Estimate']]
+    c. = summary(lmc.b)$coefficients[[3, 'Estimate']]
+    pc. = summary(lmc.b)$coefficients[[3, 'Pr(>|t|)']]
+    sa = summary(lma)$coefficients[[2, 'Std. Error']]
+    sb = summary(lmc.b)$coefficients[[2, 'Std. Error']]
+    dir = ifelse(type=='sobel', 1, -1)
+    sobel = abs(a*b)/sqrt(b^2*sa^2+a^2*sb^2+sa^2*sb^2)
+    goodman = abs(a*b)/sqrt(b^2*sa^2+a^2*sb^2-sa^2*sb^2)
+    psobel = 2*pnorm(sobel, lower.tail=F)
+    pgoodman = 2*pnorm(goodman, lower.tail=F)
+    return(list(c=c, a=a, b=b, c.=c., pc=pc, pa=pa, pb=pb, pc.=pc.,
+                sobel=sobel, goodman=goodman, psobel=psobel, pgoodman=pgoodman))
+#   } else {
+#     return(sapply((1:length(pvals))[pvals>alpha], function(i) {
+#       var = names(pvals)[i]
+#       paste(var, 'is not significant,', fprintf('p=%.3f', pvals[i]))
+#       }))
+#   }
+}
+### http://www.cookbook-r.com/Graphs/Multiple_graphs_on_one_page_(ggplot2)/
+# Multiple plot function
+#
+# ggplot objects can be passed in ..., or to plotlist (as a list of ggplot objects)
+# - cols:   Number of columns in layout
+# - layout: A matrix specifying the layout. If present, 'cols' is ignored.
+#
+# If the layout is something like matrix(c(1,2,3,3), nrow=2, byrow=TRUE),
+# then plot 1 will go in the upper left, 2 will go in the upper right, and
+# 3 will go all the way across the bottom.
+#
+multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
+  library(grid)
+
+  # Make a list from the ... arguments and plotlist
+  plots <- c(list(...), plotlist)
+
+  numPlots = length(plots)
+
+  # If layout is NULL, then use 'cols' to determine layout
+  if (is.null(layout)) {
+    # Make the panel
+    # ncol: Number of columns of plots
+    # nrow: Number of rows needed, calculated from # of cols
+    layout <- matrix(seq(1, cols * ceiling(numPlots/cols)),
+                    ncol = cols, nrow = ceiling(numPlots/cols))
+  }
+
+ if (numPlots==1) {
+    print(plots[[1]])
+
+  } else {
+    # Set up the page
+    grid.newpage()
+    pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
+
+    # Make each plot, in the correct location
+    for (i in 1:numPlots) {
+      # Get the i,j matrix positions of the regions that contain this subplot
+      matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
+
+      print(plots[[i]], vp = viewport(layout.pos.row = matchidx$row,
+                                      layout.pos.col = matchidx$col))
+    }
+  }
+}
+```
+  
+Question 1
+-----------------------------------------
+
+```{r 1 load data, echo=F, message=F, warning=F}
+n = 20
+n_conds = 2
+n_per_cond = n/n_conds
+alpha = 0.05
+talpha = qt(alpha, df=n_per_cond, lower.tail=F)
+kv0 = read.csv('http://stanford.edu/class/psych252/_downloads/kv0.csv') %>%
+  gather(num_solns, score, 3:5) %>%
+  mutate(num_solns_cat = num_solns,
+         num_solns = as.integer(num_solns),
+         focusedis0 = ifelse(attnr == 'focused', 0, 1),
+         dividedis0 = ifelse(attnr == 'divided', 0, 1),
+         num_solns.centered = scale(num_solns, scale=F),
+         num_solns.highis0 = scale(num_solns, scale=F) - 1,
+         num_solns.lowis0 = scale(num_solns, scale=F) + 1,
+         attn.numeric = as.numeric(attnr)*2-3)
+lmer_inter = lmer(score ~ attnr * num_solns + (1|subidr), kv0, REML=F)
+
+lmer_focusedis0 = lmer(score ~ focusedis0 * num_solns.centered + (1|subidr), kv0, REML=F)
+lmer_dividedis0 = lmer(score ~ dividedis0 * num_solns.centered + (1|subidr), kv0, REML=F)
+lmer_lowis0 = lmer(score ~ attnr * num_solns.lowis0 + (1|subidr), kv0, REML=F)
+lmer_centered = lmer(score ~ attnr * num_solns.centered + (1|subidr), kv0, REML=F)
+lmer_highis0 = lmer(score ~ attnr * num_solns.highis0 + (1|subidr), kv0, REML=F)
+```
+
+We run a mixed effects model with fixed effects for attention condition, number of possible solutions, and their interaction and random intercepts for participant (justification below). We find a significant interaction between attention condition and number of posisible solutions on score, `r report_lmer(lmer_inter,'attnrfocused:num_solns')`.
+
+There is a simple positive effect of the focused attention condition on score when number of possible solutions is low, `r report_lmer(lmer_lowis0,'attnrfocused')`. There is a smaller simple effect of the focused attention condition at the average number of possible solutions, `r report_lmer(lmer_centered,'attnrfocused')`. There is no simple effect of attention condition on score when number of possible solutions is high, `r report_lmer(lmer_highis0,'attnrfocused')`. That is, the fewer possible solutions there are, the more participants in the focused condition do better than those in the divided condition.
+There is no simple effect of number of possible solutions on score in the focused condition, `r report_lmer(lmer_focusedis0,'num_solns.centered')`. There is a simple effect of number of possible solutions on score in the divided condition, `r report_lmer(lmer_dividedis0,'num_solns.centered')`. That is, the number of solutions makes a difference for participants in the divided condition (it results in better scores), but does not make a difference for participants in the focused condition.
+
+Overall, it might be that the task gets easier as the number of possible solutions increases, and easier tasks can be achieved equally well by participants whose attention is divided as by those whose attention is focused. However, with fewer possible solutions, the participants in the focused condition are able to score better than those in the divided condition.
+
+```{r plot aggr, echo=F, fig.width=4, fig.height=2}
+kv0 %>% group_by(num_solns, attnr) %>% summarise(sd = sd(score), score = mean(score)) %>%
+  mutate(se = sd/n_per_cond, scoremax=score+talpha*se, scoremin=score-talpha*se) %>%
+  ggplot(., aes(x=num_solns, y=score, colour=attnr)) +
+  geom_point(size=3) +
+  geom_errorbar(aes(x=num_solns, ymin=scoremin, ymax=scoremax), width=0) +
+  geom_line() +
+  theme_few() + scale_colour_few()
+```
+
+### a. should we include a random effect?
+
+Individuals appear to have different intercepts.
+
+```{r 1a plot by S, echo=F, fig.width=7, fig.height=5}
+ggplot(kv0, aes(x=num_solns, y=score, colour=attnr, group=subidr)) +
+  geom_point(alpha=1/2) +
+  geom_smooth(method=lm, se=F) +
+  facet_wrap(~subidr) +
+  theme_few() + scale_colour_few()
+```
+
+```{r 1a compare models random effect, echo=F, warning=F, message=F}
+compare = function(lm_model, lmer_model, REML=F) {
+  lm_LL = -logLik(lm_model, REML=REML) #surprisal @data under lm model
+  lmer_LL = -logLik(lmer_model, REML=REML) #surprisal @data under lmer model
+  x2 = 2*(lm_LL - lmer_LL) #twice diff between lm and lmer surprisals (lm higher than lmer)
+  df = attr(lmer_LL, 'df') - attr(lm_LL, 'df') #difference in df (lmer has more than lm)
+  p = pchisq(x2, df=df, lower.tail=F) #chisq
+  return(c(x2=x2, df=df, p=p))
+}
+lm_inter = lm(score ~ attnr * num_solns, kv0)
+lmerbetter = compare(lm_inter, lmer_inter, REML=F)
+lmer_inter_rslope = lmer(score ~ attnr * num_solns + (1 + num_solns|subidr), kv0, REML=F)
+rslopenotbetter = anova(lmer_inter, lmer_inter_rslope)
+```
+
+We first fit a linear model with predictors for attention condition, number of possible solutions, and an interaction. Using maximum likelihood estimation, we compare this to a mixed-effects model with the same fixed effects but with random by-participant intercepts. The model with random intercepts is a significantly better fit to the data, $\chi^2$(`r lmerbetter['df']`)=`r lmerbetter['x2']`, `r printp(lmerbetter['p'])`. A model that also had a random by-participant slope did not have a significantly better fit to the data, `r printp(rslopenotbetter['Pr(>Chisq)'][2,1])`.
+
+### b. is 'nsol' a useful predictor?
+
+```{r 1b should we include nsol predictor, echo=F, warning=F, message=F}
+lmer_add = lmer(score ~ attnr + num_solns + (1|subidr), kv0, REML=F)
+lmer_onlyattnr = lmer(score ~ attnr + (1|subidr), kv0, REML=F)
+addbetter = anova(lmer_onlyattnr, lmer_add)
+interbetter = anova(lmer_add, lmer_inter)
+```
+
+Including an interaction term between number of possible solutions and attention condition gives a significantly better fit to the data over an additive model, $\chi^2$`r printcomparelmer(interbetter)`. The additive model in turn is significantly better than a model without number of possible solutions as a predictor, $\chi^2$`r printcomparelmer(addbetter)`.
+
+### c. class of 'nsol'
+
+```{r 1c class of nsol, echo=F, warning=F, message=F}
+lmer_inter_cat = lmer(score ~ attnr * num_solns_cat + (1|subidr), kv0, REML=F)
+lmer_inter_cat_aic = AIC(logLik(lmer_inter_cat))
+lmer_inter_aic = AIC(logLik(lmer_inter))
+lmer_quadratic = lmer(score ~ attnr * poly(num_solns, 2) + (1|subidr), kv0, REML=F)
+quadraticnotbetter = anova(lmer_inter, lmer_quadratic)
+```
+
+The AIC for a model with `nsol` coded as numeric (`r lmer_inter_aic`) is smaller than the AIC for a model with `nsol` coded as a factor(`r lmer_inter_cat_aic`), so I prefer the numeric version. (I prefer it anyway, since the *number* of competing solutions is a *number*...)
+
+Including a quadratic effect does not significantly improve model fit, `r printcomparelmer(quadraticnotbetter)`.
+
+### d. by-subject graph
+
+See [1a](.#a.-should-we-include-a-random-effect).
