@@ -48,9 +48,9 @@ var text2p = ['Warmup',
             'Single DB',
             'Lunge',
             'Pushup Row & Mountains',
-            'Press & Burpee',
+            'Press & Leg Lifts',
             'Sit-ups & Side Lunge',
-            'Burpees & Pushup Row',
+            'Leg Lifts & Pushup Row',
             'Jacks & Press',
             'Jumping Jacks (Cooldown)'];
 var text;
@@ -60,6 +60,10 @@ var len = [];
 var done = false;
 
 var tid;
+
+// load sounds
+var snd_start = new Audio("assets/snd/beep_start.wav"); // buffers automatically when created
+var snd_end = new Audio("assets/snd/beep_end.wav");
 
 function timer() {
     if (done) {
@@ -72,19 +76,31 @@ function timer() {
 }
 
 var celapsed = 0;
+var beep_done = 0;
 function update() {
     // Start by checking if we jumped segments
     if (pos >= len.length ) {
         // we finished a repetition
         done = true;
+        beep_done = 1;
         finish();
         return;
     }
+    if ((cbreak) && !beep_done && ((len[pos]-(elapsed-celapsed)) < 4000)) {
+        snd_start.play();
+        beep_done = 1;
+    }
+    if ((!cbreak) && !beep_done && ((len[pos]-(elapsed-celapsed)) < 500)) {
+        snd_end.play();
+        beep_end = 1;
+    }
+    // If within seconds and didn't beep yet
     if ((elapsed - celapsed) > len[pos]) {
         //we did, jump seg
         pos = pos + 1;
         cbreak = !cbreak;
         celapsed = elapsed;
+        beep_done = 0;
     }
     document.getElementById("wtext").innerHTML = rtext[pos];
     document.getElementById("ttext").innerHTML = toMMSS((len[pos]-(elapsed-celapsed))/1000);
@@ -120,5 +136,6 @@ function workout_start(num) {
     $("#ttext").show();
     $("#hdr").hide();
 	start = new Date();
+    cbreak = true;
 	timer();
 }
