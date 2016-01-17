@@ -19,7 +19,7 @@ toMMSS = function  (num) {
     return time;
 }
 
-var main = 75;
+var main = 60;
 var breaks = 20;
 var grtime = 10;
 
@@ -36,6 +36,7 @@ var text1p = ['Jumping Jacks',
             '2-DB Row',
             'Side Lunge',
             'Pushup Row','Lunge',
+            'Leg Lifts',
             '2-DB Press',
             'Jumping Jacks (Cooldown)'];
 var text2p = ['Warmup',
