@@ -21,18 +21,19 @@ toMMSS = function  (num) {
 
 var main = 60;
 var breaks = 20;
-var grtime = 10;
+var grtime = 5;
 
 var bigbreak = 5;
 var pos = 0;
 var cbreak = false;
 var rep = 0;
 var nreps = 3;
-var text1p = ['Warmup: Kicks, Scorpions, Hand-Walks',
+var text_warmup = ['Warmup: Kicks, Scorpions, Hand-Walks',
             'Continue Warm-up',
-            'Rest',
-            'Jumping Jacks',
-            'Goblet Squat',
+            'Continue Warm-up',
+            'Jumping Jacks']
+var text_cooldown = ['Jumping Jacks (Cooldown)']
+var text1p = ['Goblet Squat',
             'Mountain Climbers',
             'One-Arm Dumbell',
             'T-Pushup',
@@ -42,12 +43,8 @@ var text1p = ['Warmup: Kicks, Scorpions, Hand-Walks',
             'Pushup Row',
             'Lunge',
             'Leg Lifts',
-            '2-DB Press',
-            'Jumping Jacks (Cooldown)'];
-var text2p = ['Warmup: Kicks, Scorpions, Hand-Walks',
-            'Continue warmup',
-            'Rest',
-            'T-Pushup & Jacks',
+            '2-DB Press'];
+var text2p = ['T-Pushup & Jacks',
             'Row & Burpees',
             'Side Lunge & Sit-ups',
             'Goblet Squat',
@@ -59,8 +56,7 @@ var text2p = ['Warmup: Kicks, Scorpions, Hand-Walks',
             'Press & Leg Lifts',
             'Sit-ups & Side Lunge',
             'Leg Lifts & Pushup Row',
-            'Jacks & Press',
-            'Jumping Jacks (Cooldown)'];
+            'Jacks & Press'];
 var text;
 var rtext = [];
 var len = [];
@@ -119,6 +115,13 @@ function finish() {
     $("#ttext").hide();
 }
 
+function randomArray(min, max) {
+  return (new Array(max-min))
+    .join(',').split(',')
+    .map(function(v,i){ return [Math.random(), min + i]; })
+    .sort().map(function(v) { return v[1]; });
+}
+
 function workout_start(num) {
     if (num==1) {
         text = text1p;
@@ -130,13 +133,28 @@ function workout_start(num) {
     }
     rtext.push('Get Ready!');
     len.push(grtime*1000);
-    for (var i = 0; i < text.length-1; i++) {
-        rtext.push(text[i]);
-        rtext.push('Break! Next: ' + text[i+1]);
-        len.push(main*1000); len.push(breaks*1000);
+    // Add the warmup text
+    for (var i = 0; i < text_warmup.length; i++) {
+        rtext.push(text_warmup[i]);
+        len.push(main*1000);
     }
-    rtext.push(text[i]);
+    order = randomArray(0,text.length);
+    for (var i = 0; i < text.length - 1; i++) {
+        rtext.push('Break! Next: ' + text[order[i]]);
+        len.push(breaks*1000);
+        rtext.push(text[order[i]]);
+        len.push(main*1000);
+    }
+    rtext.push('Break! Next: ' + text[order[i]]);
+    len.push(breaks*1000);
+    rtext.push(text[order[i]]);
     len.push(main*1000);
+    for (var i = 0; i < text_cooldown.length; i++) {    
+        rtext.push('Short Break! Next: ' + text[order[i]]);
+        len.push(breaks/2*1000);
+        rtext.push(text_cooldown[i]);
+        len.push(main*1000);
+    }
 	// Runs the workout script
     $("#lbutton").hide();
     $("#l2button").hide();
