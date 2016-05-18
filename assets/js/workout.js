@@ -25,7 +25,6 @@ var grtime = 5;
 
 var bigbreak = 5;
 var pos = 0;
-var cbreak = false;
 var rep = 0;
 var nreps = 3;
 var text_warmup = ['Warmup: Kicks, Scorpions, Hand-Walks',
@@ -90,13 +89,13 @@ function update() {
         finish();
         return;
     }
-    if ((cbreak) && !beep_done && ((len[pos]-(elapsed-celapsed)) < 4000)) {
+    if ((len[pos]<=44000) && !beep_done && ((len[pos]-(elapsed-celapsed)) < 4000)) {
         snd_start.play();
         beep_done = 1;
     }
-    if ((!cbreak) && !beep_done && ((len[pos]-(elapsed-celapsed)) < 500)) {
+    if ((len[pos]>44000) && !beep_done && ((len[pos]-(elapsed-celapsed)) < 500)) {
         snd_end.play();
-        beep_end = 1;
+        beep_done = 1;
     }
     // If within seconds and didn't beep yet
     if ((elapsed - celapsed) > len[pos]) {
