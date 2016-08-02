@@ -37,7 +37,7 @@ Big three dragons - 26 (Three philosophers)
 Small three winds - 5
 Big three winds - 24
 Small four winds - 64
-Big four winds - 80
+Big four winds - 80u
 ---
 All honors - 64	
  
@@ -92,6 +92,7 @@ Seven pairs - 6
 Seabed - 2
 Riverbed - 2
 Win on Kong - 2 (i.e. off the tile you pull from the kong box)
+Robbing a Kong - 2
 
 
 1C = circles
