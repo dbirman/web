@@ -22,11 +22,11 @@ Modules - reusable parts of our design
 Main components 
 
 -------------------------------- */
-header {
+/*header {
   height: 200px;
   line-height: 200px;
   text-align: center;
-  background: #303e49;
+  background: #32333b;
 }
 header h1 {
   color: white;
@@ -42,7 +42,7 @@ header h1 {
     font-size: 24px;
     font-size: 1.5rem;
   }
-}
+}*/
 
 #cd-timeline {
   position: relative;
@@ -118,13 +118,13 @@ header h1 {
   margin-top: -12px;
 }
 .cd-timeline-img.cd-picture {
-  background: #75ce66;
+  background: #46474e;
 }
 .cd-timeline-img.cd-movie {
-  background: #c03b44;
+  background: #46474e;
 }
 .cd-timeline-img.cd-location {
-  background: #f0ca45;
+  background: #46474e;
 }
 @media only screen and (min-width: 1170px) {
   .cd-timeline-img {
@@ -207,7 +207,7 @@ header h1 {
 .cd-timeline-content {
   position: relative;
   margin-left: 60px;
-  background: white;
+  background: #46474e;
   border-radius: 0.25em;
   padding: 1em;
   box-shadow: 0 3px 0 #d7e4ed;
