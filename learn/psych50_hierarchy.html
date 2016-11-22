@@ -19,7 +19,7 @@
 
 			<!-- Header -->
 				<header id="header">
-					<h1 id="logo"><a href="../index.html">Dan Birman</a></h1>
+					<!-- <h1 id="logo"><a href="../index.html">Dan Birman</a></h1> -->
 					<nav id="nav">
 						<ul>
 							<li><a href="../learn.html">Learn</a></li>
@@ -68,19 +68,32 @@
 <div id="block2">
 	<h2 id="part1simplecells">Part 1: Simple cells</h2>
 	<p>You should recall from lecture that a <b>simple cell</b> is a neuron in the early visual cortex (part of the occipital cortex) which is sensitive to a few features, including: <b>edges</b>, <b>contrast</b>, and <b>color</b>.</p>
-	<img src="images/simplecell.png"/>
+	<img src="images/simplecell.png" width=500/>
 	<p>The first thing we're going to do is look at how a simple cell might "see" an image. Remember that a neuron in this part of cortex has a <b>receptive field</b>, which is the area of visual space that the neuron can "see" and react to. Simple cells will be activated whenever they see for example, edges. The first thing we're going to do in this lab is try to <b>design</b> a receptive field to detect edges. Eventually we'll build up to receptive fields that detect much more complex features, like cats or dogs.</p>
 </div>
 
 <div id="block3">
 	<h2>Design a receptive field</h2>
-	<p>The next section is a bit like a game, you're going to design a receptive field and test it on the image shown. Your goal is to create an <b>edge detector</b> that can find vertical lines. We've set this up just like the Hubel and Wiesel experiment, as if we were recording from this particular neuron with an electrode. When your receptive field is well activated by what it "sees" you'll hear the neuron firing (<i>turn up your sounds!</i>) and you'll see the spikes in the window on the top right. To change your receptive field simply click anywhere in the 7x7 grid on the top left to cycle between black, grey, and white. The colors indicate how much the neuron will be activated by luminance in that part of its receptive field.</p>
-	<canvas width=175 height=175 id="canvas-rf" style="float-left">UPGRADE BROWSER</canvas>
-	<canvas width=400 height=175 id="canvas-spk" style="float-right"></canvas>
+	<p>The next section is a bit like a game, you're going to design a receptive field and test it on the image shown. Your goal is to create an <b>edge detector</b> that can find vertical lines. We've set this up just like the Hubel and Wiesel experiment, but we're letting you move your receptive field around the image (with your mouse), while a real neuron would be fixed in one place. The top right panel shows the voltage of this neuron as if we were recording with an electrode. When your receptive field is well activated by what it "sees" you'll hear the neuron firing (<i>turn up your sound!</i>) and you'll see the spikes in the window on the top right. To change your receptive field simply click anywhere in the 7x7 grid on the top left to cycle between black, grey, and white. The colors indicate how much the neuron will be activated by luminance in that part of its receptive field.</p>
+	<div style="text-align:center">
+		<div class="row">
+			<div style="text-align:left">
+				<p>Receptive field</p>
+				<canvas width=175 height=175 id="canvas-rf" style="float-left">UPGRADE BROWSER</canvas>
+			</div>
+			<div style="text-align:right">
+				<p>Response</p>
+				<canvas width=400 height=175 id="canvas-spk" style="float-right"></canvas>
+			</div>
+		</div>
+	</div>
 	<br>
-	<canvas width=800 height=400 id="canvas-img" style="float-left"></canvas>
+	<div style="text-align:left">
+		<p>Image</p>
+		<canvas width=150 height=101 id="canvas-img" style="float-left"></canvas>
+	</div>
 </div>
-
+<!-- 
 <div id="block4">
 	<p><img src="images/simplecell_example.png"/></p>
 
@@ -110,11 +123,13 @@
 
 	<p><strong>Hint:</strong> This Jupyter notebook uses a mix of code and prose. To run each chunk of code, select the chunk and press <b>Shift + Enter</b>. Make sure you understand the questions that follow each section of code before you move on.</p>
 
-</div>
+</div> -->
 
 <div id="endblock">
-	<h2 style="display:none">Tutorial complete!</h2>
+	<h2>Tutorial complete!</h2>
 </div>
+
+<img id="adorbs" crossOrigin="anonymous" src="images/adorbs.png" style="display:none"/>
 
 							</section>
 		<a class="button special" onclick="prev();">Go back</a>
@@ -146,6 +161,7 @@
 			<!--[if lte IE 8]><script src="assets/js/ie/respond.min.js"></script><![endif]-->
 			<script src="../assets/js/main.js"></script>
 
+			<link rel="stylesheet" href="psych50_hierarchy.css" />
 	</body>
 </html>
 
