@@ -15,8 +15,6 @@ var rf;
 var spk = createArray(400);
 var hodgkinhuxley;
 var inject = false;
-var IDC = 0;
-var IRand = 1;
 
 // Image variables
 var imgx, imgy, imgtx, imgty;
@@ -46,7 +44,8 @@ function demoDraw() {
 function update_rf(x,y) {
 	var xpos = Math.floor(x/25.);
 	var ypos = Math.floor(y/25.);
-	rf[xpos][ypos] = (rf[xpos][ypos] + 0.5) % 1.5;
+	rf[xpos][ypos] = rf[xpos][ypos] + 0.5;
+  if (rf[xpos][ypos] > 1) {rf[xpos][ypos]=-1;}
 }
 
 function update_img(x,y) {
@@ -58,7 +57,7 @@ function update_img(x,y) {
 function draw_rf() {
 	for (var x =0; x<7;x++) {
 		for (var y = 0; y < 7;y++) {
-			ctx_rf.fillStyle = gsc2hex(rf[x][y]);
+			ctx_rf.fillStyle = gsc2hex((rf[x][y]+1)/2);
 			ctx_rf.fillRect(x*25,y*25,x*25+25,y*25+25);
 		}
 	}
@@ -101,7 +100,7 @@ function demoLogic() {
     for (var x=-3;x<4;x++) {
       for (var y=-3;y<4;y++) {
         cx = imgx-x; cy = imgy-y;
-        v = adorbs_px.data[cy*600+cx*4];
+        v = adorbs_px[cy*150+cx];
         vs.push(v);
       }
     }
@@ -110,16 +109,21 @@ function demoLogic() {
       V += vs[i]*rf_reshaped[i];
     }
   }
-
-	// Spiking
-	spk.shift();
-	// var rawInj = IDC + IRand * 2 * (Math.random()-0.5);
-  // hodgkinhuxley.Iinj += hodgkinhuxley.dt * (rawInj - hodgkinhuxley.Iinj);
-  hodgkinhuxley.step();
-  // V = hodgkinhuxley.V;
+  if (Number.isNaN(V)) {V=0;}
+  var IDC = V;
+  //repeats four times
+  for (var reps=0;reps<25;reps++) {
+    // Spiking
+    var IRand = 35
+    var Itau = 1
+    var rawInj = IDC + IRand * 2 * (Math.random()-0.5);
+    hodgkinhuxley.Iinj += hodgkinhuxley.dt/Itau * (rawInj - hodgkinhuxley.Iinj);
+    hodgkinhuxley.step();
+    V = hodgkinhuxley.V;
+  }
   // IDC *= 0.9;
-
-  spk.push(V/255);
+  spk.shift();
+  spk.push(V);
 }
 
 function run(i) {
@@ -171,22 +175,35 @@ function launch() {
   // file loaded properly
   // load it to the canvas
   ctx_img.drawImage(adorbs,0,0);
-  adorbs_px = ctx_img.getImageData(0,0,adorbs.width,adorbs.height);
+  // Now we need to contrast normalize the pixels
+  // for each pixel, (150,101), subtract local mean and div
+  // by local stdev
+  adorbs_px = createArray(150*101);
+  for (var x=0;x<150;x++) {
+    for (var y=0;y<101;y++) {
+      var val = ctx_img.getImageData(x,y,1,1).data[0];
+      var local = ctx_img.getImageData(math.min(x-1,0),math.min(y-1,0),math.min(151-x,3),math.min(151-y,3)).data;
+      var local_ = createArray(local.length/4);
+      for (var i=0;i<local_.length;i++) {
+        local_[i] = local[i*4];
+      }
+      adorbs_px[y*150+x] = (val-math.mean(local_)) / math.std(local_);
+    }
+  }
 
 	hodgkinhuxley = new HH();
 
   for (var x =0; x<7;x++) {
     for (var y = 0; y < 7;y++) {
-      rf[x][y] = 0.5;
+      rf[x][y] = 0;
     }
   }
 }
 
-launch();
-
 
 
 // HELPERS
+
 function init_rf() {
 	rf = createArray(7,7);
 	for (var x =0; x<7;x++) {
@@ -228,7 +245,7 @@ var x =  (evt.clientX - rect.left) * scaleX,   // scale mouse coordinates after 
 
 function HH() {
 	// From http://myselph.de/hodgkinHuxley.html
-  this.dt = 1; //ms
+  this.dt = 0.025; //ms
   this.C = 1; //in muF/cm^2
   this.GKMax = 36;
   this.GNaMax = 120;
@@ -292,3 +309,10 @@ function HH() {
     this.V += this.dt / this.C * (this.INa + this.IK + this.Im + this.Iinj);
   };
 };
+
+
+// STart
+
+
+
+launch();
