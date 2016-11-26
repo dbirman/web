@@ -15,8 +15,9 @@ function textarea1(e) {
 	var key = window.event.keyCode;
 	if (key===13) {
 		e.preventDefault();
+		eval(document.getElementById('textarea1').value);
 		drawPlot1();
-	} 
+	}
 }
 
 function quadratic(t) {
@@ -33,11 +34,7 @@ function drawPlot1() {
 		mode:'markers',
 		type:'scatter'
 	}
-	layout = {
-		title: 'Cannonball height over time',
-		xaxis: {title:'Time (s)'},
-		yaxis: {title:'Height (m)'}
-	}
+	layout.title = 'Cannonball height over time';
 	Plotly.newPlot('plot1',[trace],layout);
 }
 

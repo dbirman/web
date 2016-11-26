@@ -74,17 +74,20 @@
 <div id="block2">
 	<div id="katex2"></div>
 	<p>We can use this equation to make precise predictions about where the cannonball will be at each point in time. We'll set some initial parameters below to control the flight of the cannonball, and then plot the result at the bottom. Feel free to change parameters and run this again.</p>
-	<p><b>Hint:</b> whenever we provide code that can be edited, press <b>enter</b>to run the code including the changes you made.</p>
-	<textarea rows="7" onkeypress="textarea1(event);">
+	<p><b>Hint:</b> whenever we provide code that can be edited, press <b>enter</b> to run the code including the changes you made.</p>
+	<p><b>Hint:</b> when you see <b>//</b> the rest of the text on that line doesn't get executed. We use this to provide you with <b>comments</b> about what each variable means.</p>
+	<textarea id="textarea1" rows="7" onkeypress="textarea1(event,this);">
 y0 = 0; // Initial position
-vy = 24.5; // Vertical velocity
+vy = 49; // Vertical velocity
 ay = -9.8; // Vertical acceleration (gravity)
 
 x0 = 0; // Horizontal initial position
-vx = 1; // Horizontal velocity
-ax = 0; // Horizontal acceleration (friction of air)</textarea>
+vx = 1; // Horizontal initial velocity
+ax = 0; // Horizontal acceleration (friction due to air, or wind speed)</textarea><br>
 	<p>The plot below solves the equation for values of t (time) from zero to five seconds.</p>
-	<div id="plot1"></div>
+	<div width=600 id="plot1"></div><br>
+	<p>Compare the equation above to an analogous verbal model, such as "Cannonballs travel through the air in an arc." What advantages might the computational model have over the verbal model? All models make some simplifying assumptions—what details of the cannonball's trajectory does the equation neglect?</p>
+	<p>Computational models are used throughout the sciences to explain and predict complex phenomena, such as the trajectory of a hurricane, the ups and downs of the stock market and, in cognitive neuroscience, the computations perfomed by the 100 billion neurons in your brain. In this lab, we'll look at one particular class of model called <b>Drift Diffusion Models</b>.</p>
 </div>
 <div id="endblock">
 	<h2>Tutorial complete!</h2>

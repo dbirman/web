@@ -1,5 +1,18 @@
 var curBlock = 1;
 
+var layout = {
+	title: 'Default Layout (set title)',
+	xaxis: {title:'Time (s)',color:'#ffffff',showgrid:false,zeroline:true},
+	yaxis: {title:'Height (m)',color:'#ffffff',showgrid:false,zeroline:true},
+	autosize: false,
+	width:600,
+	plot_bgcolor:'rgba(1,1,1,0)',
+	paper_bgcolor:'rgba(1,1,1,0)',
+	font: {
+		color: '#ffffff'
+	}
+}
+
 function prev() {
 	document.getElementById("block"+curBlock).style.display="none";
 	if (curBlock>1) {curBlock--;}
