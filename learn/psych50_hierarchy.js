@@ -1,5 +1,3 @@
-var curBlock = 1;
-
 // Canvas variables (for demo)
 var canvas_rf = document.getElementById("canvas-rf");
 var canvas_spk = document.getElementById("canvas-spk");
@@ -109,21 +107,23 @@ function demoLogic() {
       V += vs[i]*rf_reshaped[i];
     }
   }
-  if (Number.isNaN(V)) {V=0;}
-  var IDC = V;
-  //repeats four times
-  for (var reps=0;reps<25;reps++) {
-    // Spiking
-    var IRand = 35
-    var Itau = 1
-    var rawInj = IDC + IRand * 2 * (Math.random()-0.5);
-    hodgkinhuxley.Iinj += hodgkinhuxley.dt/Itau * (rawInj - hodgkinhuxley.Iinj);
-    hodgkinhuxley.step();
-    V = hodgkinhuxley.V;
-  }
+  // if (Number.isNaN(V)) {V=0;}
+  // var IDC = V;
+  // //repeats four times
+  // var IRand = 10
+  // var Itau = 1
+  // var rawInj = IDC + IRand * 2 * (Math.random()-0.5);
+  // hodgkinhuxley.Iinj += hodgkinhuxley.dt/Itau * (rawInj - hodgkinhuxley.Iinj);
+  // hodgkinhuxley.step();
+  // V = hodgkinhuxley.V;
+  // for (var reps=0;reps<25;reps++) {
+  //   // Spiking
+  //   hodgkinhuxley.step();
+  //   V = hodgkinhuxley.V;
+  // }
   // IDC *= 0.9;
   spk.shift();
-  spk.push(V);
+  spk.push(V/2);
 }
 
 function run(i) {
@@ -135,33 +135,7 @@ function run(i) {
  }
 }
 
-function prev() {
-	document.getElementById("block"+curBlock).style.display="none";
-	if (curBlock>1) {curBlock--;}
-	run(curBlock);
-	document.getElementById("block"+curBlock).style.display="";
-}
-function next() {
-	document.getElementById("block"+curBlock).style.display="none";
-	if (document.getElementById("block"+(curBlock+1))) {
-		curBlock++;
-		document.getElementById("block"+curBlock).style.display="";
-	} else {		
-		document.getElementById("endblock").style.display="";
-	}
-	run(curBlock);
-}
-
-function launch() {
-	var i = 2;
-  document.getElementById("endblock").style.display="none";
-	var block = document.getElementById("block"+i);
-	while(block) {
-		block.style.display="none";
-		i++;
-		block = document.getElementById("block"+i);
-	}
-	run(curBlock);
+function launch_local() {
 	init_rf();
 	canvas_rf.addEventListener("click", updateCanvas, false);
 	canvas_rf.event = update_rf;
@@ -211,24 +185,6 @@ function init_rf() {
 			rf[x][y] = 0;
 		}
 	}
-}
-
-function createArray(length) {
-  var arr = new Array(length || 0),
-  i = length;
-
-  if (arguments.length > 1) {
-    var args = Array.prototype.slice.call(arguments, 1);
-    while(i--) arr[length-1 - i] = createArray.apply(this, args);
-  }
-
-  return arr;
-}
-
-function gsc2hex( percentage ) {
-  var color_part_dec = 255 * percentage;
-  var color_part_hex = Number(parseInt( color_part_dec , 10)).toString(16);
-  return "#" + color_part_hex + color_part_hex + color_part_hex;
 }
 
 function updateCanvas(evt) {
@@ -314,5 +270,3 @@ function HH() {
 // STart
 
 
-
-launch();
