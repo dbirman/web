@@ -56,15 +56,17 @@
 <div id="block1">
 	<h2>Evidence accumulation lab</h2>
 	<h1>Introduction</h1>
-	<p>In this lab, we'll discuss how computational models are used in cognitive neuroscience, and we'll look at how one class of models, Drift Diffusion Models, is used to express and test hypotheses about visual perception. By the end of this lab, you should have a better understanding of:
+	<p>In this lab, we'll discuss how computational models are used in cognitive neuroscience, and we'll look at how one class of models, Drift Diffusion Models, is used to express and test hypotheses about visual perception.
+	<h1>Learning goals</h1>
+	After this lab you should have a better understanding of the following:
 	<ul>
 		<li>What models are, and how they are used in cognitive neuroscience</li>
-		<li>How Drift Diffusion Models work, and what they capture about the data</li>
+		<li>How drift diffusion models (DDM) work, and what they capture about the decision making</li>
 		<li>How to use models to make predictions about behavior</li>
 	</ul>
 	</p>
-	<h1>Wht is a computational model?</h1>
-	<p><b>Computation models</b> are abstract, mathematical descriptions that strip down the thing being described into its essential parts. For example, the map of Stanford on your smartphone is a model of the Stanford campus: it gives you essential information about the campus that you need to navigate. Models are useful, first, precisely because they condense complex, messy information into a simpler representation—if your map was instead exactly as large and detailed as the real Stanford campus, it would not help you get to class any faster.</p>
+	<h1>What is a computational model?</h1>
+	<p><b>Computation models</b> are abstract, mathematical descriptions that strip down the thing being described into its essential parts. You already learned about how simple cells, complex cells, and even deep neural networks can be a model for the human visual cortex. Now we want to introduce you to a new kind of model that can be used to help understand decision making. For example, the map of Stanford on your smartphone is a model of the Stanford campus: it gives you essential information about the campus that you need to navigate. Models are useful, first, because they condense complex, messy information into a simpler representation—if your map was instead exactly as large and detailed as the real Stanford campus, it would not help you get to class any faster. The same will be true of our decision making models, we will take complex information and boil it down to the minimum necessary to make a choice.</p>
 	<p>You can think of computational models as a mathematical language for expressing theories. In fact, you may have already seen computational models in some of your other classes. For example, in your physics class, you may have seen the following equation used to describe the motion of a cannonball whizzing through the air:
 	</p>
 	<div style="text-align:center"><img src="images/human-cannonball.jpg"/></div>
@@ -88,6 +90,19 @@ ax = 0; // Horizontal acceleration (friction due to air, or wind speed)</textare
 	<div width=600 id="plot1"></div><br>
 	<p>Compare the equation above to an analogous verbal model, such as "Cannonballs travel through the air in an arc." What advantages might the computational model have over the verbal model? All models make some simplifying assumptions—what details of the cannonball's trajectory does the equation neglect?</p>
 	<p>Computational models are used throughout the sciences to explain and predict complex phenomena, such as the trajectory of a hurricane, the ups and downs of the stock market and, in cognitive neuroscience, the computations perfomed by the 100 billion neurons in your brain. In this lab, we'll look at one particular class of model called <b>Drift Diffusion Models</b>.</p>
+</div>
+<div id="block3">
+	<h2>What are Drift Diffusion Models (DDMs)?</h2>
+	<p>Drift Diffusion Models are a way of modeling rapid, noisy decisions between two alternatives. In class, you saw how these models are used to model some aspects of perception, such as motion detection. You might think that *seeing* is very different from *decision-making*—but, actually, your brain is constantly making split-second decisions to interpret what you are seeing. For example, just think of the many decisions you make while driving: your brain isn't hard-wired with "car detectors," but it can use information about the motion from other cars to infer whether you are going at the same speed as the other cars, whether you have enough room to change lanes, or how far away you are from your exit.</p>
+	<p>In the lab, neuroscientists use much simpler decisions to study how these fast, complex perceptual decisions are made. In class, you saw one such experiment, carried out by Professor William Newsome's lab at Stanford: macaques were shown moving dots on a screen, and they had to decide whether the dots were predominantly moving to the left or to the right. The task was made harder or easier by changing the proportion of dots that were moving in concert:</p>
+	<div style="text-align:center"><img src="images/motion_test.gif"/></div>
+	<p>DDMs describe the macaque's perceptual decision-making, essentially, as a process where evidence is noisily accumulated in favor of one of two alternatives ("left" or "right"). What does it mean to accumulate evidence? Imagine that there is a decider neuron that is counting the "votes" cast by other, motion-detecting neurons. At each timestep, it reads a spike from a neuron that codes either leftward motion (casting one vote for "left") or rightward motion (casting one vote for "right"). This neuron continues to count votes until it accumulates enough evidence for one of the two options and makes its decision. You should have this image in mind, as we saw in lecture:</p>
+	<div style="text-align:center"><img src="images/integrator.png"/></div>
+</div>
+<div id="block4">
+	<h2>Problem #1: Simulating a single decision</h2>
+	<p>So, the basic idea behind DDMs is that you are accumulating evidence by successively sampling "votes" for two decisions until you reach a threshold in favor of one of the two alternatives. Let's start by simulating a simple DDM, to see how it behaves.</p>
+	<p>You've already seen in the first lab how a cell can "see" certain kinds of features, even as complex as a dog or a cat, by building up from less complex features. Here what we're going to have are two <b>populations</p> of neurons that respond to images of dogs and cats, respectively. Note that these aren't single neurons anymore, we're going to be imagining that this is a set of neurons that respond as a group. Our first question is: <i>what happens when you show this group of neurons an image</i>?</p>
 </div>
 <div id="endblock">
 	<h2>Tutorial complete!</h2>

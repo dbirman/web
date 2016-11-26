@@ -17,7 +17,7 @@ var inject = false;
 // Image variables
 var imgx, imgy, imgtx, imgty;
 var imagedrawing = false;
-var adorbs_px;
+var image_px;
 
 var adorbs = document.getElementById("adorbs");
 
@@ -98,7 +98,7 @@ function demoLogic() {
     for (var x=-3;x<4;x++) {
       for (var y=-3;y<4;y++) {
         cx = imgx-x; cy = imgy-y;
-        v = adorbs_px[cy*150+cx];
+        v = image_px[cy*150+cx];
         vs.push(v);
       }
     }
@@ -123,7 +123,7 @@ function demoLogic() {
   // }
   // IDC *= 0.9;
   spk.shift();
-  spk.push(V/2);
+  spk.push(V*100);
 }
 
 function run(i) {
@@ -152,18 +152,23 @@ function launch_local() {
   // Now we need to contrast normalize the pixels
   // for each pixel, (150,101), subtract local mean and div
   // by local stdev
-  adorbs_px = createArray(150*101);
+  // Normalization computed according to Carrandini, Heeger
+  // 2013: http://www.nature.com/nrn/journal/v13/n1/pdf/nrn3136.pdf
+  image_px = zeros(150*101);
   for (var x=0;x<150;x++) {
     for (var y=0;y<101;y++) {
       var val = ctx_img.getImageData(x,y,1,1).data[0];
-      var local = ctx_img.getImageData(math.min(x-1,0),math.min(y-1,0),math.min(151-x,3),math.min(151-y,3)).data;
+      var local = ctx_img.getImageData(math.max(x-3,0),math.max(y-3,0),math.min(151-x,7),math.min(151-y,7)).data;
       var local_ = createArray(local.length/4);
       for (var i=0;i<local_.length;i++) {
         local_[i] = local[i*4];
       }
-      adorbs_px[y*150+x] = (val-math.mean(local_)) / math.std(local_);
+      image_px[y*150+x] = (val) / (500 + sum(local_));
     }
   }
+  // We re-normalize to 0->1 space
+  image_px = add(image_px,math.min(image_px));
+  image_px = divide(image_px,math.max(image_px));
 
 	hodgkinhuxley = new HH();
 
@@ -172,9 +177,55 @@ function launch_local() {
       rf[x][y] = 0;
     }
   }
+
+  document.getElementById("bonus1").style.display="none";
+  ctx_bonus.drawImage(adorbs,0,0,ctx_bonus.width,ctx_bonus.height);
 }
 
 
+// BONUS CODE
+var canvas_bonus = document.getElementById("canvas-bonus");
+var ctx_bonus = canvas_bonus.getContext("2d");
+var pixels = zeros(150*101);
+
+function bonus1() {
+  document.getElementById("bonus1").style.display="";
+}
+
+function textarea1(e) {
+  var key = window.event.keyCode;
+  if (key===13) {
+    e.preventDefault();
+    eval(document.getElementById('textarea1').value);
+    drawBonusCanvas();
+  }
+}
+
+function drawBonusCanvas() {
+  canvas_bonus.width = 450; canvas_bonus.height = 303;
+  for (var x=0;x<150;x++) {
+    for (var y=0;y<101;y++) {
+      ctx_bonus.fillStyle = gsc2hex(pixels[y*150+x]);
+      ctx_bonus.fillRect(x*3,y*3,3,3);
+    }
+  }
+}
+
+// BONUS SOLUTION:
+// for (var x=0;x<150;x++) {
+//   for (var y=0;y<101;y++) {
+//     var val = ctx_bonus.getImageData(x,y,1,1).data[0];
+//     var local = ctx_bonus.getImageData(math.min(x-1,0),math.min(y-1,0),math.min(151-x,3),math.min(151-y,3)).data;
+//     var local_ = createArray(local.length/4);
+//     for (var i=0;i<local_.length;i++) {
+//       local_[i] = local[i*4];
+//     }
+//     pixels[y*150+x] = (val-math.mean(local_)) / math.std(local_);
+//   }
+// }
+// // You can also write:
+// pixels = image_px;
+// drawBonusCanvas();
 
 // HELPERS
 

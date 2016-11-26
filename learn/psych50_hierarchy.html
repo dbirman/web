@@ -68,23 +68,22 @@
 
 	<h1 id="sectionlabs">Section Labs</h1>
 
-	<p>This is our first section in Psych 50 so we want to take a brief moment to orient you to how these <b>lab tutorials</b> work. Your TA should have aleady mentioned that we will have a mixture of open discussions, demonstrations, and lab tutorials. The lab tutorials are an introduction to <b>computation models</b> as a tool for understanding our brains, and we use programming (in this case <i>javascript</i>) to run our models. You'll get the most out of these labs if you work together with a partner both on the same computer and ask for help from your neighbors or the TA if you get stuck. In today's lab you'll just be going through examples that we've made for you, but in future labs you will have to write some of the program yourself. Let your TA know if you have questions!</p>
+	<p>This is our first section in Psych 50 so we want to take a brief moment to orient you to how these <b>lab tutorials</b> work. Your TA should have aleady mentioned that we will have a mixture of open discussions, demonstrations, and lab tutorials. The lab tutorials are an introduction to <b>computation models</b> as a tool for understanding our brains, and we use programming (in this case <i>javascript</i>) to run our models. You'll get the most out of these labs if you work together with a partner both on the same computer and discuss what's happening at each step. You may want to use a whiteboard or your notebook to go over key ideas along the way. In today's lab you'll just be going through examples that we've made for you, but in future labs you will have to write some of the program yourself. Let your TA know if you have questions!</p>
 
-	<p><i>If you already know how to program</i> you'll still want to go through all of the tutorial, but if you get done early check out the advanced topics at the end which include some programming challenges. Anything in this section is bonus, you will not be tested on your knowledge of programming. </p>
+	<p><i>If you already know how to program:</i> you will find bonus content sprinkled throughout the tutorials. None of this content is required but it will help you get a more in-depth understanding of what's happening behind the scenes.</p>
 </div>
 
 
 
 <div id="block2">
 	<h2 id="part1simplecells">Part 1: Simple cells</h2>
-	<p>You should recall from lecture that a <b>simple cell</b> is a neuron in the early visual cortex (part of the occipital cortex) which is sensitive to a few features, including: <b>edges</b>, <b>contrast</b>, and <b>color</b>.</p>
-	<img src="images/simplecell.png" width=500/>
+	<p>You should recall from lecture that a <b>simple cell</b> is a neuron in the early visual cortex (part of the occipital cortex) which tend to have a center-surround type of receptive field, to some extent these resemble <b>oriented bars</b></p>
 	<p>The first thing we're going to do is look at how a simple cell might "see" an image. Remember that a neuron in this part of cortex has a <b>receptive field</b>, which is the area of visual space that the neuron can "see" and react to. Simple cells will be activated whenever they see for example, edges. The first thing we're going to do in this lab is try to <b>design</b> a receptive field to detect edges. Eventually we'll build up to receptive fields that detect much more complex features, like cats or dogs.</p>
 </div>
 
 <div id="block3">
 	<h2>Design a receptive field</h2>
-	<p>The next section is a bit like a game, you're going to design a receptive field and test it on the image shown. Your goal is to create an <b>edge detector</b> that can find vertical lines. We've set this up just like the Hubel and Wiesel experiment, but we're letting you move your receptive field around the image (with your mouse), while a real neuron would be fixed in one place. The top right panel shows the voltage of this neuron as if we were recording with an electrode. When your receptive field is well activated by what it "sees" you'll hear the neuron firing (<i>turn up your sound!</i>) and you'll see the spikes in the window on the top right. To change your receptive field simply click anywhere in the 7x7 grid on the top left to cycle between black, grey, and white. The colors indicate how much the neuron will be activated by luminance in that part of its receptive field.</p>
+	<p>The next section is a bit like a game, you're going to design a receptive field and test it on the image shown. Your goal is to create an <b>edge detector</b> that can find vertical lines. We've set this up just like the Hubel and Wiesel experiment, but we're letting you move your receptive field around the image (with your mouse), while a real neuron would be fixed in one place. The top right panel shows the voltage of this neuron as if we were recording with an electrode. When your receptive field is well activated by what it "sees" you'll hear the neuron firing (<i>turn up your sound!</i>) and you'll see the spikes in the window on the top right. To change your receptive field simply click anywhere in the 7x7 grid on the top left to cycle between black, grey, and white. The colors indicate how much the neuron will be activated by luminance in that part of its receptive field. Your goal is to make a filter that <i>maximally</i> responds to the vertical white bar on the right side of the image. Good luck!</p>
 	<div style="text-align:center">
 		<div class="row">
 			<div style="text-align:left">
@@ -102,38 +101,55 @@
 		<p>Image</p>
 		<canvas width=150 height=101 id="canvas-img" style="float-left"></canvas>
 	</div>
+	<a class="button" width=150 height=15 onclick="bonus1();">Bonus content (not required)</a>
+	<br>
+	<div id="bonus1">
+		<h2>Bonus content: Contrast normalization</h2>
+		<p>We've skipped an important step in the visual cortex to make things a bit simpler, but if you remember what you read about the retina you'll know that the retina acts a local contrast normalization filter. In other words: it transforms each local region of the image based on the contrast in that area, so that the image ends up having more uniform contrast when it is processed downstream by V1.</p>
+		<p>We hid this process, but as someone with knowledge of programming we'd like you to reconstruct the steps required to make this happen. We've provided some code below which you can run by pressing enter. You'll need to fill in the relevant missing areas.</p>
+		<textarea id="textarea1" rows="7" onkeypress="textarea1(event,this);">
+// First draw the image on the canvas
+ctx_img.drawImage(adorbs,0,0);
+// Set up an empty array of pixels, 
+pixels = createArray(150*101);
+// Your job now is to write code that gets, for each pixel,
+// the Z-score using the local area around it (+- 1 pixel,
+// so you want to get the 3x3 region surrounding). Place
+// the values you compute into the relevant positions in 
+// pixels, which will be displayed on the canvas below.
+// var local_pixels = ctx_img.getImageData(x,y,w,h).data;
+// The code above shows you how to get the pixel values in
+// some rectangular region. Data off the canvas returns as
+// zeros (bad for normalizing!), and values come back as an
+// array in row column order with r g b a values for each 
+// pixel. So the array length will be 4 times the size of
+// the area requested. Because these are in grayscale you
+// can discard all but the first value.
+
+//YOUR CODE HERE
+
+// We tweak the space to 0->1 at the end for plotting
+image_px = add(image_px,math.min(image_px));
+image_px = divide(image_px,math.max(image_px));</textarea>
+		<div style="text-align:left">
+			<p>Bonus Canvas</p>
+			<canvas width=150 height=101 id="canvas-bonus" style="float-left"></canvas>
+		</div>
+	</div>
 </div>
-<!-- 
 <div id="block4">
-	<p><img src="images/simplecell_example.png"/></p>
-
-	<p>One way to describe this is to say that a simple cell likes edges--but only when they are in their receptive field. This is because each cell "sees" only a small part of the full image and that it is either <b>active</b> or <b>inactive</b>. In our <b>model</b> of the cell we use a 1 (white) or 0 (black) to indicate activity. Now, vision doesn't just have one cell, it has many many millions. One of way of thinking about this is to imagine that the same cell is <b>tiled</b> throughout the visual field:</p>
-
-	<p><img src="images/simplecell_tiled.png"/></p>
-
-	<p>But really you might have a single type of cell, in this case a cell that likes edges at 45 degrees, which tile the entire visual field:</p>
-
-	<p><img src="images/simplecell_ftiled.png"/></p>
-
-	<p>Note again that this cell <i>only cares about 45 degree angles!</i> Other simple cells might care about other orientations, but this particular cell just cares about this angle. If you have any questions this is a good time to pause and ask a neighbor or TA.</p>
-
-	<h2 id="part2simplecellmodel">Part 2: Simple cell model</h2>
-
-	<p>We're now going to build a <b>computational model</b> of a simple cell. That is: we're going to write out a mathematical formula that, when give the same image from above, will compute the same active/inactive map after tiling the formula across the entire image. So how do we represent a simple cell as a formula? Remember from lecture that part of the reason that simple cells "care" about a particular orientation is that their receptive fields aren't uniform. They like to see light in some parts of their receptive field but not others. For a simpe cell this usually looks something like this:</p>
-
-	<p><img src="images/simplecell_rf.png"/></p>
-
-	<p>Does it seem intuitive why this particular receptive field would respond well to 45 degree angles but <i>not</i> to 135 degree angles? Try drawing on a piece of paper or the whiteboard how the receptive field would overlap with the different angles and make sure you understand this before going on.</p>
-
-	<p>Now let's start running some code. It turns out that a pretty reasonable approximation of the "mexican hat" shape of the simple cell receptive field is a sinusoid "windowed" by a gaussian. We're going to look at a "slice" of this receptive field in just one dimension (the slice is shown in red below).</p>
-
-	<p><img src="images/simplecell_slice.png"/></p>
-
-	<p>Run the code block to see the numerical values that correspond to that slice.</p>
-
-	<p><strong>Hint:</strong> This Jupyter notebook uses a mix of code and prose. To run each chunk of code, select the chunk and press <b>Shift + Enter</b>. Make sure you understand the questions that follow each section of code before you move on.</p>
-
-</div> -->
+	<p>At this point you should have built a somewhat working filter. We're now going to use it to filter the entire image we showed you above so you can see, all at once, how this kind of a neuron would "see" this image. In a sense you can think of this as how cells tuned for this orientation in area V1 "see the world", as bright spots wherever their preferred orientation exists. To help you get your algorithm right I've loaded an idealized filter in the background. The button below will rotate between the original image, your filtered image, and our filtered image.</p>
+	<div style="text-align:left">
+		<p>Filtered Image</p>
+		<canvas width=150 height=101 id="canvas-filt" style="float-left"></canvas>
+		<a class="button" width=150 height=15 onclick="rotate_filter();">Rotate</a>
+	</div>
+	<p>So hopefully you got your filter working pretty well! On the next page we're going to talk about <b>complex cells</b>.</p>
+</div>
+<div id="block5">
+	<h2>Complex cells</h2>
+	<p>Recall form lecture the properties of complex cells. Now learn some shit with this demo that doesn't exist.</p>
+</div>
 
 <div id="endblock">
 	<h2>Tutorial complete!</h2>

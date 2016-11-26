@@ -14,15 +14,18 @@ var layout = {
 }
 
 function prev() {
-	document.getElementById("block"+curBlock).style.display="none";
+	document.getElementById("endblock").style.display="none";
+	try {document.getElementById("block"+curBlock).style.display="none";}
+	catch (err) {}
 	if (curBlock>1) {curBlock--;}
 	run(curBlock);
 	document.getElementById("block"+curBlock).style.display="";
 }
+
 function next() {
 	document.getElementById("block"+curBlock).style.display="none";
-	if (document.getElementById("block"+(curBlock+1))) {
-		curBlock++;
+	curBlock++;
+	if (document.getElementById("block"+(curBlock))) {
 		document.getElementById("block"+curBlock).style.display="";
 	} else {		
 		document.getElementById("endblock").style.display="";
