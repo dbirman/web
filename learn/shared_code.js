@@ -5,7 +5,6 @@ var layout = {
 	xaxis: {color:'#ffffff',showgrid:false,zeroline:true},
 	yaxis: {color:'#ffffff',showgrid:false,zeroline:true},
 	autosize: false,
-	width:600,
 	plot_bgcolor:'rgba(1,1,1,0)',
 	paper_bgcolor:'rgba(1,1,1,0)',
 	font: {

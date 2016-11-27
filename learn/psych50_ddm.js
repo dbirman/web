@@ -168,6 +168,102 @@ function drawMotionDemo() {
 	tick4 = window.requestAnimationFrame(drawMotionDemo);
 }
 
+////////////////////////////////
+////////// BLOCK 5 /////////////
+////////////////////////////////
+
+// This is the sample block, before they build up the model themselves
+var canvas_sample = document.getElementById("sample");
+var ctx_sample = canvas_sample.getContext("2d");
+
+var tick5;
+
+var dots4 = initDots(400,100,100,0,0);
+var coherence4 = 0.75;
+
+
+function drawMotionSample() {
+	dots4 = updateDots(dots4,coherence4)
+	// draw
+	ctx_sample.clearRect(0,0,canvas_sample.width,canvas_sample.height);
+	clipCtx(ctx_sample,canvas_sample);
+	drawDots(dots4,ctx_sample);
+	ctx_sample.restore();
+
+	tick5 = window.requestAnimationFrame(drawMotionSample);
+}
+
+function resetSample() {
+	coherence4 = Math.random()*2-1;
+	dots4.dir = (coherence4>0) ? 0 : Math.PI;
+	coherence4 = Math.abs(coherence4);
+	// Re-build the plot
+	drawPlot2();
+}
+
+function buildPlot2() {
+	var mult = 2; // response multiplier (coherence>0) ? (coherence + randn() * noise)*mult : randn()*noise*mult
+	var noise = 1;
+	var data = {};
+	// build up the variables for the plot
+	// the evidence runs are just the L/R evidence 
+	data.eL = [0]; // evidence left
+	data.eR = [0];
+	data.E = [0]; // accumulated evidence
+	data.time = range(1,40);
+	for (var i=1; i<40; i++) {
+		var r = (dots4.dir==0) ? (coherence4 + randn() * noise)*mult : randn()*noise*mult;
+		r = r>0?r:0;
+		var l = (!(dots4.dir==0)) ? (coherence4 + randn() * noise)*mult : randn()*noise*mult;
+		l = l>0?l:0;
+		var E = l-r;
+		data.eL.push(l);
+		data.eR.push(r);
+		data.E.push(data.E[i-1]+E);
+	}
+	return data;
+}
+
+function drawPlot2() {
+	var data2 = buildPlot2();
+	traceL = {
+		x: data2.time,
+		y: data2.eL,
+		mode:'line',
+		line:{color:'blue'},
+		type:'scatter',
+		name:'Left population response'
+	}
+	traceR = {
+		x: data2.time,
+		y: data2.eR,
+		mode:'line',
+		line:{color:'red'},
+		type:'scatter',
+		name:'Right population response'
+	}
+	traceM = {
+		x: data2.time,
+		y: data2.E,
+		mode:'line',
+		marker: {color:'black'},
+		type:'scatter',
+		name:'Accumulated evidence (left - right)'
+	}
+	layout.title = 'Accumulated evidence';
+	layout.xaxis.title = 'Time (ms)';
+	layout.xaxis.range = [0,40];
+	layout.yaxis.title = 'Evidence for RIGHT --------- Evidence for LEFT';
+	layout.yaxis.range = [-25,25];
+	Plotly.newPlot('plot2',[traceL,traceR, traceM],layout);
+}
+
+////////////////////////////////
+////////// BLOCK 6 /////////////
+////////////////////////////////
+
+
+
 ///////////////////////////////////
 ////////// LOCAL CODE /////////////
 ///////////////////////////////////
@@ -177,10 +273,12 @@ var done2 = false;
 function stopMotion() {
 	window.cancelAnimationFrame(tick3);
 	window.cancelAnimationFrame(tick4);
+	window.cancelAnimationFrame(tick5);
 }
 
 function run(i) {
-	stopMotion();
+	stopMotion();				
+	document.getElementById("continue").style.display="";
 	// Runs each time a block starts incase that block has to do startup
 	switch(i) {
 		case 2:
@@ -196,11 +294,16 @@ function run(i) {
 		case 4:
 			drawMotionDemo();
 			break;
+		case 5:
+			drawMotionSample();
+			break;
  }
 }
 
 function launch_local() {
 	katex.render("y(t)=y_{0}+v_{y}t+\\frac{1}{2}at^{2}",document.getElementById("katex1"),{displayMode:true});
 	katex.render("y(t)=y_{0}+v_{y}t+\\frac{1}{2}at^{2}",document.getElementById("katex2"),{displayMode:true});	
+	katex.render("difference(t)=left(t)-right(t)",document.getElementById("katex3"),{displayMode:true});	
 	drawPlot1();
+	drawPlot2();
 }

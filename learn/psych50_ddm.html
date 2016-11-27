@@ -111,15 +111,42 @@ ay = -1; // Vertical acceleration (gravity, m/s^2)</textarea><br>
 	<p>You've already seen in the first lab how a cell can "see" certain kinds of features, even as complex as a dog or a cat, by building up from less complex features. Here what we're going to have are two <b>populations</b> of neurons that respond to rightward or leftward motion, respectively. Note that these aren't single neurons anymore, we're going to be imagining that this is a set of neurons that respond as a group. Below we're going to show you what this looks like. We'll generate a patch of motion and show you the output of the two populations of neurons. The left preferring neurons are drawn in blue, while the right preferring neurons in red. Note how as the amount of motion in the patch changes the populations becoming more or less certain in their output.</p>
 	<div width="100%" height="150px" style="position:relative; text-align:center">
 		<div><canvas width=100 height=100 id="motion_patch1"></canvas></div>
-		<div><h1 style="color:blue">Left neurons</h1><h1 style="color:red">Right neurons</h1><br><canvas width=200 height=100 id="output1"></canvas>
+		<div><h1 style="color:blue">Left neurons</h1><h1 style="color:red">Right neurons</h1><br><canvas width=200 height=100 id="output1"></canvas></div>
 	</div><br>
-	<p>What should be clear from this demonstration is that there is a region where for the brain, looking at only the <b>neural</b> output, it is trivial to tell which direction the motion is going in. But at low coherence it would be very hard to distinguish the direction. Because this is a model it should match with your intuition when you look at the motion patch directly.</p>
-	<p>As we mentioned before, a macaque (or human) brain looking at a patch of motion is trying to answer the question: what direction is the motion going? You've now seen that different populations of neurons will <i>separately</i> report evidence for different answers. The last step is to combine those different sources of information together.</p>
+	<p>What should be clear from this demonstration is that given these two <b>neural</b> outputs, that at high motion coherence the brain can easily tell the direction of motion. But at low coherence it would be very hard to distinguish the direction. This model should match your own experience looking at the dot patch directly.</p>
+	<p>As we mentioned before, a macaque (or human) brain looking at a patch of motion is trying to answer the question: what direction is the motion going? You've learned that different populations of neurons will <i>separately</i> report evidence for different answers. The last step is to combine those different sources of information together.</p>
 </div>
 
 <div id="block5">
 	<h2>Problem #1: Simulating a single decision</h2>
-	<p>To build up our model we're going to imagine that our macaque brain is looking at a motion patch for a few hundred milliseconds. This means that the populations of <i>left</i> and <i>right</i> preferring neurons will be 
+	<p>We're now going to describe a computational model to combine two noisy sources of information together to try to reach a decision. To build up our model we're going to imagine that our macaque brain is looking at a motion patch for a few hundred milliseconds. This means that the populations of <i>left</i> and <i>right</i> preferring neurons will each be activated to some extent at every moment in time. Each population also has noise at any given moment, so it would be a mistake to take the instantenous response of either population as the truth. Instead we will combine the two sets of data by looking at the difference in their responses and <b>accumulating</b> those differences over time. If we wait long enough and <i>one population is, on average, more active</i> then eventually we will see that in the accumulated response.</p>
+	<p>To picture what's happening take a look at this graph. In red and blue we have the responses of two populations of neurons that prefer <span style="color:blue">left</span> and <span style="color:red">right</span> motion. In black we plot the accumulate difference, calculated as follows:</p>
+	<div id="katex3"></div>
+	<p>To orient you, we're also going to show you the patch of the dots that this particular set of data were generated from. You can click the button to generate a new motion sample (and a new "run" of the data).
+	<div width="100%" height="150px" style="position:relative; text-align:center">
+		<div>
+			<h1>Motion sample</h1><canvas width=100 height=100 id="sample"></canvas>
+			<button class="button" onclick="resetSample();">Run new sample</button>
+		</div>
+	</div>
+	<div width=600 id="plot2"></div><br><br>
+	<p>There are a few things to note here. First, at a glance the red and blue lines really don't give you enough information to tell on their own whether any given motion is to the left or to the right. BUT--integrating this information (by summing it up over time, that is the black line) does! Second, even sometimes when the motion is quite obvious the model doesn't go in the right direction, this is of course because we've introduced <b>noise</b> into the model. Finally, you could imagine now adding one final step. What if you picked some value, a threshold, of evidence at which you would accept whatever decision the model had come to. For example, you could say that if you get to either +20 (left) or -20 (right), then you'll take that decision and use it. This would now give you the ability to use this miniature model to make decisions.</p>
+	<p>What we've just shown you is the core of the drift diffusion model: a diffusion rate (the evidence for left minus the evidence for right), the drift rate (noise), and the threshold at which you make your choice. In the next section you're going to write some code to implement the model yourself, and then we'll use it to do some <b>simulations</b>.
+</div>
+
+<div id="block6">
+	<h2>Problem #1: Simulating a single decision</h2>
+	<p>It's now your turn to write some code! The first thing we're going to do is generate the neural population responses for any particular motion patch. We're going to give you two numbers: the coherence of the patch (what % of dots are moving together), and the direction. Your job is going to be to complete two <b>functions</b> that will tell us what the neural population response looks like based on what the neurons are seeing (the coherence and direction). Remember that neurons have some response, but they also have noise. We've written a function <b>randn()</b> that you can use to get random numbers pulled from a normal distribution. Try out randn() here: just press <b>enter</b>, you'll see the output of your code below.
+	<textarea rows=1 onkeypress="textarea6(event,this);>
+randn();</textarea>
+	<output id="output6"></output>
+	<br>
+	<a class="button" width=150 height=15 onclick="bonus1();">Bonus content (not required)</a>
+	<br>
+	<div id="bonus1">
+		<h2>Bonus content: Function shapes</h2>
+		<p>How do you think neurons actually respond to increasing motion coherence? Do you think it's linear, non-linear, exponential? Why? As you write your function consider trying out different forms of non-linearities.</p>
+
 </div>
 
 <div id="endblock">
