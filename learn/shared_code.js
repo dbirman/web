@@ -2,8 +2,8 @@ var curBlock = 1;
 
 var layout = {
 	title: 'Default Layout (set title)',
-	xaxis: {title:'Time (s)',color:'#ffffff',showgrid:false,zeroline:true},
-	yaxis: {title:'Height (m)',color:'#ffffff',showgrid:false,zeroline:true},
+	xaxis: {color:'#ffffff',showgrid:false,zeroline:true},
+	yaxis: {color:'#ffffff',showgrid:false,zeroline:true},
 	autosize: false,
 	width:600,
 	plot_bgcolor:'rgba(1,1,1,0)',
@@ -813,6 +813,17 @@ function mean(array) {
 	return sum / count;
 	
 }
+
+function randn() {
+	var x1, x2, rad, y1;
+	do {
+		x1 = 2 * Math.random() - 1;
+		x2 = 2 * Math.random() - 1;
+		rad = x1 * x1 + x2 * x2;
+	} while(rad >= 1 || rad == 0);
+	var c = Math.sqrt(-2 * Math.log(rad) / rad);
+	return x1 * c;
+};
 
 /**
  * Function for generating a random integer.

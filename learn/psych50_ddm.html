@@ -75,42 +75,61 @@
 
 <div id="block2">
 	<div id="katex2"></div>
-	<p>We can use this equation to make precise predictions about where the cannonball will be at each point in time. We'll set some initial parameters below to control the flight of the cannonball, and then plot the result at the bottom. Feel free to change parameters and run this again.</p>
-	<p><b>Hint:</b> whenever we provide code that can be edited, press <b>enter</b> to run the code including the changes you made.</p>
-	<p><b>Hint:</b> when you see <b>//</b> the rest of the text on that line doesn't get executed. We use this to provide you with <b>comments</b> about what each variable means.</p>
+	<p>We can use this equation to <b>model</b> the position of the cannonball over time. What you'll see below plotted in red is the actual positions of an imaginary cannonball. Your job is going to be to change the <b>parameters</b> of the model to best fit the data. After that we'll be able to <b>interpret</b> the parameters to understand what the cannonball was doing, and what forces were acting upon it.</p>
+	<p><b>Hint:</b> whenever we provide code that can be edited, press <b>enter</b> to run the code including changes you made.</p>
+	<p><b>Hint:</b> when you see <b>//</b> the rest of the text on that line doesn't get executed. We use this to provide you with <b>comments</b> about what indiviual variables mean.</p>
 	<textarea id="textarea1" rows="7" onkeypress="textarea1(event,this);">
-y0 = 0; // Initial position
-vy = 49; // Vertical velocity
-ay = -9.8; // Vertical acceleration (gravity)
-
-x0 = 0; // Horizontal initial position
-vx = 1; // Horizontal initial velocity
-ax = 0; // Horizontal acceleration (friction due to air, or wind speed)</textarea><br>
-	<p>The plot below solves the equation for values of t (time) from zero to five seconds.</p>
+// Model Paramters: tweak to fit the black line (model) to the data (red)
+y0 = 0; // Initial position (m)
+vy = 10; // Vertical velocity (m/s)
+ay = -1; // Vertical acceleration (gravity, m/s^2)</textarea><br>
+	<p>The plot below solves the equation for values of t (time) using your parameters from zero to five seconds.</p>
 	<div width=600 id="plot1"></div><br>
-	<p>Compare the equation above to an analogous verbal model, such as "Cannonballs travel through the air in an arc." What advantages might the computational model have over the verbal model? All models make some simplifying assumptions—what details of the cannonball's trajectory does the equation neglect?</p>
-	<p>Computational models are used throughout the sciences to explain and predict complex phenomena, such as the trajectory of a hurricane, the ups and downs of the stock market and, in cognitive neuroscience, the computations perfomed by the 100 billion neurons in your brain. In this lab, we'll look at one particular class of model called <b>Drift Diffusion Models</b>.</p>
+	<p id="leastsquares_visible1">Complete the task to continue!</p>
+	<div id="leastsquares_hidden1"><p></p>
+		<p>What you just did was use a computational model to attempt to explain a set of data. What you found was that by setting the initial velocity to 49 m/s and gravity -9.8 m/s^2 you were able to explain all of the datapoints we observed. An analgous way to say this would be to say: the cannonball left the cannon at 49 m/s, and over time gravity pulled it back to earth, ultimately the cannonball traveled in an <i>arc</i>.
+		<p>Compare the statement <i>cannonballs travel in an arc</i> to the equation above. What advantages might the computational model have over the verbal model? All models make some simplifying assumptions—what details of the cannonball's trajectory does the equation neglect?</p>
+		<p>Computational models are used throughout the sciences to explain and predict complex phenomena, such as the trajectory of a hurricane, the ups and downs of the stock market and, in cognitive neuroscience, the computations perfomed by the 100 billion neurons in your brain. In the remainder of this lab, we'll look at one particular class of models: <b>Drift Diffusion Models</b>.</p>
+	</div>
 </div>
+
 <div id="block3">
 	<h2>What are Drift Diffusion Models (DDMs)?</h2>
 	<p>Drift Diffusion Models are a way of modeling rapid, noisy decisions between two alternatives. In class, you saw how these models are used to model some aspects of perception, such as motion detection. You might think that *seeing* is very different from *decision-making*—but, actually, your brain is constantly making split-second decisions to interpret what you are seeing. For example, just think of the many decisions you make while driving: your brain isn't hard-wired with "car detectors," but it can use information about the motion from other cars to infer whether you are going at the same speed as the other cars, whether you have enough room to change lanes, or how far away you are from your exit.</p>
 	<p>In the lab, neuroscientists use much simpler decisions to study how these fast, complex perceptual decisions are made. In class, you saw one such experiment, carried out by Professor William Newsome's lab at Stanford: macaques were shown moving dots on a screen, and they had to decide whether the dots were predominantly moving to the left or to the right. The task was made harder or easier by changing the proportion of dots that were moving in concert:</p>
-	<div style="text-align:center"><img src="images/motion_test.gif"/></div>
+	<div width="100%" height="150px" style="position:relative; text-align:center">
+		<div >25%<br><canvas width=100 height=100 id="canvas_mot25"></canvas></div>
+		<div >50%<br><canvas width=100 height=100 id="canvas_mot50"></canvas></div>
+		<div >75%<br><canvas width=100 height=100 id="canvas_mot75"></canvas></div>
+	</div><br>
 	<p>DDMs describe the macaque's perceptual decision-making, essentially, as a process where evidence is noisily accumulated in favor of one of two alternatives ("left" or "right"). What does it mean to accumulate evidence? Imagine that there is a decider neuron that is counting the "votes" cast by other, motion-detecting neurons. At each timestep, it reads a spike from a neuron that codes either leftward motion (casting one vote for "left") or rightward motion (casting one vote for "right"). This neuron continues to count votes until it accumulates enough evidence for one of the two options and makes its decision. You should have this image in mind, as we saw in lecture:</p>
 	<div style="text-align:center"><img src="images/integrator.png"/></div>
+	<p>We're going to model this picture in just a moment, but before you go on take a second to really study it. What do we mean by a "right preferring MT population"? This should remind you of last week's lab in which you learned about neurons that have preferences for different visual features, such as oriented bars, or complex features like cats and dogs. The neurons here just happen to prefer <b>rightward motion</b>.
 </div>
 <div id="block4">
 	<h2>Problem #1: Simulating a single decision</h2>
-	<p>So, the basic idea behind DDMs is that you are accumulating evidence by successively sampling "votes" for two decisions until you reach a threshold in favor of one of the two alternatives. Let's start by simulating a simple DDM, to see how it behaves.</p>
-	<p>You've already seen in the first lab how a cell can "see" certain kinds of features, even as complex as a dog or a cat, by building up from less complex features. Here what we're going to have are two <b>populations</p> of neurons that respond to images of dogs and cats, respectively. Note that these aren't single neurons anymore, we're going to be imagining that this is a set of neurons that respond as a group. Our first question is: <i>what happens when you show this group of neurons an image</i>?</p>
+	<p>You've already seen in the first lab how a cell can "see" certain kinds of features, even as complex as a dog or a cat, by building up from less complex features. Here what we're going to have are two <b>populations</b> of neurons that respond to rightward or leftward motion, respectively. Note that these aren't single neurons anymore, we're going to be imagining that this is a set of neurons that respond as a group. Below we're going to show you what this looks like. We'll generate a patch of motion and show you the output of the two populations of neurons. The left preferring neurons are drawn in blue, while the right preferring neurons in red. Note how as the amount of motion in the patch changes the populations becoming more or less certain in their output.</p>
+	<div width="100%" height="150px" style="position:relative; text-align:center">
+		<div><canvas width=100 height=100 id="motion_patch1"></canvas></div>
+		<div><h1 style="color:blue">Left neurons</h1><h1 style="color:red">Right neurons</h1><br><canvas width=200 height=100 id="output1"></canvas>
+	</div><br>
+	<p>What should be clear from this demonstration is that there is a region where for the brain, looking at only the <b>neural</b> output, it is trivial to tell which direction the motion is going in. But at low coherence it would be very hard to distinguish the direction. Because this is a model it should match with your intuition when you look at the motion patch directly.</p>
+	<p>As we mentioned before, a macaque (or human) brain looking at a patch of motion is trying to answer the question: what direction is the motion going? You've now seen that different populations of neurons will <i>separately</i> report evidence for different answers. The last step is to combine those different sources of information together.</p>
 </div>
+
+<div id="block5">
+	<h2>Problem #1: Simulating a single decision</h2>
+	<p>To build up our model we're going to imagine that our macaque brain is looking at a motion patch for a few hundred milliseconds. This means that the populations of <i>left</i> and <i>right</i> preferring neurons will be 
+</div>
+
 <div id="endblock">
 	<h2>Tutorial complete!</h2>
 </div>
 							</section>
-		<a class="button special" onclick="prev();">Go back</a>
-
-		<a class="button special" onclick="next();">Continue</a>
+							<section id="continue">
+								<a class="button special" onclick="prev();">Go back</a>
+								<a class="button special" onclick="next();">Continue</a>
+							</section>
 						<!-- End Content -->
 					</div>
 				</div>
@@ -125,7 +144,8 @@ ax = 0; // Horizontal acceleration (friction due to air, or wind speed)</textare
 		</div>
 	</body>
 		<!-- Local Assets -->
-			<script src="demo_logic.js"></script>
+			<script src="dots.js"></script>
+			<script src="shared_code.js"></script>
 			<script src="psych50_ddm.js"></script>
 			<!-- <link rel="stylesheet" href="psych50_ddm.css" /> -->
 
