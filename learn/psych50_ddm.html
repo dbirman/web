@@ -136,17 +136,108 @@ ay = -1; // Vertical acceleration (gravity, m/s^2)</textarea><br>
 
 <div id="block6">
 	<h2>Problem #1: Simulating a single decision</h2>
-	<p>It's now your turn to write some code! The first thing we're going to do is generate the neural population responses for any particular motion patch. We're going to give you two numbers: the coherence of the patch (what % of dots are moving together), and the direction. Your job is going to be to complete two <b>functions</b> that will tell us what the neural population response looks like based on what the neurons are seeing (the coherence and direction). Remember that neurons have some response, but they also have noise. We've written a function <b>randn()</b> that you can use to get random numbers pulled from a normal distribution. Try out randn() here: just press <b>enter</b>, you'll see the output of your code below.
-	<textarea rows=1 onkeypress="textarea6(event,this);>
-randn();</textarea>
-	<output id="output6"></output>
+	<p>It's now your turn to write some code! The first thing we're going to do is generate the neural population responses for any particular motion patch. We're going to give you two numbers: the coherence of the patch (what % of dots are moving together), and the direction. Your job is going to be to complete two <b>functions</b> that will tell us what the neural population response looks like based on what the neurons are seeing (the coherence and direction). Remember that neurons have some response, but they also have noise. We've written a function <b>randn()</b> that you can use to get random numbers pulled from a normal distribution. Try out randn() here: just press <b>enter</b>, you'll see the output of this function below.
+	<textarea rows=1 id="textarea6" onkeypress="textarea6(event);">
+out = randn();</textarea>
+	<textarea color="red" rows=1 onkeypress="event.preventDefault();" id="output6">Output will appear here</textarea>
 	<br>
+	<p>Try pressing enter a few more times, you should see that the values you get are being taken from the random normal (gaussian) distribution, centered at 0 with a standard deviation of 1. If you're not familiar with normal distributions this is a good time to ask your neighbor, or the TA, to describe how these work.</p>
+	<p>Now imagine that we have a motion patch that has some random coherence and direction. We'll store these values in the variables <b>patch_coherence</b> which can go from 0 to 1 and <b>patch_dir</b> which is either 1 (right) or -1 (left). Use these values to fill out the two functions below: leftResponse() and rightResponse(), so that they return the response of the neural population. Remember the response should be some function of the coherence, plus noise, i.e. as in this equation but where F() is a function that you can pick. (It's okay to use the coherence value directly, but keep in mind how large the neural responses are relative to the noise, you may want to add a scaling factor)</p>
+	<div id="katex4"></div>
+	<textarea rows=23 id="textarea62" onkeypress="textarea62(event);">
+//We've set up the function definitions for you
+//just fill in the code where we marked it
+function leftResponse(patch_coherence,patch_dir) {
+	// Some hints: since this is the left response it should depend on
+	// whether the patch is actually going left or right
+	// To make things depend on a value you can use a conditional 
+	// statement. For example, if you do the following:
+	// out = dir>0 ? 1 : 0
+	// The english translation is: If dir>0 is true then: 1, otherwise: 0
+	// Don't forget to use randn() to add noise!
+
+	// MODIFY THE NEXT LINE
+	out = ??YOUR CODE HERE??;
+
+	return out;
+}
+
+function rightResponse(patch_coherence,patch_dir) {
+	// MODIFY THE NEXT LINE
+	out = ??YOUR CODE HERE??;
+
+	return out;
+}</textarea>
+	<textarea rows=4 onkeypress="event.preventDefault();" id="output62">Output will appear here</textarea>
+	<br>
+	<div id="end6">
+	<p>Nice work! You now have two functions leftResponse() and rightResponse() that you'll be able to re-use later. Right now we're going to use them to generate samples like in the graph on the last page. We'll then write one more function to integrate these, and then we'll have our drift-diffusion model!
+	<br><br>
 	<a class="button" width=150 height=15 onclick="bonus1();">Bonus content (not required)</a>
 	<br>
-	<div id="bonus1">
+	<div id="bonus1"><br>
 		<h2>Bonus content: Function shapes</h2>
-		<p>How do you think neurons actually respond to increasing motion coherence? Do you think it's linear, non-linear, exponential? Why? As you write your function consider trying out different forms of non-linearities.</p>
+		<p>How do you think neurons actually respond to increasing motion coherence? Do you think it's linear, non-linear, exponential? Why? When you look at the output on the graph on the next page, try going back to this one and editing your functions to compare linear, exponential, and saturating non-linear functions of coherence. Which do you think is the most realistic? Is there anything in biology that would suggest one solution is more likely than the others? Discuss with your partner and the TA.</p>
+	</div>
+	</div>
+</div>
 
+<div id="block7">
+	<h2>Problem #1: Simulating a single decision</h2>
+	<p>We're missing two more pieces for our drift diffusion model. The first is that we need to <b>accumulate</b> the evidence over time and the second is that we need to stop accumulating when we hit the <b>threshold</b>. You'll write that code in this next section. If you realize you made a mistake on the previous page you'll be able to go back and edit those as soon as you finish writing the code on this page.</p>
+	<textarea rows=32 id="textarea7" onkeypress="textarea7(event);">
+// This first function needs to accumulate the difference between the left
+// and right neural population responses, then add them to the previous response
+// and store the result in out.
+// 
+// We've provided for you:
+// left - the left population respnse
+// right - the right population response
+// acc - the current accumulated value
+function accumulateDDM(left,right,acc) {
+	var new_acc = ??YOUR CODE HERE??;
+
+	return new_acc;
+}
+
+//This second function tests whether we've hit the thresold yet.
+//It needs to return a boolean, either true or false.
+//You can do this by making a comparison, for example:
+// 1 > 0 returns the boolean true
+// 1 < 0 returns the boolean false
+// And you can combine booleans with && (and) or || (or)
+// For example:
+// 1 > 0 || 1 < 0, reads as "Is one greater than zero AND is one less than zero?"
+// which would return false.
+//
+//This function should return 1 if we are above the threshold
+//and -1 if we are below the negative threshold (-threshold)
+//if neither of these are true, simply return 0.
+function atThreshold(acc,threshold) {
+	var dir = ??YOUR CODE HERE??;
+
+	return dir;
+}</textarea>
+	<textarea rows=2 onkeypress="event.preventDefault();" id="output7">Output will appear here</textarea>
+	<br>
+	<div id="end7">
+		<p>Fantastic work! It's time to see your code code in action! Below we are plotting the output of <b>your code</b> based on the motion coherence and direction of this dot patch. This should look familiar, if you did everything correctly it should look more or less like the plot we showed you earlier. If it doesn't look right it probably means you used difference constant factors (for example: your ratio of noise to population responses may be quite different from what we used). Feel free to tweak your numbers and your functions and go on when you're ready.
+		<div width="100%" height="150px" style="position:relative; text-align:center">
+			<div>
+				<h1>Motion sample</h1><canvas width=100 height=100 id="sample2"></canvas>
+				<button class="button" onclick="resetSample7();">Run new sample</button>
+			</div>
+		</div>
+		<div width=600 id="plot3"></div>
+	</div>
+</div>
+
+<div id="block8">
+	<h2>Problem #2: Simulating many decisions</h2>
+	<p>The drift diffusion model is most useful as a <b>simulation</b> of reality. Given some set of parameters: a drift rate, diffusion rate, and threshold, we can create all sorts of different scenarios for how a particular event might play out. In fact if we simulate a large number of repeated events, because of the noise in the model we will get slightly different results each time. But: on average with each set of parameters we'll get some number of trials that come out correct <b>hits</b> some number that are incorrect <b>misses</b> and also a piece of information we haven't discussed which is the <b>reaction time</b> on each trial.</p>
+	<p>The first thing we'll do in this section is model a hundred trials and just look at the variability in results that we get. Try tweaking the evidence for left or right motion, changing the amount of noise, or changing the thresholds, you'll see the output as well as the percentage of hits, misses, and the distribution of reaction times. Check it out:</p>
+
+	<p>
 </div>
 
 <div id="endblock">
