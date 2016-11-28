@@ -234,10 +234,18 @@ function atThreshold(acc,threshold) {
 
 <div id="block8">
 	<h2>Problem #2: Simulating many decisions</h2>
-	<p>The drift diffusion model is most useful as a <b>simulation</b> of reality. Given some set of parameters: a drift rate, diffusion rate, and threshold, we can create all sorts of different scenarios for how a particular event might play out. In fact if we simulate a large number of repeated events, because of the noise in the model we will get slightly different results each time. But: on average with each set of parameters we'll get some number of trials that come out correct <b>hits</b> some number that are incorrect <b>misses</b> and also a piece of information we haven't discussed which is the <b>reaction time</b> on each trial.</p>
-	<p>The first thing we'll do in this section is model a hundred trials and just look at the variability in results that we get. Try tweaking the evidence for left or right motion, changing the amount of noise, or changing the thresholds, you'll see the output as well as the percentage of hits, misses, and the distribution of reaction times. Check it out:</p>
-
-	<p>
+	<p>The drift diffusion model is most useful as a <b>simulation</b>. Given some set of parameters: a drift rate, diffusion rate, and threshold, the model will create all sorts of different scenarios for how a particular event might play out. But: on average with any given set of parameters we'll get some number of trials that come out correct <b>hits</b> some number that are incorrect <b>misses</b> and also a piece of information we haven't discussed which is the <b>reaction time</b> on each trial.</p>
+	<p>The first thing we'll do in this section is model a hundred trials and just look at the variability in results that we get. Try tweaking the evidence for left or right motion, changing the amount of noise, or changing the thresholds, you'll see the output change each time you change the parameters. Press enter in the input box to re-run the model.</p>
+	<textarea rows=5 id="textarea8" onkeypress="textarea8(event);">
+diffusion_rate = 1; //A number, positive or negative, defining how much is added
+// to the model on each step (equivalent to the Left-Right evidence for motion)
+drift_rate = 5; //How much noise is added on each step
+threshold = 20; //How large of a response necessary to stop a trial and declare it
+//as either left or right</textarea>
+	<textarea rows=5 onkeypress="event.preventDefault();" id="output8">Output will appear here</textarea>
+	<br>
+	<div width=600 id="plot8"></div>
+	<p>What should be apparent from this simulation is that different diffusion, drift, and threshold parameters can fit all kinds of sets of data (hits, misses, RTs). Just like early on when we <i>fit</i> the quadratic model to a set of data, here you can also tweak the parameters to fit them to a particular set of data. What this gives us then are parameters that are <b>interpretable</b>. What does a hit rate really mean? Not necessarily that much, but what about a drift rate? It's possible that there are direct neural correlates to the drift diffusion model parameters. In other words, if we record from the brain can we find neurons that actually appear to be computing drift diffusion while we make decisions? It turns out there are! In the last section we'll look at real recordings from macaque neurons in the lateral intraparietal area and as you'll see we will be able to model them quite well using the drift diffusion model.</p> 
 </div>
 
 <div id="endblock">

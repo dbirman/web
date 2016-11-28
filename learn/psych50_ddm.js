@@ -364,10 +364,6 @@ function resetSample7() {
 	drawPlot7();
 }
 
-function leftResponse(c,d) {return 0;}
-function rightResponse(c,d) {return 0;}
-function accumulateDDM(l,r,a) {return 0;}
-
 function buildPlot3() {
 	var mult = 2; // response multiplier (coherence>0) ? (coherence + randn() * noise)*mult : randn()*noise*mult
 	var noise = 1;
@@ -390,7 +386,13 @@ function buildPlot3() {
 }
 
 function drawPlot7() {
-	var data2 = buildPlot3();
+	var data2;
+	try {
+		data2 = buildPlot3();
+	} catch (err) {
+		console.log(err);
+		return;
+	}
 	traceL = {
 		x: data2.time,
 		y: data2.eL,
@@ -421,6 +423,100 @@ function drawPlot7() {
 	layout.yaxis.title = 'Evidence for RIGHT --------- Evidence for LEFT';
 	layout.yaxis.range = [-25,25];
 	Plotly.newPlot('plot3',[traceL,traceR, traceM],layout);
+}
+
+////////////////////////////////
+////////// BLOCK 8 /////////////
+////////////////////////////////
+var diffusion_rate = 1;
+var drift_rate = 5;
+var threshold = 0;
+
+var outputArea8 = document.getElementById("output8");
+
+function textarea8(e) {
+	var key = window.event.keyCode;
+	if (key===13) {
+		e.preventDefault();
+		try {
+			eval(document.getElementById('textarea8').value);
+			var out = runSimulation8();
+			var correct_pos = ['negative','','positive'];
+			var correct_dir = ['RIGHT','','LEFT'];
+			var posneg = diffusion_rate > 0 ? 2 : 0;
+			outputArea8.innerHTML = "Hit rate: " + Math.round(out.hit*100) + "%&#13;&#10;Miss rate: " + Math.round(out.miss*100) + "%&#13;&#10;No response: " + Math.round(out.NR*100) + "%&#13;&#10;Mean RT: " + Math.round(out.RT_*100)/100	 + " ticks" + "%&#13;&#10;Your diffusion rate was " + correct_pos[posneg] + " so the correct answer was always " + correct_dir[posneg];
+		} catch (error) {
+			outputArea8.innerHTML = "Your code produced an error: " + "&#13;&#10;" + error;
+		}
+	}
+}
+
+var data8 = {};
+
+function runSimulation8() {
+	// Run simulation using parameters
+	data8 = {};
+	data8.n = 25;
+	data8.data = createArray(data8.n,40);
+	data8.hit = 0;
+	data8.miss = 0;
+	data8.NR = 0;
+	data8.RT = [];
+	data8.time = range(1,40);
+	for (var i = 0; i < data8.n; i++) {
+		data8.data[i][0] = 0;
+		var done = false;
+		for (var j = 1; j < 40; j++) {
+			if (!done) {
+				data8.data[i][j] = data8.data[i][j-1] + diffusion_rate + randn()*drift_rate;
+				if (data8.data[i][j] > threshold) {
+					data8.hit += 1;
+					data8.RT.push(j);
+					done = true;
+				} else if (data8.data[i][j] < (-threshold)) {
+					data8.miss += 1;
+					data8.RT.push(j);
+					done = true;
+				}
+			} else {
+				data8.data[i][j] = NaN;
+			}
+		}
+	}
+	data8.NR = data8.n-data8.hit-data8.miss;
+	// Compute statistics
+	var out = {};
+	out.hit = data8.hit/data8.n;
+	out.miss = data8.miss/data8.n;
+	out.NR = data8.NR/data8.n;
+	out.RT_ = mean(data8.RT);
+	// Plot simulation
+	drawPlot8();
+
+	return out;
+}
+
+function drawPlot8() {
+	var traces = [];
+	var maxY = 0;
+	for (var i=0;i<data8.n;i++) {
+		maxY = max(maxY,data8.data[i]);
+		var trace = {
+			x: data8.time,
+			y: data8.data[i],
+			mode:'line',
+			marker: {color:'black'},
+			type:'scatter'
+		}
+		traces.push(trace);
+	}
+	layout.title = 'Drift diffusion model, 100 runs';
+	layout.xaxis.title = 'Time (model ticks)';
+	layout.xaxis.range = [0,40];
+	layout.yaxis.title = 'Evidence for RIGHT --------- Evidence for LEFT';
+	layout.yaxis.range = [-maxY,maxY];
+	layout.showlegend = false;
+	Plotly.newPlot('plot8',traces,layout);
 }
 
 ///////////////////////////////////
@@ -476,7 +572,7 @@ function run(i) {
 function launch_local() {
 	katex.render("y(t)=y_{0}+v_{y}t+\\frac{1}{2}at^{2}",document.getElementById("katex1"),{displayMode:true});
 	katex.render("y(t)=y_{0}+v_{y}t+\\frac{1}{2}at^{2}",document.getElementById("katex2"),{displayMode:true});	
-	katex.render("difference(t)=left(t)-right(t)",document.getElementById("katex3"),{displayMode:true});	
+	katex.render("A(t)=\\sum_{i=0}^{t} left(i)-right(i)",document.getElementById("katex3"),{displayMode:true});	
 	katex.render("Response(coherence) = f(coherence) + \\epsilon",document.getElementById("katex4"),{displayMode:true});	
 	drawPlot1();
 	drawPlot2();
