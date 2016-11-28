@@ -12,8 +12,10 @@ var y0 = 0,
 var time = divide(range(0,50),10);
 var data = quadratic(time,0,49,-9.8);
 
+$("#textarea1").keydown(function(event) {textarea1(event)});
+
 function textarea1(e) {
-	var key = window.event.keyCode;
+	var key = e.which;
 	if (key===13) {
 		e.preventDefault();
 		eval(document.getElementById('textarea1').value);
@@ -29,7 +31,7 @@ function checkLS() {
 	ym = quadratic(time,y0,vy,ay);
 	yd = data;
 	LS = sum(pow(subtract(yd,ym),2));
-	if (LS<1 && !done2) {
+	if (LS<5 && !done2) {
 		alert('Good fit! You can continue with the tutorial now.');
 		document.getElementById("continue").style.display="";
 		document.getElementById("leastsquares_hidden1").style.display="";
@@ -271,16 +273,20 @@ var outputArea2 = document.getElementById("output62");
 var coh6 = Math.random();
 var dir6 = (Math.random()>0.5) ? 1 : -1;
 
+$("#textarea6").keydown(function(event) {textarea6(event)});
+
 function textarea6(e) {
-	var key = window.event.keyCode;
+	var key = e.which;
 	if (key===13) {
 		e.preventDefault();
 		eval(document.getElementById('textarea6').value);
 		outputArea.value = "out = " + out;
 	}
 }
+$("#textarea62").keydown(function(event) {textarea62(event)});
+
 function textarea62(e) {
-	var key = window.event.keyCode;
+	var key = e.which;
 	if (key===13) {
 		e.preventDefault();
 		try {
@@ -307,8 +313,10 @@ function bonus1() {
 ////////////////////////////////
 var outputArea7 = document.getElementById("output7");
 
+$("#textarea7").keydown(function(event) {textarea7(event)});
+
 function textarea7(e) {
-	var key = window.event.keyCode;
+	var key = e.which;
 	if (key===13) {
 		e.preventDefault();
 		try {
@@ -437,8 +445,10 @@ var threshold = 0;
 
 var outputArea8 = document.getElementById("output8");
 
+$("#textarea8").keydown(function(event) {textarea8(event)});
+
 function textarea8(e) {
-	var key = window.event.keyCode;
+	var key = e.which;
 	if (key===13) {
 		e.preventDefault();
 		try {
@@ -514,7 +524,7 @@ function drawPlot8() {
 		traces.push(trace);
 	}
 	var layout8 = layout;
-	layout8.title = 'Drift diffusion model, 100 runs';
+	layout8.title = 'Drift diffusion model, 25 runs';
 	layout8.xaxis.title = 'Time (model ticks)';
 	layout8.xaxis.range = [0,40];
 	layout8.yaxis.title = 'Evidence for RIGHT --------- Evidence for LEFT';
@@ -527,8 +537,10 @@ function drawPlot8() {
 ////////// BLOCK 9 /////////////
 ////////////////////////////////
 
+$("#textarea9").keydown(function(event) {textarea9(event)});
+
 function textarea9(e) {
-	var key = window.event.keyCode;
+	var key = e.which;
 	if (key===13) {
 		e.preventDefault();
 		try {
@@ -542,7 +554,7 @@ function textarea9(e) {
 }
 
 function addSimulation(data) {
-	var reps = 10; // tied to roitman shadlen data
+	var reps = 56; // tied to roitman shadlen data
 	// Uses the user defined functions:
 	// rs_diffusion, rs_drift, and rs_threshold
 	// which each require the coherence and direction (1/-1) 
@@ -589,7 +601,7 @@ function addSimulation(data) {
 			}
 			if (repscomplete<reps) {
 				// This simulation failed, return zeros
-				data[copts[ci]].m[i] = zeros(xdata.length);
+				data[copts[ci]].m[i] = baseF*ones(xdata.length);
 			} else {
 				// The simulated succeeded, average replications
 				for (var si=0;si<xdata.length;si++) {

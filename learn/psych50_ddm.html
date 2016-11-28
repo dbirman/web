@@ -85,8 +85,8 @@
 	<textarea id="textarea1" rows="7" onkeypress="textarea1(event,this);">
 // Model Paramters: tweak to fit the black line (model) to the data (red)
 y0 = 0; // Initial position (m)
-vy = 10; // Vertical velocity (m/s)
-ay = -1; // Vertical acceleration (gravity, m/s^2)</textarea><br>
+vy = 49; // Vertical velocity (m/s)
+ay = -9.8; // Vertical acceleration (gravity, m/s^2)</textarea><br>
 	<p>The plot below solves the equation for values of t (time) using your parameters from zero to five seconds.</p>
 	<div width=600 id="plot1"></div><br>
 	<p id="leastsquares_visible1">Complete the task to continue!</p>
@@ -160,7 +160,7 @@ leftResponse = function(patch_coherence,patch_dir) {
 	// The english translation is: If dir>0 is true then: 1, otherwise: 0
 
 	// MODIFY THE NEXT LINE
-	out = ??YOUR CODE HERE??;
+	out = patch_dir>0 ? patch_coherence*2 : 0;
 	// The last thing we do is add random noise on this line:
 	out = out+randn();
 
@@ -169,7 +169,7 @@ leftResponse = function(patch_coherence,patch_dir) {
 
 rightResponse = function(patch_coherence,patch_dir) {
 	// MODIFY THE NEXT LINE
-	out = ??YOUR CODE HERE??;
+	out = patch_dir<0 ? patch_coherence*2 : 0;
 	out = out+randn();
 
 	return out;
@@ -201,7 +201,7 @@ rightResponse = function(patch_coherence,patch_dir) {
 // right - the right population response
 // acc - the current accumulated value
 accumulateDDM = function(left,right,acc) {
-	var new_acc = ??YOUR CODE HERE??;
+	var new_acc = acc+left-right;
 
 	return new_acc;
 }
@@ -220,7 +220,7 @@ accumulateDDM = function(left,right,acc) {
 //and -1 if we are below the negative threshold (-threshold)
 //if neither of these are true, simply return 0.
 atThreshold = function(acc,threshold) {
-	var dir = ??YOUR CODE HERE??;
+	var dir = acc>threshold ? 1 : acc < -threshold ? -1 : 0;
 
 	return dir;
 }</textarea>
@@ -274,7 +274,7 @@ rs_diffusion = function(coherence,dir) {
 	// YOUR COMPUTATIONS HERE
 	// YOUR COMPUTATIONS HERE
 	// YOUR COMPUTATIONS HERE
-	return dir*Math.sqrt(coherence)*1/5;
+	return dir*coherence*1/5;
 }
 
 // Function returns a value to be used as a multiplier to random
@@ -283,19 +283,20 @@ rs_drift = function(coherence,dir) {
 	// YOUR COMPUTATIONS HERE
 	// YOUR COMPUTATIONS HERE
 	// YOUR COMPUTATIONS HERE
-	return randn()/100;
+	return randn()/5;
 }
 
-// Function returns a number to be used as the threshold
+// Function needs to return two numbers [#1,#2], the upper and lower thresholds
+// note: the lower threshold may need to be different! (i.e. not -upper)
 rs_threshold = function(coherence,dir) {
 	// YOUR COMPUTATIONS HERE
 	// YOUR COMPUTATIONS HERE
 	// YOUR COMPUTATIONS HERE
-	return [60,35];
+	return [60,25];
 }
 </textarea>
-
 	<div width=600 height=600 id="plot9"></div>
+	<p>As you try out different approaches think about how well your model fits to the entirety of the data here. Are you able to recover both the variability in the correct trials and incorrect trials? Where does your model fit worst? Is the poor fit in those areas an indication that we've oversimplified the situation and that the model is failing to capture some variability in the data?
 </div>
 <div id="endblock">
 	<h2>Tutorial complete!</h2>
