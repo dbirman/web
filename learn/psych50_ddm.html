@@ -1,3 +1,6 @@
+<!-- TODO: - make right eveidence negative -->
+<!-- TODO: - on 7 give them motion coherence options (e.g. click one to show output for that motion coherence) -->
+
 <!DOCTYPE HTML>
 <!--
 	Landed by HTML5 UP
@@ -47,7 +50,7 @@
 				<div id="main" class="wrapper style1">
 					<div class="container">
 						<header class="major">
-							<h2>Sensory Perception Lab</h2>
+							<h2>Evidence accumulation Lab</h2>
 							<p>PSYCH 50</p>
 						</header>
 
@@ -147,7 +150,7 @@ out = randn();</textarea>
 	<textarea rows=23 id="textarea62" onkeypress="textarea62(event);">
 //We've set up the function definitions for you
 //just fill in the code where we marked it
-function leftResponse(patch_coherence,patch_dir) {
+leftResponse = function(patch_coherence,patch_dir) {
 	// Some hints: since this is the left response it should depend on
 	// whether the patch is actually going left or right
 	// To make things depend on a value you can use a conditional 
@@ -162,7 +165,7 @@ function leftResponse(patch_coherence,patch_dir) {
 	return out;
 }
 
-function rightResponse(patch_coherence,patch_dir) {
+rightResponse = function(patch_coherence,patch_dir) {
 	// MODIFY THE NEXT LINE
 	out = ??YOUR CODE HERE??;
 
@@ -194,7 +197,7 @@ function rightResponse(patch_coherence,patch_dir) {
 // left - the left population respnse
 // right - the right population response
 // acc - the current accumulated value
-function accumulateDDM(left,right,acc) {
+accumulateDDM = function(left,right,acc) {
 	var new_acc = ??YOUR CODE HERE??;
 
 	return new_acc;
@@ -213,7 +216,7 @@ function accumulateDDM(left,right,acc) {
 //This function should return 1 if we are above the threshold
 //and -1 if we are below the negative threshold (-threshold)
 //if neither of these are true, simply return 0.
-function atThreshold(acc,threshold) {
+atThreshold = function(acc,threshold) {
 	var dir = ??YOUR CODE HERE??;
 
 	return dir;
@@ -248,6 +251,12 @@ threshold = 20; //How large of a response necessary to stop a trial and declare 
 	<p>What should be apparent from this simulation is that different diffusion, drift, and threshold parameters can fit all kinds of sets of data (hits, misses, RTs). Just like early on when we <i>fit</i> the quadratic model to a set of data, here you can also tweak the parameters to fit them to a particular set of data. What this gives us then are parameters that are <b>interpretable</b>. What does a hit rate really mean? Not necessarily that much, but what about a drift rate? It's possible that there are direct neural correlates to the drift diffusion model parameters. In other words, if we record from the brain can we find neurons that actually appear to be computing drift diffusion while we make decisions? It turns out there are! In the last section we'll look at real recordings from macaque neurons in the lateral intraparietal area and as you'll see we will be able to model them quite well using the drift diffusion model.</p> 
 </div>
 
+<div id="block9">
+	<h2>Problem #3: Fitting to many decisions</h2>
+	<p>In the following image we're going to show you real data recorded from 56 neurons in the macaque lateral intraparietal area (LIP). It's thought that LIP acts as an accumulator of evidence when making decision about direction of motion. The graph is set up in the same way as we've shown previously--time is on the X axis and evidence for the correct response (here, the neuron's firing rate) is on the Y axis. The solid lines are from correct trials and dashed lines were incorrect. Notice that the lines break out by motion coherence just as you might expect: stronger motion coherence causes firing rates to peak more quickly.</p>
+	<div style="text-align:center;" ><img width=400 src="images/RoitmanShadlen2002.jpg"/></div>
+	<p>The final step of our tutorial today is going to be to try to fit a drift diffusion model to this data. Like before we're going to let you define how the drift rate, diffusion rate, and threshold, might vary as a function of the motion coherence on each trial. As output we'll show you the data from this graph compared to the average output of 56 trials of your drift diffusion model. Your goal, just like in the cannonball example, is to minimize the difference between the model output and the data. At the end we'll look at the model parameters that you produced and discuss how you would <b>interpret</b> these.</p>
+</div>
 <div id="endblock">
 	<h2>Tutorial complete!</h2>
 </div>

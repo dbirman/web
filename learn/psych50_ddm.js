@@ -579,5 +579,5 @@ function launch_local() {
 	document.getElementById("bonus1").style.display="none";
 	document.getElementById("end6").style.display="none";
 	document.getElementById("end7").style.display="none";
-
 }
+
