@@ -795,19 +795,31 @@ function lessThan(first, second) {
 	}
 }
 
+function nanmean(array) {
+	return mean(array,not(isnan(array)));
+}
 /**
  * Determines the mean of the given array.
  * @param {Array} array the given array
  * @returns {Number} the mean value
  */
-function mean(array) {
+function mean(array,indexer) {
 	if (array.length == 0) {
 		return 0;
 	}
 	var sum = 0, count = 0;
-	for (var i =0 ;i<array.length;i++) {
-		sum += array[i];
-		count++;
+	if (indexer) {
+		for (var i=0;i<array.length;i++) {
+			if (indexer[i]) {
+				sum += array[i];
+				count++;
+			}
+		}
+	} else {
+		for (var i =0 ;i<array.length;i++) {
+			sum += array[i];
+			count++;
+		}
 	}
 	return sum / count;
 	

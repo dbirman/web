@@ -62,12 +62,13 @@ function drawPlot1() {
 		color:'red',
 		name:'Data'
 	}
-	layout.title = 'Cannonball height over time';
-	layout.xaxis.title = 'Time (s)';
-	layout.xaxis.range = [0,5];
-	layout.yaxis.title = 'Height (m)';
-	layout.yaxis.range = [0, 65];
-	Plotly.newPlot('plot1',[traceM, traceD],layout);
+	var layout1 = layout;
+	layout1.title = 'Cannonball height over time';
+	layout1.xaxis.title = 'Time (s)';
+	layout1.xaxis.range = [0,5];
+	layout1.yaxis.title = 'Height (m)';
+	layout1.yaxis.range = [0, 65];
+	Plotly.newPlot('plot1',[traceM, traceD],layout1);
 }
 
 ////////////////////////////////
@@ -250,12 +251,13 @@ function drawPlot2() {
 		type:'scatter',
 		name:'Accumulated evidence (left - right)'
 	}
-	layout.title = 'Accumulated evidence';
-	layout.xaxis.title = 'Time (ms)';
-	layout.xaxis.range = [0,40];
-	layout.yaxis.title = 'Evidence for RIGHT --------- Evidence for LEFT';
-	layout.yaxis.range = [-25,25];
-	Plotly.newPlot('plot2',[traceL,traceR, traceM],layout);
+	var layout2 = layout;
+	layout2.title = 'Accumulated evidence';
+	layout2.xaxis.title = 'Time (ms)';
+	layout2.xaxis.range = [0,40];
+	layout2.yaxis.title = 'Evidence for RIGHT --------- Evidence for LEFT';
+	layout2.yaxis.range = [-25,25];
+	Plotly.newPlot('plot2',[traceL,traceR, traceM],layout2);
 }
 
 ////////////////////////////////
@@ -417,12 +419,13 @@ function drawPlot7() {
 		type:'scatter',
 		name:'Accumulated evidence (left - right)'
 	}
-	layout.title = 'Accumulated evidence';
-	layout.xaxis.title = 'Time (ms)';
-	layout.xaxis.range = [0,40];
-	layout.yaxis.title = 'Evidence for RIGHT --------- Evidence for LEFT';
-	layout.yaxis.range = [-25,25];
-	Plotly.newPlot('plot3',[traceL,traceR, traceM],layout);
+	var layout7 = layout;
+	layout7.title = 'Accumulated evidence';
+	layout7.xaxis.title = 'Time (ms)';
+	layout7.xaxis.range = [0,40];
+	layout7.yaxis.title = 'Evidence for RIGHT --------- Evidence for LEFT';
+	layout7.yaxis.range = [-25,25];
+	Plotly.newPlot('plot3',[traceL,traceR, traceM],layout7);
 }
 
 ////////////////////////////////
@@ -510,13 +513,148 @@ function drawPlot8() {
 		}
 		traces.push(trace);
 	}
-	layout.title = 'Drift diffusion model, 100 runs';
-	layout.xaxis.title = 'Time (model ticks)';
-	layout.xaxis.range = [0,40];
-	layout.yaxis.title = 'Evidence for RIGHT --------- Evidence for LEFT';
-	layout.yaxis.range = [-maxY,maxY];
-	layout.showlegend = false;
-	Plotly.newPlot('plot8',traces,layout);
+	var layout8 = layout;
+	layout8.title = 'Drift diffusion model, 100 runs';
+	layout8.xaxis.title = 'Time (model ticks)';
+	layout8.xaxis.range = [0,40];
+	layout8.yaxis.title = 'Evidence for RIGHT --------- Evidence for LEFT';
+	layout8.yaxis.range = [-maxY,maxY];
+	layout8.showlegend = false;
+	Plotly.newPlot('plot8',traces,layout8);
+}
+
+////////////////////////////////
+////////// BLOCK 9 /////////////
+////////////////////////////////
+
+function textarea9(e) {
+	var key = window.event.keyCode;
+	if (key===13) {
+		e.preventDefault();
+		try {
+			eval(document.getElementById('textarea9').value);
+			simCompiled = true;
+			drawPlot9(rs_data);
+		} catch (error) {
+			outputArea2.innerHTML = "Your code produced an error: " + "&#13;&#10;" + error;
+		}
+	}
+}
+
+function addSimulation(data) {
+	var reps = 10; // tied to roitman shadlen data
+	// Uses the user defined functions:
+	// rs_diffusion, rs_drift, and rs_threshold
+	// which each require the coherence and direction (1/-1) 
+
+	// This simulation might be slow...?
+
+	// Go through rs_data, grab the current coherence, simulate 56 runs of each 
+	// correct and incorrect then average the results.
+	// Then these can be added to the plot as lines. The difficult thing
+
+	var copts = ['incorrect','correct'];
+	var baseF = 41; // initial firing rate for all model trajectories
+	var dir = 1; // always use one direction
+	for (var ci=0;ci<2;ci++) {
+		data[copts[ci]].m = {};
+		// per condition (correct/incorrect)
+		// data.[copts[ci]].my = createArray(6,0);
+		for (var i=0;i<6;i++) {
+			data[copts[ci]].m[i] = [];
+			var ccoh = data.coherence[i];
+			// SIMULATION
+			var xdata = data[copts[ci]].x[i];
+			sim = createArray(xdata.length,reps);
+			var repscomplete = 0;
+			var repsattempted = 0;
+			while (repscomplete<reps && repsattempted<500) {
+				// Add a replicate
+				var crdone = false;
+				for (var si=0;si<xdata.length;si++) {			
+					if (si==0) {
+						//just initialize
+						sim[si][repscomplete] = baseF;
+					} else {
+						var deltax = Math.round(xdata[si]-xdata[si-1]);
+						sim[si][repscomplete] = sim[si-1][repscomplete] + deltax*rs_diffusion(ccoh,dir) + deltax*rs_drift(ccoh,dir);
+					}
+					if ((sim[si][repscomplete] > rs_threshold()[0]) && ci==1) {crdone = true;}
+					if ((sim[si][repscomplete] < rs_threshold()[1]) && ci==0) {crdone = true;}
+				}
+				if (crdone) {
+					repscomplete+=1;
+				} // If we didn't get a success, repeat this repetition
+				repsattempted+=1;
+			}
+			if (repscomplete<reps) {
+				// This simulation failed, return zeros
+				data[copts[ci]].m[i] = zeros(xdata.length);
+			} else {
+				// The simulated succeeded, average replications
+				for (var si=0;si<xdata.length;si++) {
+					data[copts[ci]].m[i].push(nanmean(sim[si]));	
+				}	
+				hold = sim;
+			}
+		}
+	}
+
+	return data;
+}
+
+var simCompiled = false;
+
+function drawPlot9(rs_data) {
+	if (simCompiled) {
+		try{
+			rs_data = addSimulation(rs_data);
+		} catch (error) {
+			console.log(error);
+		}
+	}
+	var copts = ['incorrect','correct'];
+	var lopts = [false,true];
+	var sopts = [3,5];
+	var ltopts = ['dot','solid'];
+	var colors = ['#005350','#4ac80d','#ec174d','#029d59','#8f33c6','#f79c1a'];
+	// Using rs_data from roitman shadlen 2002
+	var traces = [];
+	for (var ci=0;ci<2;ci++) {
+		for (var i=0;i<6;i++) {
+			var trace = {
+				x: rs_data[copts[ci]].x[i],
+				y: rs_data[copts[ci]].y[i],
+				mode:'markers',
+				marker: {color:colors[i],size:sopts[ci]},
+				type:'scatter',
+				name:(rs_data.coherence[i]*100),
+				showlegend:lopts[ci]	
+			}
+			traces.push(trace);
+			if (simCompiled) {
+				var traceS = {
+					x: rs_data[copts[ci]].x[i],
+					y: rs_data[copts[ci]].m[i],
+					mode:'lines',
+					line: {color:colors[i],size:1,dash:ltopts[ci]},
+					type:'scatter',
+					showlegend:false
+				}
+				traces.push(traceS);
+			}
+		}
+	}
+	layout9 = layout;
+	layout9.title = 'DDM fit to Roitman Shadlen data';
+	layout9.xaxis.title = 'Time (ms)';
+	layout9.xaxis.range = [175,825];
+	layout9.yaxis.title = 'Firing Rate (sp/s)';
+	layout9.yaxis.range = [20,70];
+	layout9.showlegend = true;
+	layout9.height = 700;
+	layout9.width = 500;
+	Plotly.newPlot('plot9',traces,layout9);
 }
 
 ///////////////////////////////////
@@ -569,6 +707,33 @@ function run(i) {
  }
 }
 
+var rs_data;
+
+function read_RS_CSV(file) {
+	rs_data = {};
+	var data = $.csv.toArrays(file);
+	rs_data.coherence = [0,.032,.064,.128,.256,.512];
+	rs_data.correct = {}; rs_data.incorrect = {};
+	rs_data.correct.x = createArray(6,0);
+	rs_data.correct.y = createArray(6,0);
+	rs_data.incorrect.x = createArray(6,0);
+	rs_data.incorrect.y = createArray(6,0);
+	 copts = ['incorrect','correct'];
+	for (var i=0;i<data.length;i++) {
+		 ccoh = data[i][3];
+		 ccorr = data[i][2];
+		 cx = data[i][0];
+		 cy = data[i][1];
+		for (var j=0;j<6;j++) {
+			if (ccoh==rs_data.coherence[j]) {
+				rs_data[copts[ccorr]].x[j].push(Number(cx));
+				rs_data[copts[ccorr]].y[j].push(Number(cy));
+			}
+		}
+	}
+	drawPlot9(rs_data);
+}
+
 function launch_local() {
 	katex.render("y(t)=y_{0}+v_{y}t+\\frac{1}{2}at^{2}",document.getElementById("katex1"),{displayMode:true});
 	katex.render("y(t)=y_{0}+v_{y}t+\\frac{1}{2}at^{2}",document.getElementById("katex2"),{displayMode:true});	
@@ -579,5 +744,9 @@ function launch_local() {
 	document.getElementById("bonus1").style.display="none";
 	document.getElementById("end6").style.display="none";
 	document.getElementById("end7").style.display="none";
+	$.ajax({ url: "roitmanshadlen2002.csv", success: function(file_content) {
+    read_RS_CSV(file_content);
+	  }
+	});
 }
 

@@ -20,6 +20,7 @@
 		<!-- Generics -->
 			<script src="../assets/js/jquery.min.js"></script>
 			<script src="../assets/js/math.min.js"></script>
+			<script src="../assets/js/jquery.csv.min.js"></script>
 			<script src="../assets/js/jquery.scrolly.min.js"></script>
 			<script src="../assets/js/jquery.dropotron.min.js"></script>
 			<script src="../assets/js/jquery.scrollex.min.js"></script>
@@ -147,7 +148,7 @@ out = randn();</textarea>
 	<p>Try pressing enter a few more times, you should see that the values you get are being taken from the random normal (gaussian) distribution, centered at 0 with a standard deviation of 1. If you're not familiar with normal distributions this is a good time to ask your neighbor, or the TA, to describe how these work.</p>
 	<p>Now imagine that we have a motion patch that has some random coherence and direction. We'll store these values in the variables <b>patch_coherence</b> which can go from 0 to 1 and <b>patch_dir</b> which is either 1 (right) or -1 (left). Use these values to fill out the two functions below: leftResponse() and rightResponse(), so that they return the response of the neural population. Remember the response should be some function of the coherence, plus noise, i.e. as in this equation but where F() is a function that you can pick. (It's okay to use the coherence value directly, but keep in mind how large the neural responses are relative to the noise, you may want to add a scaling factor)</p>
 	<div id="katex4"></div>
-	<textarea rows=23 id="textarea62" onkeypress="textarea62(event);">
+	<textarea rows=25 id="textarea62" onkeypress="textarea62(event);">
 //We've set up the function definitions for you
 //just fill in the code where we marked it
 leftResponse = function(patch_coherence,patch_dir) {
@@ -157,10 +158,11 @@ leftResponse = function(patch_coherence,patch_dir) {
 	// statement. For example, if you do the following:
 	// out = dir>0 ? 1 : 0
 	// The english translation is: If dir>0 is true then: 1, otherwise: 0
-	// Don't forget to use randn() to add noise!
 
 	// MODIFY THE NEXT LINE
 	out = ??YOUR CODE HERE??;
+	// The last thing we do is add random noise on this line:
+	out = out+randn();
 
 	return out;
 }
@@ -168,6 +170,7 @@ leftResponse = function(patch_coherence,patch_dir) {
 rightResponse = function(patch_coherence,patch_dir) {
 	// MODIFY THE NEXT LINE
 	out = ??YOUR CODE HERE??;
+	out = out+randn();
 
 	return out;
 }</textarea>
@@ -253,9 +256,46 @@ threshold = 20; //How large of a response necessary to stop a trial and declare 
 
 <div id="block9">
 	<h2>Problem #3: Fitting to many decisions</h2>
-	<p>In the following image we're going to show you real data recorded from 56 neurons in the macaque lateral intraparietal area (LIP). It's thought that LIP acts as an accumulator of evidence when making decision about direction of motion. The graph is set up in the same way as we've shown previously--time is on the X axis and evidence for the correct response (here, the neuron's firing rate) is on the Y axis. The solid lines are from correct trials and dashed lines were incorrect. Notice that the lines break out by motion coherence just as you might expect: stronger motion coherence causes firing rates to peak more quickly.</p>
-	<div style="text-align:center;" ><img width=400 src="images/RoitmanShadlen2002.jpg"/></div>
+	<p>In the following image we're going to show you real data recorded from 56 neurons in the macaque lateral intraparietal area (LIP). It's thought that LIP acts as an accumulator of evidence when making decision about direction of motion. The graph is set up similar to how we've shown it before--time is on the X axis but now firing rate is on the Y axis. The hypothesis is that firing rate is representing the <b>accumulated evidence</b> at any given moment in time. We're going to fit a drift diffusion model to see whether the model captures the variance in the data, and if so we'll consider that evidence that the hypothesis might be correct.</p>
+	<p>The solid lines are from correct trials and dashed lines were incorrect, and each condition was averaged across left and right motion. Notice that the lines break out by motion coherence just as you might expect: stronger motion coherence causes firing rates to peak more quickly.</p>
+	<div style="text-align:center;width:500px;margin:auto"><img width=400 src="images/RoitmanShadlen2002.jpg"/><br><span style="font-size:12px">Roitman, J. D., & Shadlen, M. N. (2002).</span></div>
+	<br>
 	<p>The final step of our tutorial today is going to be to try to fit a drift diffusion model to this data. Like before we're going to let you define how the drift rate, diffusion rate, and threshold, might vary as a function of the motion coherence on each trial. As output we'll show you the data from this graph compared to the average output of 56 trials of your drift diffusion model. Your goal, just like in the cannonball example, is to minimize the difference between the model output and the data. At the end we'll look at the model parameters that you produced and discuss how you would <b>interpret</b> these.</p>
+	<textarea rows=25 id="textarea9" onkeypress="textarea9(event);">
+// The three functions below control how your DDM model responds to any particular
+// motion coherence. Right now the model is set to just generate flat responses, but
+// based on what you learned from this tutorial you should be able to generate the
+// correct fits to the Roitman Shadlen data. Good luck! You don't need to use the
+// parameters (coherence/dir) if you don't think they're necessary for a particular
+// function. Coherence is a value from 0 to 1, dir is either -1 or 1.
+
+// Function returns a number to be used as the diffusion rate
+rs_diffusion = function(coherence,dir) {
+	// YOUR COMPUTATIONS HERE
+	// YOUR COMPUTATIONS HERE
+	// YOUR COMPUTATIONS HERE
+	return dir*Math.sqrt(coherence)*1/5;
+}
+
+// Function returns a value to be used as a multiplier to random
+// gaussian noise (i.e. the noise will be randn() times what you return)
+rs_drift = function(coherence,dir) {
+	// YOUR COMPUTATIONS HERE
+	// YOUR COMPUTATIONS HERE
+	// YOUR COMPUTATIONS HERE
+	return randn()/100;
+}
+
+// Function returns a number to be used as the threshold
+rs_threshold = function(coherence,dir) {
+	// YOUR COMPUTATIONS HERE
+	// YOUR COMPUTATIONS HERE
+	// YOUR COMPUTATIONS HERE
+	return [60,35];
+}
+</textarea>
+
+	<div width=600 height=600 id="plot9"></div>
 </div>
 <div id="endblock">
 	<h2>Tutorial complete!</h2>
