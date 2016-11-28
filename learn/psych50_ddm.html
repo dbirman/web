@@ -125,11 +125,11 @@ ay = -9.8; // Vertical acceleration (gravity, m/s^2)</textarea><br>
 		<input type="range" min="0" max="100" value="25" oninput="updateCoherence4(this.value/100);"/><output id="coherence4">25%</output>
 	</div><br>
 	<div id="4initial">
-	<p>What you see above is the response of <b>one</b> neuron to this patch of motion, which we assume is in the neuron's receptive field. Try changing the motion coherence and direction. Notice that the single neuron is slightly variable--this is due to random noise in the firing rate of the neuron. A neuron fires off "spikes" every few milliseconds, and occasionally that rate of firing can fluctuate, causing the noise you see here.
+	<p>What you see is the response of <b>one</b> neuron to this patch of motion, which we assume is in the neuron's receptive field. Try changing the motion coherence and direction. Notice that the single neuron is slightly variable--this is due to random noise in the firing rate of the neuron. A neuron fires off "spikes" every few milliseconds, and occasionally that rate of firing can fluctuate, causing the noise you see here.
 	</p>
 	</div>
 	<div id="4population">
-	<p>Now what you see is the response of <b>many</b> neurons averaged together (the thick line) and the individual neurons (thin lines). Remember that each of the neurons have some variability in the strength of their responses: this causes the population response to have <b>noise</b>, which you see as the random fluctuations in the average. Notice that the noise in the population average is smaller than the noise across the population. The advantage of using a population response rather than individual neurons is that it reduces noise.
+	<p>Now what you see is the response of <b>many</b> neurons averaged together (the <span style="color:#5DADE2">blue</span> line) and the individual neurons (gray lines). Remember that each of the neurons have some variability in the strength of their responses: this causes the population response to have <b>noise</b>, which you see as the random fluctuations in the average. Notice that the noise in the population average is smaller than the noise across the population. The advantage of using a population response rather than individual neurons is that it reduces noise.
 	</div>
 	<div id="4lr">
 		<p>Finally you now see the response of <i>two populations of neurons</i>, one that prefers <span style="color:#5DADE2">left</span> motion and one that prefers <span style="color:#CD6155">right</span>.</p>
@@ -140,19 +140,28 @@ ay = -9.8; // Vertical acceleration (gravity, m/s^2)</textarea><br>
 
 <div id="block5">
 	<h2>Problem #2: Simulating a single decision</h2>
-	<p>We're now going to describe a computational model to combine two noisy sources of information together to try to reach a decision. To build up our model we're going to imagine that our macaque brain is looking at a motion patch for a few hundred milliseconds. This means that the populations of <i>left</i> and <i>right</i> preferring neurons will each be activated to some extent at every moment in time. Each population also has noise at any given moment, so it would be a mistake to take the instantenous response of either population as the truth. Instead we will combine the two sets of data by looking at the difference in their responses and <b>accumulating</b> those differences over time. If we wait long enough and <i>one population is, on average, more active</i> then eventually we will see that in the accumulated response.</p>
-	<p>To picture what's happening take a look at this graph. In red and blue we have the responses of two populations of neurons that prefer <span style="color:blue">left</span> and <span style="color:red">right</span> motion. In black we plot the accumulate difference, calculated as follows:</p>
+	<p>We now need to describe the drift diffusion model: how do we take two noisy sources of information and combine them to reach a decision.</p>
+	<p>To build up our model we're going to imagine that our macaque brain is looking at a motion patch for a few hundred milliseconds. This means that the populations of <span style="color:#5DADE2">left</span> and <span style="color:#CD6155">right</span> preferring neurons will each be activated to some extent at every moment in time. Each population also has noise (as you saw), so it would be a mistake to take the instantenous response of either population as the truth. Instead we will <b>accumulate</b> data over time until we are <b>confident</b>.</p>
+	<p>To picture what's happening we're going to show you the same display as before. Again, you can control the coherence and the direction of the motion. But now we're going to add a new plot below which will have: the firing rate of the <span style="color:#5DADE2">left</span> population, <span style="color:#CD6155">right</span> population, and the accumulated evidence in black.</p>
+	<p>What do we mean by "accumulated evidence"? Well, intuitively, the evidence at any given moment for left is the firing rate of the left population <b>minus</b> the firing rate of the right population. All we do is sum that up over time, as in this equation:</p>
 	<div id="katex3"></div>
-	<p>To orient you, we're also going to show you the patch of the dots that this particular set of data were generated from. You can click the button to generate a new motion sample (and a new "run" of the data).
+	<br>
 	<div width="100%" height="150px" style="position:relative; text-align:center">
 		<div>
-			<h1>Motion sample</h1><canvas width=100 height=100 id="sample"></canvas>
-			<button class="button" onclick="resetSample();">Run new sample</button>
+			<h1>Motion sample</h1><canvas width=100 height=100 onclick="flip5();" id="sample"></canvas>
+			<br>
+			<input type="range" min="0" max="100" value="25" oninput="updateCoherence5(this.value/100);"/><output id="coherence5">25%</output>
 		</div>
 	</div>
 	<div width=600 id="plot2"></div><br><br>
-	<p>There are a few things to note here. First, at a glance the red and blue lines really don't give you enough information to tell on their own whether any given motion is to the left or to the right. BUT--integrating this information (by summing it up over time, that is the black line) does! Second, even sometimes when the motion is quite obvious the model doesn't go in the right direction, this is of course because we've introduced <b>noise</b> into the model. Finally, you could imagine now adding one final step. What if you picked some value, a threshold, of evidence at which you would accept whatever decision the model had come to. For example, you could say that if you get to either +20 (left) or -20 (right), then you'll take that decision and use it. This would now give you the ability to use this miniature model to make decisions.</p>
-	<p>What we've just shown you is the core of the drift diffusion model: a diffusion rate (the evidence for left minus the evidence for right), the drift rate (noise), and the threshold at which you make your choice. In the next section you're going to write some code to implement the model yourself, and then we'll use it to do some <b>simulations</b>.
+	<p>There are a few things to note here.
+	<ul>
+		<li>Even when you put in the same coherence and direction twice, you get slightly different results. This is due to the <b>noise</b></li>
+		<li>At a glance, the left and right population responses don't give you much information at all. It's only by summing them up that you can tell what direction the patch is going.</li>
+		<li>We still haven't decided how to define that we are <b>confident</b> in the accumulated evidence.</li>
+	</ul>
+	You could imagine now adding one final step. What if you picked some value, a threshold, of evidence at which you would say you were confident? For example, you could say that if you get to either +20 (left) or -20 (right), then you'll take that decision and use it. This would now give you the ability to use this miniature model to make decisions.</p>
+	<p>What we've just shown you is the core of the drift diffusion model: a diffusion rate (the evidence for left minus the evidence for right), the drift rate (noise), and the threshold at which you make your choice. In the next section you're going to write some code to implement the model yourself, and then we'll use it to construct <b>simulations</b>.
 </div>
 
 <div id="block6">

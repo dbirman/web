@@ -132,6 +132,11 @@ var dots4 = initDots(400,100,100,0,0);
 
 var outL = zeros(200);
 var outR = zeros(200);
+var indiv = zeros(4);
+indiv[0] = zeros(200);
+indiv[1] = zeros(200);
+indiv[2] = zeros(200);
+indiv[3] = zeros(200);
 
 var coherence4 = 0.25;
 var dir4 = 0;
@@ -174,42 +179,63 @@ function drawMotionDemo() {
 	ctx_patch1.restore();
 
 	if (displayMode==0) {
-		var mult = 40;
+		var mult = 30;
 		outL.shift();
-		outL.push((dir4f<0) ? (coherence4 + randn() * noise)*mult : randn()*noise*mult);
+		var resp = (dir4f<0) ? coherence4 * mult : -coherence4*mult/5;
+		resp = resp + randn()*mult/2;
+		outL.push(resp);
 		ctx_output1.strokeStyle = "#5DADE2";
 		ctx_output1.beginPath();
-		ctx_output1.moveTo(0,output1.height-20);
-		for (var i=0;i<400;i++) {
+		ctx_output1.moveTo(0,output1.height-outL[0]-20);
+		for (var i=1;i<200;i++) {
 			ctx_output1.lineTo(i,output1.height-outL[i]-20);
 		}
 		ctx_output1.stroke();
 	} else if (displayMode==1) {
-		var mult = 10;
+		var mult = 30;
+		var resp3 = zeros(4);
+		for (var i=0;i<4;i++) {
+			indiv[i].shift(); 
+			var resp = (dir4f<0) ? coherence4 * mult : -coherence4*mult/5;
+			resp = resp + randn()*mult/2;
+			indiv[i].push(resp);
+			resp3[i] = resp;
+			ctx_output1.strokeStyle = "rgba(128,128,128,0.5)";
+			ctx_output1.beginPath();
+			ctx_output1.moveTo(0,output1.height-indiv[i][0]-20);
+			for (var j=1;j<200;j++) {
+				ctx_output1.lineTo(j,output1.height-indiv[i][j]-20);
+			}
+			ctx_output1.stroke();
+		}
 		outL.shift();
-		outL.push((dir4f<0) ? (coherence4 + randn() * noise)*mult : randn()*noise*mult);
+		outL.push(mean(resp3));
 		ctx_output1.strokeStyle = "#5DADE2";
 		ctx_output1.beginPath();
 		ctx_output1.moveTo(0,output1.height-20);
-		for (var i=0;i<400;i++) {
+		for (var i=0;i<200;i++) {
 			ctx_output1.lineTo(i,output1.height-outL[i]-20);
 		}
 		ctx_output1.stroke();
 	} else {
 	// draw DDM output
-	var mult = 10;
+	var mult = 30;
 	outL.shift();
-	outL.push((dir4f<0) ? (coherence4 + randn() * noise)*mult : randn()*noise*mult);
+	var resp = (dir4f<0) ? coherence4 * mult : -coherence4*mult/5;
+	resp = resp + randn()*mult/4;
+	outL.push(resp);
 	ctx_output1.strokeStyle = "#5DADE2";
 	ctx_output1.beginPath();
 	ctx_output1.moveTo(0,output1.height-20);
-	for (var i=0;i<400;i++) {
+	for (var i=0;i<200;i++) {
 		ctx_output1.lineTo(i,output1.height-outL[i]-20);
 	}
 	ctx_output1.stroke();
 	// out right
 	outR.shift();
-	outR.push((dir4f>0) ? (coherence4 + randn() * noise)*mult : randn()*noise*mult);
+	var resp = (dir4f>0) ? coherence4 * mult : -coherence4*mult/5;
+	resp = resp + randn()*mult/4;
+	outR.push(resp);
 	ctx_output1.strokeStyle = "#CD6155";
 	ctx_output1.beginPath();
 	ctx_output1.moveTo(0,output1.height-20);
@@ -232,32 +258,28 @@ var ctx_sample = canvas_sample.getContext("2d");
 
 var tick5;
 
-var dots4 = initDots(400,100,100,0,0);
-var coherence4 = 0.75;
+var dots5 = initDots(400,100,100,0,0);
+var coherence5 = 0.75;
+var dir5 = 0;
+
+function flip5() {dots5.dir = dots5.dir>0?0:Math.PI; drawPlot2();}
+function updateCoherence5(ncoh) {coherence5 = ncoh; document.getElementById("coherence5").innerHTML=Math.round(ncoh*100)+"%"; drawPlot2();}
 
 
 function drawMotionSample() {
-	dots4 = updateDots(dots4,coherence4)
+	dots5 = updateDots(dots5,coherence5)
 	// draw
 	ctx_sample.clearRect(0,0,canvas_sample.width,canvas_sample.height);
 	clipCtx(ctx_sample,canvas_sample);
-	drawDots(dots4,ctx_sample);
+	drawDots(dots5,ctx_sample);
 	ctx_sample.restore();
 
 	tick5 = window.requestAnimationFrame(drawMotionSample);
 }
 
-function resetSample() {
-	coherence4 = Math.random()*2-1;
-	dots4.dir = (coherence4>0) ? 0 : Math.PI;
-	coherence4 = Math.abs(coherence4);
-	// Re-build the plot
-	drawPlot2();
-}
-
 function buildPlot2() {
-	var mult = 2; // response multiplier (coherence>0) ? (coherence + randn() * noise)*mult : randn()*noise*mult
-	var noise = 1;
+	var mult = 1.5; // response multiplier (coherence>0) ? (coherence + randn() * noise)*mult : randn()*noise*mult
+	var noise = 0.5;
 	var data = {};
 	// build up the variables for the plot
 	// the evidence runs are just the L/R evidence 
@@ -266,13 +288,13 @@ function buildPlot2() {
 	data.E = [0]; // accumulated evidence
 	data.time = range(1,40);
 	for (var i=1; i<40; i++) {
-		var r = (dots4.dir==0) ? (coherence4 + randn() * noise)*mult : randn()*noise*mult;
+		var r = (Math.round(dots5.dir)==0) ? (coherence5 + randn() * noise)*mult : randn()*noise*mult;
 		r = r>0?r:0;
-		var l = (!(dots4.dir==0)) ? (coherence4 + randn() * noise)*mult : randn()*noise*mult;
+		var l = (!(Math.round(dots5.dir)==0)) ? (coherence5 + randn() * noise)*mult : randn()*noise*mult;
 		l = l>0?l:0;
 		var E = l-r;
 		data.eL.push(l);
-		data.eR.push(r);
+		data.eR.push(-r);
 		data.E.push(data.E[i-1]+E);
 	}
 	return data;
@@ -310,6 +332,8 @@ function drawPlot2() {
 	layout2.xaxis.range = [0,40];
 	layout2.yaxis.title = 'Evidence for RIGHT --------- Evidence for LEFT';
 	layout2.yaxis.range = [-25,25];
+	layout2.width = 700;
+	layout2.height = 400;
 	Plotly.newPlot('plot2',[traceL,traceR, traceM],layout2);
 }
 
