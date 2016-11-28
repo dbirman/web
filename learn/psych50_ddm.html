@@ -79,50 +79,67 @@
 
 <div id="block2">
 	<div id="katex2"></div>
-	<p>We can use this equation to <b>model</b> the position of the cannonball over time. What you'll see below plotted in red is the actual positions of an imaginary cannonball. Your job is going to be to change the <b>parameters</b> of the model to best fit the data. After that we'll be able to <b>interpret</b> the parameters to understand what the cannonball was doing, and what forces were acting upon it.</p>
+	<p>We can use this equation to <b>model</b> the height of the cannonball over time. What you'll see below plotted in red is the actual positions of an imaginary cannonball. Your job is going to be to change the <b>parameters</b> of the model to best fit the data. After that we'll be able to <b>interpret</b> the parameters to understand what the cannonball was doing, and what forces were acting upon it.</p>
 	<p><b>Hint:</b> whenever we provide code that can be edited, press <b>enter</b> to run the code including changes you made.</p>
-	<p><b>Hint:</b> when you see <b>//</b> the rest of the text on that line doesn't get executed. We use this to provide you with <b>comments</b> about what indiviual variables mean.</p>
-	<textarea id="textarea1" rows="7" onkeypress="textarea1(event,this);">
+	<p><b>Hint:</b> when you see <b>//</b> the rest of the text on that line is ignored. We use this to provide you with <b>comments</b> about the programming problems.</p>
+	<textarea id="textarea1" rows="4" onkeypress="textarea1(event,this);">
 // Model Paramters: tweak to fit the black line (model) to the data (red)
 y0 = 0; // Initial position (m)
 vy = 49; // Vertical velocity (m/s)
 ay = -9.8; // Vertical acceleration (gravity, m/s^2)</textarea><br>
 	<p>The plot below solves the equation for values of t (time) using your parameters from zero to five seconds.</p>
-	<div width=600 id="plot1"></div><br>
+	<div id="plot1"></div><br>
 	<p id="leastsquares_visible1">Complete the task to continue!</p>
 	<div id="leastsquares_hidden1"><p></p>
-		<p>What you just did was use a computational model to attempt to explain a set of data. What you found was that by setting the initial velocity to 49 m/s and gravity -9.8 m/s^2 you were able to explain all of the datapoints we observed. An analgous way to say this would be to say: the cannonball left the cannon at 49 m/s, and over time gravity pulled it back to earth, ultimately the cannonball traveled in an <i>arc</i>.
-		<p>Compare the statement <i>cannonballs travel in an arc</i> to the equation above. What advantages might the computational model have over the verbal model? All models make some simplifying assumptions—what details of the cannonball's trajectory does the equation neglect?</p>
-		<p>Computational models are used throughout the sciences to explain and predict complex phenomena, such as the trajectory of a hurricane, the ups and downs of the stock market and, in cognitive neuroscience, the computations perfomed by the 100 billion neurons in your brain. In the remainder of this lab, we'll look at one particular class of models: <b>Drift Diffusion Models</b>.</p>
+		<p>What you just did was use a computational model to attempt to explain a set of data. What you found was that by setting the initial velocity to ~49 m/s and gravity to -9.8 m/s^2 you were able to explain all of the datapoints we observed. An analogous way to say this would be: the cannonball was launched from the cannon, and over time gravity pulled it back to earth.
+		<p>Compare that statement to the equation above. What advantages might the computational model have over the verbal model? All models make some simplifying assumptions—what details of the cannonball's trajectory does the equation neglect?</p>
+		<p>Computational models are used throughout the sciences to explain and predict complex phenomena, such as the trajectory of a hurricane, the ups and downs of the stock market and, in cognitive neuroscience, the computations perfomed by the 100 billion neurons in your brain. In the remainder of this lab, we'll look at one particular class of models: <b>drift diffusion models</b>.</p>
 	</div>
 </div>
 
 <div id="block3">
-	<h2>What are Drift Diffusion Models (DDMs)?</h2>
-	<p>Drift Diffusion Models are a way of modeling rapid, noisy decisions between two alternatives. In class, you saw how these models are used to model some aspects of perception, such as motion detection. You might think that *seeing* is very different from *decision-making*—but, actually, your brain is constantly making split-second decisions to interpret what you are seeing. For example, just think of the many decisions you make while driving: your brain isn't hard-wired with "car detectors," but it can use information about the motion from other cars to infer whether you are going at the same speed as the other cars, whether you have enough room to change lanes, or how far away you are from your exit.</p>
+	<h2>What are drift diffusion models (DDMs)?</h2>
+	<p>Drift Diffusion Models are a way of modeling rapid, noisy decisions between two alternatives. In class, you saw how these models are used to model some aspects of perception, such as motion detection. You might think that *seeing* is very different from *decision-making*—but, actually, your brain is constantly making split-second decisions to interpret what you are seeing. For example, just think of the many decisions you make while driving: your brain can use information about the motion from other cars to infer whether you are going at the same speed as the other cars, whether you have enough room to change lanes, or how far away you are from your exit.</p>
 	<p>In the lab, neuroscientists use much simpler decisions to study how these fast, complex perceptual decisions are made. In class, you saw one such experiment, carried out by Professor William Newsome's lab at Stanford: macaques were shown moving dots on a screen, and they had to decide whether the dots were predominantly moving to the left or to the right. The task was made harder or easier by changing the proportion of dots that were moving in concert:</p>
 	<div width="100%" height="150px" style="position:relative; text-align:center">
-		<div >25%<br><canvas width=100 height=100 id="canvas_mot25"></canvas></div>
-		<div >50%<br><canvas width=100 height=100 id="canvas_mot50"></canvas></div>
-		<div >75%<br><canvas width=100 height=100 id="canvas_mot75"></canvas></div>
+		<div >25%: Very Difficult<br><canvas width=100 height=100 id="canvas_mot25"></canvas></div>
+		<div >50%: Medium Difficult<br><canvas width=100 height=100 id="canvas_mot50"></canvas></div>
+		<div >75%: Easy<br><canvas width=100 height=100 id="canvas_mot75"></canvas></div>
 	</div><br>
 	<p>DDMs describe the macaque's perceptual decision-making, essentially, as a process where evidence is noisily accumulated in favor of one of two alternatives ("left" or "right"). What does it mean to accumulate evidence? Imagine that there is a decider neuron that is counting the "votes" cast by other, motion-detecting neurons. At each timestep, it reads a spike from a neuron that codes either leftward motion (casting one vote for "left") or rightward motion (casting one vote for "right"). This neuron continues to count votes until it accumulates enough evidence for one of the two options and makes its decision. You should have this image in mind, as we saw in lecture:</p>
 	<div style="text-align:center"><img src="images/integrator.png"/></div>
 	<p>We're going to model this picture in just a moment, but before you go on take a second to really study it. What do we mean by a "right preferring MT population"? This should remind you of last week's lab in which you learned about neurons that have preferences for different visual features, such as oriented bars, or complex features like cats and dogs. The neurons here just happen to prefer <b>rightward motion</b>.
 </div>
 <div id="block4">
-	<h2>Problem #1: Simulating a single decision</h2>
-	<p>You've already seen in the first lab how a cell can "see" certain kinds of features, even as complex as a dog or a cat, by building up from less complex features. Here what we're going to have are two <b>populations</b> of neurons that respond to rightward or leftward motion, respectively. Note that these aren't single neurons anymore, we're going to be imagining that this is a set of neurons that respond as a group. Below we're going to show you what this looks like. We'll generate a patch of motion and show you the output of the two populations of neurons. The left preferring neurons are drawn in blue, while the right preferring neurons in red. Note how as the amount of motion in the patch changes the populations becoming more or less certain in their output.</p>
+	<h2>Problem #1: Simulating a neural population</h2>
+	<p>You've already seen in the first lab how a cell can "see" certain kinds of features, even as complex as a dog or a cat, by building up from less complex features. Here what we're going to have are two <b>populations</b> of neurons that respond to rightward or leftward motion, respectively. Note that these aren't single neurons, we're going to be imagining that this is a set of neurons and that we're reading out the average response. We're going to walk through this in steps, building up from single neurons through to two populations that prefer different motion directions.</p>
+	<p>First, take a look at this patch of dots. By clicking on the patch you can change it's direction. If you click and drag the slider bar you'll see the motion coherence (% of dots moving) change. 
 	<div width="100%" height="150px" style="position:relative; text-align:center">
-		<div><canvas width=100 height=100 id="motion_patch1"></canvas></div>
-		<div><h1 style="color:blue">Left neurons</h1><h1 style="color:red">Right neurons</h1><br><canvas width=200 height=100 id="output1"></canvas></div>
+		<div>
+			<canvas width=100 height=100 onclick="flip4();" id="motion_patch1"></canvas>
+		</div>
+		<div id="4lr_div"><span style="color:#5DADE2">Left</span> preferring population<br><span style="color:#CD6155">Right</span> preferring population</div>
+		<div id="4initial_div">A <span style="color:#5DADE2">left</span> preferring neuron's response</div>
+		<div id="4population_div"><span style="color:#5DADE2">Left</span> preferring population response</div>
+		<div><canvas width=200 height=100 id="output1"></canvas></div>
+		<input type="range" min="0" max="100" value="25" oninput="updateCoherence4(this.value/100);"/><output id="coherence4">25%</output>
 	</div><br>
-	<p>What should be clear from this demonstration is that given these two <b>neural</b> outputs, that at high motion coherence the brain can easily tell the direction of motion. But at low coherence it would be very hard to distinguish the direction. This model should match your own experience looking at the dot patch directly.</p>
-	<p>As we mentioned before, a macaque (or human) brain looking at a patch of motion is trying to answer the question: what direction is the motion going? You've learned that different populations of neurons will <i>separately</i> report evidence for different answers. The last step is to combine those different sources of information together.</p>
+	<div id="4initial">
+	<p>What you see above is the response of <b>one</b> neuron to this patch of motion, which we assume is in the neuron's receptive field. Try changing the motion coherence and direction. Notice that the single neuron is slightly variable--this is due to random noise in the firing rate of the neuron. A neuron fires off "spikes" every few milliseconds, and occasionally that rate of firing can fluctuate, causing the noise you see here.
+	</p>
+	</div>
+	<div id="4population">
+	<p>Now what you see is the response of <b>many</b> neurons averaged together (the thick line) and the individual neurons (thin lines). Remember that each of the neurons have some variability in the strength of their responses: this causes the population response to have <b>noise</b>, which you see as the random fluctuations in the average. Notice that the noise in the population average is smaller than the noise across the population. The advantage of using a population response rather than individual neurons is that it reduces noise.
+	</div>
+	<div id="4lr">
+		<p>Finally you now see the response of <i>two populations of neurons</i>, one that prefers <span style="color:#5DADE2">left</span> motion and one that prefers <span style="color:#CD6155">right</span>.</p>
+		<p>The purpose of this demonstration was to show how two <b>neural</b> outputs can read out different features from the exact same stimulus. Again, this should remind you of how cats and dogs were separately read out from the stimuli in the first lab. Now, what the drift diffusion model is going to do is use the responses of these two populations of neurons to make a decision about what motion is being shown.</p>
+	</div>
+	<button class="button" id="continue4" onclick="continue4();">Next</button>
 </div>
 
 <div id="block5">
-	<h2>Problem #1: Simulating a single decision</h2>
+	<h2>Problem #2: Simulating a single decision</h2>
 	<p>We're now going to describe a computational model to combine two noisy sources of information together to try to reach a decision. To build up our model we're going to imagine that our macaque brain is looking at a motion patch for a few hundred milliseconds. This means that the populations of <i>left</i> and <i>right</i> preferring neurons will each be activated to some extent at every moment in time. Each population also has noise at any given moment, so it would be a mistake to take the instantenous response of either population as the truth. Instead we will combine the two sets of data by looking at the difference in their responses and <b>accumulating</b> those differences over time. If we wait long enough and <i>one population is, on average, more active</i> then eventually we will see that in the accumulated response.</p>
 	<p>To picture what's happening take a look at this graph. In red and blue we have the responses of two populations of neurons that prefer <span style="color:blue">left</span> and <span style="color:red">right</span> motion. In black we plot the accumulate difference, calculated as follows:</p>
 	<div id="katex3"></div>
@@ -139,7 +156,7 @@ ay = -9.8; // Vertical acceleration (gravity, m/s^2)</textarea><br>
 </div>
 
 <div id="block6">
-	<h2>Problem #1: Simulating a single decision</h2>
+	<h2>Problem #2: Simulating a single decision</h2>
 	<p>It's now your turn to write some code! The first thing we're going to do is generate the neural population responses for any particular motion patch. We're going to give you two numbers: the coherence of the patch (what % of dots are moving together), and the direction. Your job is going to be to complete two <b>functions</b> that will tell us what the neural population response looks like based on what the neurons are seeing (the coherence and direction). Remember that neurons have some response, but they also have noise. We've written a function <b>randn()</b> that you can use to get random numbers pulled from a normal distribution. Try out randn() here: just press <b>enter</b>, you'll see the output of this function below.
 	<textarea rows=1 id="textarea6" onkeypress="textarea6(event);">
 out = randn();</textarea>
@@ -189,7 +206,7 @@ rightResponse = function(patch_coherence,patch_dir) {
 </div>
 
 <div id="block7">
-	<h2>Problem #1: Simulating a single decision</h2>
+	<h2>Problem #2: Simulating a single decision</h2>
 	<p>We're missing two more pieces for our drift diffusion model. The first is that we need to <b>accumulate</b> the evidence over time and the second is that we need to stop accumulating when we hit the <b>threshold</b>. You'll write that code in this next section. If you realize you made a mistake on the previous page you'll be able to go back and edit those as soon as you finish writing the code on this page.</p>
 	<textarea rows=32 id="textarea7" onkeypress="textarea7(event);">
 // This first function needs to accumulate the difference between the left
@@ -239,7 +256,7 @@ atThreshold = function(acc,threshold) {
 </div>
 
 <div id="block8">
-	<h2>Problem #2: Simulating many decisions</h2>
+	<h2>Problem #3: Simulating many decisions</h2>
 	<p>The drift diffusion model is most useful as a <b>simulation</b>. Given some set of parameters: a drift rate, diffusion rate, and threshold, the model will create all sorts of different scenarios for how a particular event might play out. But: on average with any given set of parameters we'll get some number of trials that come out correct <b>hits</b> some number that are incorrect <b>misses</b> and also a piece of information we haven't discussed which is the <b>reaction time</b> on each trial.</p>
 	<p>The first thing we'll do in this section is model a hundred trials and just look at the variability in results that we get. Try tweaking the evidence for left or right motion, changing the amount of noise, or changing the thresholds, you'll see the output change each time you change the parameters. Press enter in the input box to re-run the model.</p>
 	<textarea rows=5 id="textarea8" onkeypress="textarea8(event);">
@@ -255,7 +272,7 @@ threshold = 20; //How large of a response necessary to stop a trial and declare 
 </div>
 
 <div id="block9">
-	<h2>Problem #3: Fitting to many decisions</h2>
+	<h2>Problem #4: Fitting to many decisions</h2>
 	<p>In the following image we're going to show you real data recorded from 56 neurons in the macaque lateral intraparietal area (LIP). It's thought that LIP acts as an accumulator of evidence when making decision about direction of motion. The graph is set up similar to how we've shown it before--time is on the X axis but now firing rate is on the Y axis. The hypothesis is that firing rate is representing the <b>accumulated evidence</b> at any given moment in time. We're going to fit a drift diffusion model to see whether the model captures the variance in the data, and if so we'll consider that evidence that the hypothesis might be correct.</p>
 	<p>The solid lines are from correct trials and dashed lines were incorrect, and each condition was averaged across left and right motion. Notice that the lines break out by motion coherence just as you might expect: stronger motion coherence causes firing rates to peak more quickly.</p>
 	<div style="text-align:center;width:500px;margin:auto"><img width=400 src="images/RoitmanShadlen2002.jpg"/><br><span style="font-size:12px">Roitman, J. D., & Shadlen, M. N. (2002).</span></div>

@@ -70,6 +70,8 @@ function drawPlot1() {
 	layout1.xaxis.range = [0,5];
 	layout1.yaxis.title = 'Height (m)';
 	layout1.yaxis.range = [0, 65];
+	layout1.width = 600;
+	layout1.height = 400;
 	Plotly.newPlot('plot1',[traceM, traceD],layout1);
 }
 
@@ -131,26 +133,74 @@ var dots4 = initDots(400,100,100,0,0);
 var outL = zeros(200);
 var outR = zeros(200);
 
+var coherence4 = 0.25;
+var dir4 = 0;
+var dir4f = 1;
+
+var displayMode = 0; //0 = initial, 1 = population (noise), 2 = left + right
+
+function continue4() {
+	if (displayMode<2) {
+		displayMode+=1;
+		switch (displayMode) {
+			case 1:
+				$("#4initial").hide(); $("#4initial_div").hide();
+				$("#4population").show(); $("#4population_div").show();
+				break;
+			case 2:
+				$("#4population").hide(); $("#4population_div").hide();
+				$("#4lr").show(); $("#4lr_div").show();
+				$("#continue4").hide();
+				$("#continue").show();
+				break;
+		}
+	}
+}
+function flip4() {dir4 += Math.PI;dir4f *= -1;}
+function updateCoherence4(ncoh) {coherence4 = ncoh; document.getElementById("coherence4").innerHTML=Math.round(ncoh*100)+"%";}
+
 function drawMotionDemo() {
 	ctx_patch1.clearRect(0,0,canvas_patch1.width,canvas_patch1.height);
 	ctx_output1.clearRect(0,0,output1.width,output1.height);
 
 	// compute time, direction, and coherence
 	time4 += 0.01; // we'll use a sine wave to compute the coherence
-	var coherence = Math.sin(time4);
-	var dir = (coherence>0) ? 0 : Math.PI;
 	var noise = 0.2; // use to generate DDM 
 	// update
-	dots4 = updateDots(dots4,Math.abs(coherence),dir);
+	dots4 = updateDots(dots4,Math.abs(coherence4),dir4);
 	// draw dots
 	clipCtx(ctx_patch1,canvas_patch1);
 	drawDots(dots4,ctx_patch1)
 	ctx_patch1.restore();
+
+	if (displayMode==0) {
+		var mult = 40;
+		outL.shift();
+		outL.push((dir4f<0) ? (coherence4 + randn() * noise)*mult : randn()*noise*mult);
+		ctx_output1.strokeStyle = "#5DADE2";
+		ctx_output1.beginPath();
+		ctx_output1.moveTo(0,output1.height-20);
+		for (var i=0;i<400;i++) {
+			ctx_output1.lineTo(i,output1.height-outL[i]-20);
+		}
+		ctx_output1.stroke();
+	} else if (displayMode==1) {
+		var mult = 10;
+		outL.shift();
+		outL.push((dir4f<0) ? (coherence4 + randn() * noise)*mult : randn()*noise*mult);
+		ctx_output1.strokeStyle = "#5DADE2";
+		ctx_output1.beginPath();
+		ctx_output1.moveTo(0,output1.height-20);
+		for (var i=0;i<400;i++) {
+			ctx_output1.lineTo(i,output1.height-outL[i]-20);
+		}
+		ctx_output1.stroke();
+	} else {
 	// draw DDM output
-	var mult = 40;
+	var mult = 10;
 	outL.shift();
-	outL.push((coherence<0) ? (-1 * coherence + randn() * noise)*mult : randn()*noise*mult);
-	ctx_output1.strokeStyle = "#0000ff";
+	outL.push((dir4f<0) ? (coherence4 + randn() * noise)*mult : randn()*noise*mult);
+	ctx_output1.strokeStyle = "#5DADE2";
 	ctx_output1.beginPath();
 	ctx_output1.moveTo(0,output1.height-20);
 	for (var i=0;i<400;i++) {
@@ -159,14 +209,15 @@ function drawMotionDemo() {
 	ctx_output1.stroke();
 	// out right
 	outR.shift();
-	outR.push((coherence>0) ? (coherence + randn() * noise)*mult : randn()*noise*mult);
-	ctx_output1.strokeStyle = "#ff0000";
+	outR.push((dir4f>0) ? (coherence4 + randn() * noise)*mult : randn()*noise*mult);
+	ctx_output1.strokeStyle = "#CD6155";
 	ctx_output1.beginPath();
 	ctx_output1.moveTo(0,output1.height-20);
 	for (var i=0;i<400;i++) {
 		ctx_output1.lineTo(i,output1.height-outR[i]-20);
 	}
 	ctx_output1.stroke();
+	}
 
 	tick4 = window.requestAnimationFrame(drawMotionDemo);
 }
@@ -701,6 +752,9 @@ function run(i) {
 			break;
 		case 4:
 			drawMotionDemo();
+			$("#4lr_div").hide();$("#4population_div").hide();
+			$("#4lr").hide(); $("#4population").hide();
+			$("#continue").hide();
 			break;
 		case 5:
 			drawMotionSample();
