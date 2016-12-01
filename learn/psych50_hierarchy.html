@@ -94,11 +94,17 @@
 	<h2>1953: Retinal ganglion cells</h2>
 	<p>To start off we're going to put you in the shoes of Stephen Kuffler. You've placed an electrode in the retina of an anesthetized cat and you're now showing pinpricks of light. You can literally do this below, the large round display below is the "retina" of the animal, and if you move your mouse you should see the "pinprick" of light appear. Remember, you're recording from <b>one neuron</b>, and that neuron has a receptive field somewhere in the retina: a region of the retina that it responds to. You'll see and hear the responses on the red line above the retina. The line shows the voltage measured by the electrode, by now you've probably already seen or heard it "pop" with a random action potential. When you find the receptive field you should hear it go wild. Your task is to find and <b>map</b> the receptive field: it has areas that are <b>excitatory</b> or activated by light and areas that are <b>inhibitory</b>.</p>
 	<p><b>Tools:</b> to help you map the retina you can do two things. First, you can change the size and intensity of your pinprick by using the slider bars. Second, if you click on the retina you can <b>mark</b> a region. You'll first see a green area appear. This green area indicates you believe that this position is <b>excitatory</b> for the neuron. Click again and it becomes red, indicating that you think it is <b>inhibitory</b>. Click a third time and it returns to neutral. Explore the visual space to find the excitatory and inhibitory areas and then mark them as such, when you're successful the tutorial will display the true receptive field for you and allow you to continue</p>
-	<div style="text-align:center;"><div class="4u" style="text-align:center"><input type="range" min="1" max="5" value="2" step="1" oninput="changeSize(this.value);"/></div>
-	<div class="4u"><output id="size1">radius=10</output></div></div>
-	<canvas width=200 height=100 id="output1"></canvas></div>
-	<div><canvas width=400 height=400 id="visual1"></canvas></div>
-<!-- style="cursor:none"  -->
+	<div style="text-align:center;">
+		<div class="4u" style="text-align:center">
+			<input type="range" min="1" max="5" value="2" step="1" oninput="changeSize(this.value);"/>
+		</div>
+		<div class="4u">
+			<output id="size1">radius=10</output>
+		</div>
+		<canvas width=200 height=100 id="output1"></canvas>	
+	</div>
+	<canvas style="cursor:none" width=400 height=400 id="visual1"></canvas>
+ 	<div id="endblock3"><p>Congratulations! You've mapped your first receptive field. You can now see the areas that were excitatory in white and inhibitory in black. We call this particular kind of neuron a center-surround </div>
 </div>
 
 <div id="block4"> 
@@ -135,9 +141,10 @@
 
 
 							</section>
-		<a class="button special" onclick="prev();">Go back</a>
-
-		<a class="button special" onclick="next();">Continue</a>
+							<section id="continue">
+								<a class="button special" onclick="prev();">Go back</a>
+								<a class="button special" onclick="next();">Continue</a>
+							</section>
 						<!-- End Content -->
 					</div>
 				</div>

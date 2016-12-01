@@ -38,6 +38,8 @@ var tick;
 ///// BLOCK 3 //////
 ////////////////////
 
+var done3 = false;
+
 function launch3() {
   can_vis = document.getElementById("visual1");
   can_out = document.getElementById("output1");
@@ -69,9 +71,11 @@ function sectionComplete() {
   window.cancelAnimationFrame(tick);
   clearTimeout(stick);
   // show true 
-  completeSound.play();
+  // completeSound.play();
   drawRawRF(ctx_vis,can_vis);
-  alert('Nice work: you identified the correct receptive field properties!');
+  done3 = true;
+  $("#continue").show();
+  $("#endblock3").show();
 }
 
 function computeRF3() {
@@ -275,6 +279,7 @@ function mexicanHat(x,f,sigma,theta) {
 ////////////////////
 
 function drawRawRF(ctx,canvas) {
+  clipCtx(ctx_vis,can_vis);  
   for (var x=0;x<canvas.width;x++) {
     for (var y=0;y<canvas.width;y++) {
       ctx.fillStyle = gsc2hex(imageDataRaw[y*canvas.width+x]/255);
@@ -282,9 +287,10 @@ function drawRawRF(ctx,canvas) {
     }
   }
   ctx_vis.beginPath();
-  ctx_vis.arc(can_vis.width/2,can_vis.height/2,can_vis.width/2-1, 0, 2 * Math.PI, false);
+  ctx_vis.arc(x0,y0,size*7, 0, 2 * Math.PI, false);
   ctx_vis.strokeStyle = "#ffffff";
   ctx_vis.stroke();
+  ctx_vis.restore();
 }
 
 function getImage(ctx,canvas,flag) {
@@ -348,7 +354,11 @@ function run(i) {
 
   switch (i) {
     case 3:
-      launch3();
+      if (!done) {
+        launch3();
+        $("#continue").hide();
+        $("#endblock3").hide();
+      }
       break;
   }
 }
@@ -379,6 +389,7 @@ function updateCanvasMove(evt) {
 }
 
 function updateCanvasClick(evt) {
+  evt.preventDefault();
   var canvas = evt.target;
   out = updateCanvas(evt,canvas);
   canvas.eventClick(out[0],out[1]);
