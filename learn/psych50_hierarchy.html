@@ -13,9 +13,11 @@
 		<link rel="stylesheet" href="../assets/css/main.css" />
 		<!--[if lte IE 9]><link rel="stylesheet" href="assets/css/ie9.css" /><![endif]-->
 		<!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
+		
 		<!-- Generics -->
 			<script src="../assets/js/jquery.min.js"></script>
 			<script src="../assets/js/math.min.js"></script>
+			<script src="../assets/js/jquery.csv.min.js"></script>
 			<script src="../assets/js/jquery.scrolly.min.js"></script>
 			<script src="../assets/js/jquery.dropotron.min.js"></script>
 			<script src="../assets/js/jquery.scrollex.min.js"></script>
@@ -23,13 +25,18 @@
 			<script src="../assets/js/util.js"></script>
 			<!--[if lte IE 8]><script src="assets/js/ie/respond.min.js"></script><![endif]-->
 			<script src="../assets/js/main.js"></script>
+		<!-- Math KaTeX -->
+			<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.js"></script>
+		<!-- Plotting: Plot.ly JS -->
+      <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 	</head>
 	<body>
 		<div id="page-wrapper">
 
 			<!-- Header -->
 				<header id="header">
-					<!-- <h1 id="logo"><a href="../index.html">Dan Birman</a></h1> -->
+					<h1 id="logo"><a href="../index.html">Sensory perception lab</a></h1>
 					<nav id="nav">
 						<ul>
 							<li><a href="../learn.html">Learn</a></li>
@@ -47,6 +54,7 @@
 
 						<!-- Content -->
 							<section id="content">
+
 <div id="block1">
 	<h2>Simple cells, complex cells, and deep neural networks</h2>
 
@@ -57,105 +65,74 @@
 	<h1 id="learninggoals">Learning goals</h1>
 
 	<p>After this lab you should have a better understanding of the following:</p>
-
 	<ul>
 	<li>How simple and complex cells act as filters, only detecting a certain pattern of information. </li>
-
 	<li>How representations in the cortical visual hierarchy become more complex as you proceed deeper through cortical areas.</li>
-
 	<li>Be able to explain why invariance is an important property to have in the highest levels of visual cortex.</li>
 	</ul>
 
-	<h1 id="sectionlabs">Section Labs</h1>
+	<h1 id="sectionlabs">Lab sections in Psych 50</h1>
 
-	<p>This is our first section in Psych 50 so we want to take a brief moment to orient you to how these <b>lab tutorials</b> work. Your TA probably aleady mentioned that we will have a mixture of open discussions, demonstrations, and lab tutorials. The lab tutorials are an introduction to <b>computation models</b> as a tool for understanding the brain, and we use programming to run our models(in this case <i>javascript</i>, which runs on webpages). You'll get the most out of these labs if you work together with a partner and discuss what's happening at each step. You may want to use a whiteboard or pen/paper to go over key ideas along the way. In today's lab you'll just be going through examples that we've made for you, but in future labs you will have to write some parts of the computational models yourself. We don't expect you to learn to program during this class but we do expect you to (1) learn how the computational models we use work, and (2) understand the value of programming as a tool. Let your TA know if you have questions!</p>
+	<p>This is our first section in Psych 50 so we want to take a brief moment to orient you to how these <b>lab tutorials</b> work. Your TA probably aleady mentioned that we will have a mixture of open discussions, demonstrations, and lab tutorials. The lab tutorials are an introduction to <b>computation models</b> as a tool for understanding the brain, and we use programming to run our models(in this case <i>javascript</i>, which runs on webpages). You'll get the most out of these labs if you work together with a partner and discuss what's happening at each step. You may want to use a whiteboard or pen/paper to go over key ideas along the way. In today's lab you'll just be going through examples that we've made for you, but in future labs you will have to write some parts of the computational models yourself. We don't expect you to learn to program during this class but we do expect you to (1) learn the computational models presented in lab, and (2) understand the value of programming as a tool to understand the brain. Let your TA know if you have questions!</p>
 
-	<p>If you already know how to program you will find bonus content sprinkled throughout the tutorials. None of this content is required but it will help you get a more in-depth understanding of what's happening behind the scenes.</p>
+	<p>If you already know how to program you will find bonus content sprinkled throughout the tutorials, usually at the end. None of this content will be required but it will help you get a more in-depth understanding of what's happening behind the scenes.</p>
 </div>
 
 <div id="block2">
-	<h2>Part 1: Simple cells</h2>
+	<h2>Introduction</h2>
+	<p>How do neurons in visual cortex see the world? This is a much more complex question than you might think. Neurons in visual cortex actually embody very complex computations and the visual features they are sensitive to turn out to be quite complex. But--over the years researchers have discovered that part of that complexity comes from the hierarchical organization of visual cortex. In this lab we're going to focus on this core question: how do simple computations repeated in a hierarchical manner create complex feature detectors? As we go along through the tutorial the answer should become more and more concrete.<p>
+	<p>Before we go on we want to mention three important vocabulary terms that we will repeat throughout this tutorial:
+	<ul>
+		<li><b>Neural activation</b>: a neuron can be <b>excited</b> or <b>inhibited</b>, above or below its baseline firing rate. We usually assume that most of a visual cortex neuron's activity is due to features in its receptive field.</li>
+		<li><b>Features</b>: a feature is an aspect of the visual world, like luminance, edges, color, or the presence of an object or animal.</li>
+		<li><b>Receptive field</b>: the area of visual space a neuron is sensitive to, i.e. "what the neuron sees", some parts may be excitatory, some may be inhibotry</li>
+	</ul></p>
+	<p>Now we're going to go back in time a bit. First to 1953 to see how Stephen Kuffler studied <i>retinal ganglion cells</i>, then to 1962 when Hubel and Wiesel characterized the <i>simple and complex cells</i> of V1, and finally to 2012 when Geoff Hinton and others used <i>hierarchical models</i> based on ideas from visual cortex to revolutionize computer vision.</p>
+</div>
 
 <div id="block3">
-	<h2 id="part1simplecells">How do simple cells see?</h2>
-	<p>The first thing we're going to do is look at how a simple cell might "see" an image. Remember that a neuron in this part of cortex has a <b>receptive field</b>, which is the area of visual space that the neuron can "see" and react to. Simple cells will be activated whenever they see for example, edges. The first thing we're going to do in this lab is try to <b>design</b> a receptive field to detect edges. Eventually we'll build up to receptive fields that detect much more complex features, like cats or dogs.</p>
+	<h2>1953: Retinal ganglion cells</h2>
+	<p>To start off we're going to put you in the shoes of Stephen Kuffler. You've placed an electrode in the retina of an anesthetized cat and you're now showing pinpricks of light. You can literally do this below, the large round display below is the "retina" of the animal, and if you move your mouse you should see the "pinprick" of light appear. Remember, you're recording from <b>one neuron</b>, and that neuron has a receptive field somewhere in the retina: a region of the retina that it responds to. You'll see and hear the responses on the red line above the retina. The line shows the voltage measured by the electrode, by now you've probably already seen or heard it "pop" with a random action potential. When you find the receptive field you should hear it go wild. Your task is to find and <b>map</b> the receptive field: it has areas that are <b>excitatory</b> or activated by light and areas that are <b>inhibitory</b>.</p>
+	<p><b>Tools:</b> to help you map the retina you can do two things. First, you can change the size and intensity of your pinprick by using the slider bars. Second, if you click on the retina you can <b>mark</b> a region. You'll first see a green area appear. This green area indicates you believe that this position is <b>excitatory</b> for the neuron. Click again and it becomes red, indicating that you think it is <b>inhibitory</b>. Click a third time and it returns to neutral. Explore the visual space to find the excitatory and inhibitory areas and then mark them as such, when you're successful the tutorial will display the true receptive field for you and allow you to continue</p>
+	<div style="text-align:center;"><div class="4u" style="text-align:center"><input type="range" min="1" max="5" value="2" step="1" oninput="changeSize(this.value);"/></div>
+	<div class="4u"><output id="size1">radius=10</output></div></div>
+	<canvas width=200 height=100 id="output1"></canvas></div>
+	<div><canvas width=400 height=400 id="visual1"></canvas></div>
+<!-- style="cursor:none"  -->
 </div>
 
-<div id="block4">
-	<h2>Design a receptive field</h2>
-	<p>The next section is a bit like a game, you're going to design a receptive field and test it on the image shown. Your goal is to create an <b>edge detector</b> that can find vertical lines. We've set this up just like the Hubel and Wiesel experiment, but we're letting you move your receptive field around the image (with your mouse), while a real neuron would be fixed in one place. The top right panel shows the voltage of this neuron as if we were recording with an electrode. When your receptive field is well activated by what it "sees" you'll hear the neuron firing (<i>turn up your sound!</i>) and you'll see the spikes in the window on the top right. To change your receptive field simply click anywhere in the 7x7 grid on the top left to cycle between black, grey, and white. The colors indicate how much the neuron will be activated by luminance in that part of its receptive field. Your goal is to make a filter that <i>maximally</i> responds to the vertical white bar on the right side of the image. Good luck!</p>
-	<div style="text-align:center">
-		<div class="row">
-			<div style="text-align:left">
-				<p>Receptive field</p>
-				<canvas width=175 height=175 id="canvas-rf" style="float-left">UPGRADE BROWSER</canvas>
-			</div>
-			<div style="text-align:right">
-				<p>Response</p>
-				<canvas width=400 height=175 id="canvas-spk" style="float-right"></canvas>
-			</div>
-		</div>
-	</div>
-	<br>
-	<div style="text-align:left">
-		<p>Image</p>
-		<canvas width=150 height=101 id="canvas-img" style="float-left"></canvas>
-	</div>
-	<a class="button" width=150 height=15 onclick="bonus1();">Bonus content (not required)</a>
-	<br>
-	<div id="bonus1">
-		<h2>Bonus content: Contrast normalization</h2>
-		<p>We've skipped an important step in the visual cortex to make things a bit simpler, but if you remember what you read about the retina you'll know that the retina acts a local contrast normalization filter. In other words: it transforms each local region of the image based on the contrast in that area, so that the image ends up having more uniform contrast when it is processed downstream by V1.</p>
-		<p>We hid this process, but as someone with knowledge of programming we'd like you to reconstruct the steps required to make this happen. We've provided some code below which you can run by pressing enter. You'll need to fill in the relevant missing areas.</p>
-		<textarea id="textarea1" rows="7" onkeypress="textarea1(event,this);">
-// First draw the image on the canvas
-ctx_img.drawImage(adorbs,0,0);
-// Set up an empty array of pixels, 
-pixels = createArray(150*101);
-// Your job now is to write code that gets, for each pixel,
-// the Z-score using the local area around it (+- 1 pixel,
-// so you want to get the 3x3 region surrounding). Place
-// the values you compute into the relevant positions in 
-// pixels, which will be displayed on the canvas below.
-// var local_pixels = ctx_img.getImageData(x,y,w,h).data;
-// The code above shows you how to get the pixel values in
-// some rectangular region. Data off the canvas returns as
-// zeros (bad for normalizing!), and values come back as an
-// array in row column order with r g b a values for each 
-// pixel. So the array length will be 4 times the size of
-// the area requested. Because these are in grayscale you
-// can discard all but the first value.
-
-//YOUR CODE HERE
-
-// We tweak the space to 0->1 at the end for plotting
-image_px = add(image_px,math.min(image_px));
-image_px = divide(image_px,math.max(image_px));</textarea>
-		<div style="text-align:left">
-			<p>Bonus Canvas</p>
-			<canvas width=150 height=101 id="canvas-bonus" style="float-left"></canvas>
-		</div>
-	</div>
+<div id="block4"> 
+	<h2>Simple cells from retinal gangliion cells (visual)</h2>
 </div>
-<div id="block4">
-	<p>At this point you should have built a somewhat working filter. We're now going to use it to filter the entire image we showed you above so you can see, all at once, how this kind of a neuron would "see" this image. In a sense you can think of this as how cells tuned for this orientation in area V1 "see the world", as bright spots wherever their preferred orientation exists. To help you get your algorithm right I've loaded an idealized filter in the background. The button below will rotate between the original image, your filtered image, and our filtered image.</p>
-	<div style="text-align:left">
-		<p>Filtered Image</p>
-		<canvas width=150 height=101 id="canvas-filt" style="float-left"></canvas>
-		<a class="button" width=150 height=15 onclick="rotate_filter();">Rotate</a>
-	</div>
-	<p>So hopefully you got your filter working pretty well! On the next page we're going to talk about <b>complex cells</b>.</p>
+
+<div id="block5"> 
+	<h2>1963: Simple cells</h2>
 </div>
-<div id="block5">
-	<h2>Complex cells</h2>
-	<p>Recall form lecture the properties of complex cells. Now learn some shit with this demo that doesn't exist.</p>
+
+<div id="block6"> 
+	<h2>The simple cell model (code + visual)</h2>
+</div>
+
+<div id="block7"> 
+	<h2>1963: Complex cells</h2>
+</div>
+
+<div id="block8"> 
+	<h2>Cells as filters (visual)</h2>
+</div>
+
+<div id="block9"> 
+	<h2>Complexity (visual)</h2>
+</div>
+
+<div id="block10"> 
+	<h2>Cat detectors</h2>
 </div>
 
 <div id="endblock">
 	<h2>Tutorial complete!</h2>
 </div>
 
-<img id="adorbs" crossOrigin="anonymous" src="images/Adorbs.png" style="display:none"/>
 
 							</section>
 		<a class="button special" onclick="prev();">Go back</a>

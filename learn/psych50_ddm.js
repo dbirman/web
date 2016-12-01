@@ -91,13 +91,6 @@ var dots50 = initDots(400,100,100,0.50,0);
 var dots75 = initDots(400,100,100,0.75,0);
 var tick3;
 
-function clipCtx(ctx,canvas) {
-	ctx.save();
-	ctx.beginPath();
-	ctx.arc(canvas.width/2,canvas.height/2,canvas.width/2,0,2*Math.PI,false);
-	ctx.clip();
-}
-
 function drawMotionPatches() {
 	ctx_25.clearRect(0,0,canvas_25.width,canvas_25.height);
 	ctx_50.clearRect(0,0,canvas_50.width,canvas_50.height);

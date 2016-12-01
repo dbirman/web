@@ -12,6 +12,26 @@ var layout = {
 	}
 }
 
+var prev_tick;
+
+function elapsed() {
+	// Returns time since the last call to elapsed
+	var elapsed = now()-prev_tick;
+	prev_tick = now();
+	return elapsed;
+}
+
+function now() {
+	return performance.now();
+}
+
+function clipCtx(ctx,canvas) {
+	ctx.save();
+	ctx.beginPath();
+	ctx.arc(canvas.width/2,canvas.height/2,canvas.width/2,0,2*Math.PI,false);
+	ctx.clip();
+}
+
 function prev() {
 	document.getElementById("endblock").style.display="none";
 	try {document.getElementById("block"+curBlock).style.display="none";}
@@ -64,10 +84,18 @@ function createArray(length) {
   return arr;
 }
 
-function gsc2hex( percentage ) {
-  var color_part_dec = 255 * percentage;
-  var color_part_hex = Number(parseInt( color_part_dec , 10)).toString(16);
-  return "#" + color_part_hex + color_part_hex + color_part_hex;
+function componentToHex(c) {
+    var hex = c.toString(16);
+    return hex.length == 1 ? "0" + hex : hex;
+}
+
+function rgb2hex(r, g, b) {
+    return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+}
+
+function gsc2hex(perc) {
+	var comp = componentToHex(Math.round(perc*255));
+	return "#" + comp + comp + comp;
 }
 
 
@@ -557,7 +585,7 @@ function pow(first, second) {
 		});
 	} else if (! $.isArray(first) && $.isArray(second)) {
 		return jQuery.map(second, function(n, i) {
-			return Math.pow(n,first);
+			return Math.pow(first,n);
 		});
 	} else {
 		return [Math.pow(first,second)];
@@ -864,6 +892,8 @@ function randPerm(task, length) {
 	}
 	return array;
 }
+
+
 
 /**
  * Generates size of given value

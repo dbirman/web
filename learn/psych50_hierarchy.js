@@ -1,323 +1,385 @@
-// Canvas variables (for demo)
-var canvas_rf = document.getElementById("canvas-rf");
-var canvas_spk = document.getElementById("canvas-spk");
-var canvas_img = document.getElementById("canvas-img");
-var ctx_rf = canvas_rf.getContext("2d");
-var ctx_spk = canvas_spk.getContext("2d");
-var ctx_img = canvas_img.getContext("2d");
-
-// RF variables
-var rf;
-
 // Spiking variables
-var spk = createArray(400);
-var hodgkinhuxley;
-var inject = false;
+var spk_rate = 2;
+var spk = zeros(200);
+// Image
+var pixReduction = 4; // how many pixels = 1 pixel for calculations
+// Even a reduction by a factor of 2 makes a HUGE difference for 
+// speed of calculations, and there's really no appreciable difference
+// for the quality of the output
+var imageData; // this is the current image data REDUCED
+var imageDataRound; // for checking against clicked locations
+var imageDataRaw; // keep this around so we can re-draw the RF later
+// Receptive field
+var rf;
+var x0,y0,x0r,y0r; // center of receptive field
+var rf_size;
+var computeRF; // function set for each run 
+var correctCount = 0;
+// Stimulus parameters
+var size;
+var sizeOut;
+//  - Circles: adjusts radius
+//  - Bars: adjusts length
+var theta;
+var thetaOut;
 
-// Image variables
-var imgx, imgy, imgtx, imgty;
-var imagedrawing = false;
-var image_px;
-
-var adorbs = document.getElementById("adorbs");
-
+// Visual canvas
+var can_vis;
+var can_out;
+var cursorPosRaw = [-10,-10];
+var cursorPos = [-10,-10]; // REDUCED POSITION-- NOT REAL
+// Contexts
+var ctx_vis;
+var ctx_out;
+// requestAnimationFrame 
 var tick;
 
-function stopDemo() {
-	window.cancelAnimationFrame(tick);
+////////////////////
+///// BLOCK 3 //////
+////////////////////
+
+function launch3() {
+  can_vis = document.getElementById("visual1");
+  can_out = document.getElementById("output1");
+  sizeOut = document.getElementById("size1");
+  ctx_vis = can_vis.getContext("2d");
+  ctx_out = can_out.getContext("2d");
+
+  can_vis.addEventListener("click",updateCanvasClick,false);
+  can_vis.eventClick = eventClick3;
+  can_vis.addEventListener("mousemove",updateCanvasMove,false);
+  can_vis.eventMove = eventMove3;
+
+  computeRF = computeRF3;
+
+  // Launch
+  addRGCrf();
+
+  changeSize(2); // initial size
+  drawBlock3();
+  spike();
 }
 
-function demo() {
-	demoDraw();
-	demoLogic();
-	tick = window.requestAnimationFrame(demo);
+// Visual variables
+var clickListPos = [];
+var clickListNeg = [];
+
+function sectionComplete() {
+  // stop animations
+  window.cancelAnimationFrame(tick);
+  clearTimeout(stick);
+  // show true 
+  completeSound.play();
+  drawRawRF(ctx_vis,can_vis);
+  alert('Nice work: you identified the correct receptive field properties!');
 }
 
-function demoDraw() {
-	draw_rf();
-	draw_spk();
-  draw_img();
-}
-
-function update_rf(x,y) {
-	var xpos = Math.floor(x/25.);
-	var ypos = Math.floor(y/25.);
-	rf[xpos][ypos] = rf[xpos][ypos] + 0.5;
-  if (rf[xpos][ypos] > 1) {rf[xpos][ypos]=-1;}
-}
-
-function update_img(x,y) {
-  imagedrawing = true;
-  imgtx = x; imgty = y;
-  imgx = Math.round(x); imgy = Math.round(y);
-}
-
-function draw_rf() {
-	for (var x =0; x<7;x++) {
-		for (var y = 0; y < 7;y++) {
-			ctx_rf.fillStyle = gsc2hex((rf[x][y]+1)/2);
-			ctx_rf.fillRect(x*25,y*25,x*25+25,y*25+25);
-		}
-	}
-}
-
-function draw_spk() {
-	ctx_spk.fillStyle = "#000000";
-	ctx_spk.fillRect(0,0,canvas_spk.width,canvas_spk.height);
-	ctx_spk.lineWidth = 1;
-	ctx_spk.strokeStyle = "#ff0000"; // red
-	ctx_spk.beginPath();
-	ctx_spk.moveTo(0,175-spk[i]-40)
-	for (var i=1; i<400;i++) {
-		ctx_spk.lineTo(i,175-spk[i]-40);
-	}
-	ctx_spk.stroke();
-}
-
-function draw_img() {
-  ctx_img.drawImage(adorbs,0,0,canvas_img.width,canvas_img.height);
-  if (imagedrawing) {
-    ctx_img.fillStyle = "#ffffff";
-    ctx_img.globalAlpha = 0.3;
-    ctx_img.fillRect(imgtx-3,imgty-3,7,7);
+function computeRF3() {
+  var diam = size*2; //diameter
+  rf = zeros(diam**2);
+  for (var x=0;x<diam;x++) {
+    for (var y=0;y<diam;y++) {
+      var dist = Math.hypot(x-size,y-size);
+      rf[y*diam+x] = (dist<size) ? 1 : 0;
+    }
   }
 }
 
-function imgleave() {
-  imagedrawing = false;
+function updateBlock3() {
+  curData = zeros(rf.length); var count = 0;
+  for (var x=cursorPos[0]-size;x<=cursorPos[0]+size-1;x++) {
+    for (var y=cursorPos[1]-size;y<=cursorPos[1]+size-1;y++) {
+      curData[count++] = imageData[y*can_vis.width/pixReduction+x];
+    }
+  }
+  var val = sum(multiply(curData,rf)); 
+  if (val>0) {val=val*3;}
+  updateSpikeRate(val);
 }
 
-function demoLogic() {
-  var V = 0;
-  // Calculate overlap
-  if (imagedrawing) {
-    // We are on the image, get the rf
-    rf_reshaped = rf[0].concat(rf[1],rf[2],rf[3],rf[4],rf[5],rf[6])
-    // Now get the current image section: use imgx and imgy
-    vs = [];
-    for (var x=-3;x<4;x++) {
-      for (var y=-3;y<4;y++) {
-        cx = imgx-x; cy = imgy-y;
-        v = image_px[cy*150+cx];
-        vs.push(v);
+function updateSpikeRate(val) {
+  spk_rate = 3 + val;
+  if (spk_rate<0) {spk_rate=0;}
+}
+
+function eventClick3(x,y) {
+  var x = Math.floor(x/pixReduction), y = Math.floor(y/pixReduction);
+  for (var i=0;i<clickListNeg.length;i++) {
+    if (clickListNeg[i][0]==x && clickListNeg[i][1]==y) {
+      if (imageDataRound[y*100+x]==-1) {correctCount--;}
+      clickListNeg.splice(i,1); return;
+    }
+  }
+  for (var i=0;i<clickListPos.length;i++) {
+    if (clickListPos[i][0]==x && clickListPos[i][1]==y) {
+      if (imageDataRound[y*100+x]==1) {correctCount--;}
+      // move to neg
+      clickListNeg.push(clickListPos.splice(i,1)[0]);
+      // check if that position is neg
+      if (imageDataRound[y*100+x]==-1) {correctCount++;}
+      return;
+    }
+  }
+  clickListPos.push([x,y]);
+  if (imageDataRound[y*100+x]==1) {correctCount++;}
+  if (correctCount>25 && clickListPos.length>0 && clickListNeg.length>0) {sectionComplete();}
+}
+
+function eventMove3(x,y) {
+  cursorPosRaw = [x,y];
+  cursorPos = [Math.floor(x/pixReduction),Math.floor(y/pixReduction)];
+}
+
+function updateVisual3() {
+  // draw clicks
+  for (var i=0;i<clickListNeg.length;i++) {   
+    drawCross(clickListNeg[i][0]*pixReduction,clickListNeg[i][1]*pixReduction,false,"#CD6155"); 
+  }
+  for (var i=0;i<clickListPos.length;i++) {
+    drawCross(clickListPos[i][0]*pixReduction,clickListPos[i][1]*pixReduction,true,"#55CD61");
+  }
+  // draw cursor (over everything)
+  ctx_vis.beginPath();
+  ctx_vis.arc(cursorPosRaw[0], cursorPosRaw[1], size*2, 0, 2 * Math.PI, false);
+  ctx_vis.fillStyle = "rgba(255,255,255,0.5)";
+  ctx_vis.fill();
+  // draw outer edge
+  ctx_vis.beginPath();
+  ctx_vis.arc(can_vis.width/2,can_vis.height/2,can_vis.width/2-1, 0, 2 * Math.PI, false);
+  ctx_vis.strokeStyle = "#ffffff";
+  ctx_vis.stroke();
+}
+
+function drawCross(x,y,cross,color) {
+  ctx_vis.beginPath();
+  ctx_vis.strokeStyle = color;
+  ctx_vis.moveTo(x-5,y);
+  ctx_vis.lineTo(x+5,y);
+  if (cross) {
+    ctx_vis.moveTo(x,y-5);
+    ctx_vis.lineTo(x,y+5);
+  } 
+  ctx_vis.stroke();
+}
+
+function drawBlock3() {
+  tick = window.requestAnimationFrame(drawBlock3);
+
+  updateBlock3();
+  // Clear contexts
+  ctx_vis.clearRect(0,0,can_vis.width,can_vis.height);
+  ctx_out.clearRect(0,0,can_out.width,can_out.height);
+  // Block visual context + update
+  clipCtx(ctx_vis,can_vis);
+  updateVisual3();
+  ctx_vis.restore();
+  // Update output context
+  ctx_out.strokeStyle = "#CD6155"; // low saturation red
+  ctx_out.beginPath();
+  ctx_out.moveTo(0,can_out.height-20-spk[0])
+  for (var i=1;i<spk.length;i++) {
+    ctx_out.lineTo(i,can_out.height-20-spk[i]);
+  }
+  ctx_out.stroke();
+}
+
+////////////////////
+///// SHARED ///////
+////////////////////
+
+
+function changeSize(nSize) {
+  size = nSize*pixReduction;
+  sizeOut.innerHTML = "size="+size+"px"
+  // Recompute the RF based on this new radius
+  computeRF();
+}
+
+function computeSpikeRate(x,y,shape) {
+  // Shape is an array that defines the size of the current
+  // object that is being shown. We use this size to obtain
+  // the corresponding space of the receptive field and dot
+  // product the two to obtain the current firing rate.
+  // We set spk_rate to that firing rate (scaled if necessary)
+}
+
+function addRGCrf() {
+  // Sets up the retinal ganglion cell receptive field
+  // we do this by drawing quickly on the canvas the retinal
+  // ganglion cell RF, and then using getImageData to recover
+  // what the image looks like (gray everywhere, except at 
+  // areas where there is excitatory/inhibitory activity).
+  // Finally we reduce the resolution of the image by the pixReduction
+  // factor, and re-scale into the [0 1] space.
+
+  // pick an x y coordinate to center at
+  x0 = Math.random() * can_vis.width;
+  y0 = Math.random() * can_vis.height;
+  while (Math.hypot(x0-can_vis.width/2, y0-can_vis.height/2)>(can_vis.width/2-30)) {
+    x0 = Math.random() * can_vis.width;
+    y0 = Math.random() * can_vis.height;
+  }
+  x0r = Math.floor(x0/pixReduction);
+  y0r = Math.floor(y0/pixReduction);
+  // clear context
+  ctx_vis.fillStyle = "#808080";
+  ctx_vis.fillRect(0,0,can_vis.width,can_vis.height);
+  // we will use the mexican hat function (gaussian windowed sin wave)
+  // based on the hypotenuse distance from x,y coordinates
+  rf_size = 100/pixReduction; // how far to do the test coordinate region
+  var f = 0.1; 
+  var sigma = 2.5; // largeish sigma
+  var theta = 0; // no phase offset
+  var xRange = divide(range(0,101),10);
+  var outRange = mexicanHat(xRange,f,sigma,theta);
+  for (var x=0;x<can_vis.width;x++) {
+    for (var y =0;y<can_vis.height;y++) {
+      var dist = Math.hypot(x-x0,y-y0);
+      if (dist<75) {
+        var i=0;
+        while (i<dist) {i+=1;}
+        ctx_vis.fillStyle = gsc2hex(Math.round(outRange[i]*1000)/1000);
+        ctx_vis.fillRect(x,y,1,1);
+      } else {
+        ctx_vis.fillStyle = "#808080";
+        ctx_vis.fillRect(x,y,1,1);
       }
     }
-    // Multiply
-    for (var i=0;i<vs.length;i++) {
-      V += vs[i]*rf_reshaped[i];
+  }
+  imageDataRaw = getImage(ctx_vis,can_vis,false);
+  // Whew! That was a fucking pain. Now we get the image data
+  // Note that rescale the imageData into the [-1 1] space
+  // This is so that when we do firing rates later and things
+  // work out nicely.
+  imageData = getImage(ctx_vis,can_vis,true);
+
+  for (var i=0;i<imageData.length;i++) {
+    imageData[i] = imageData[i]/128-1;
+  }
+  imageDataRound = zeros(imageData.length);
+  for (var i=0;i<imageDataRound.length;i++) {
+    imageDataRound[i] = (imageData[i]>0.02)?1:((imageData[i]<0.02)?-1:0);
+  }
+
+}
+
+function mexicanHat(x,f,sigma,theta) {
+  // technically there's an x0 but we set it to 0 here
+  // gaussian window * sin wave
+  return add(0.5,multiply(0.5,multiply(pow(Math.exp(1),multiply(-1,divide(pow(x,2),multiply(2,pow(sigma,2))[0]))),cos(subtract(multiply(2*Math.PI*f,x),theta))))); 
+}
+
+
+////////////////////
+///// HELPERS //////
+////////////////////
+
+function drawRawRF(ctx,canvas) {
+  for (var x=0;x<canvas.width;x++) {
+    for (var y=0;y<canvas.width;y++) {
+      ctx.fillStyle = gsc2hex(imageDataRaw[y*canvas.width+x]/255);
+      ctx.fillRect(x,y,1,1);
     }
   }
-  // if (Number.isNaN(V)) {V=0;}
-  // var IDC = V;
-  // //repeats four times
-  // var IRand = 10
-  // var Itau = 1
-  // var rawInj = IDC + IRand * 2 * (Math.random()-0.5);
-  // hodgkinhuxley.Iinj += hodgkinhuxley.dt/Itau * (rawInj - hodgkinhuxley.Iinj);
-  // hodgkinhuxley.step();
-  // V = hodgkinhuxley.V;
-  // for (var reps=0;reps<25;reps++) {
-  //   // Spiking
-  //   hodgkinhuxley.step();
-  //   V = hodgkinhuxley.V;
-  // }
-  // IDC *= 0.9;
-  spk.shift();
-  spk.push(V*100);
+  ctx_vis.beginPath();
+  ctx_vis.arc(can_vis.width/2,can_vis.height/2,can_vis.width/2-1, 0, 2 * Math.PI, false);
+  ctx_vis.strokeStyle = "#ffffff";
+  ctx_vis.stroke();
+}
+
+function getImage(ctx,canvas,flag) {
+  var adata = ctx.getImageData(0,0,canvas.width,canvas.height).data;
+  var data = zeros(adata.length/4);
+  // we ignore alpha
+  for (var i=0;i<data.length;i++) {
+    data[i] = adata[i*4];
+  }
+  if (!flag) {return data;}
+  var dataRed = zeros(data.length/(pixReduction**2));
+  // the last thing we have to do is reduce the quality by our factor
+  for (var x=0;x<(canvas.width/pixReduction);x++) {
+    for (var y=0;y<(canvas.height/pixReduction);y++) {
+      // we could pre-save the size but that would be a hassle
+      // also this isn't that slow (in theory)
+      var ldata = [];
+      // get the x position on the original canvas
+      var xd_ = x*pixReduction, yd_ = y*pixReduction;
+      for (var xd=xd_;xd<xd_+pixReduction;xd++) {
+        for (var yd=yd_;yd<yd_+pixReduction;yd++) {
+          ldata.push(data[yd*canvas.width+xd]);
+        }
+      }
+      dataRed[y*(canvas.width/pixReduction)+x] = mean(ldata)
+    }
+  }
+  return dataRed;
+}
+
+var stick;
+var spike_false = [0,0,0,0,0];
+var spike_true = [5,50,-10,-5,-2];
+
+function spike() {
+  // run again
+  stick = setTimeout(spike,5);
+  //
+  prob = spk_rate/200; // estimate is that average tick is actually 5 ms
+  if (Math.random() < prob) {
+    spikes[cur].play();
+    cur += 1; if(cur>39){cur=0;}
+    for (var i=0;i<5;i++) {spk.shift(); spk.push(spike_true[i]+randn()*2);}
+  } else {
+    for (var i=0;i<5;i++) {spk.shift(); spk.push(spike_false[i]+randn()*2);}
+  }
+}
+
+function poisson(avg) {
+  // Returns the probability of a spike at any time t, given an average
+  // rate of spiking and a time interval
 }
 
 function run(i) {
-	// Runs each time a block starts incase that block has to do startup
-	stopDemo();
-	switch(i) {
-		case 3:
-   demo(); break;
- }
+  clearTimeout(stick);
+  window.cancelAnimationFrame(tick);
+  // start tracking time
+  prev_tick = now();
+
+  correctCount = 0;
+
+  switch (i) {
+    case 3:
+      launch3();
+      break;
+  }
 }
 
 function launch_local() {
-	init_rf();
-	canvas_rf.addEventListener("click", updateCanvas, false);
-	canvas_rf.event = update_rf;
-
-  canvas_img.addEventListener("mousemove", updateCanvas, false);
-  canvas_img.addEventListener("mouseleave", imgleave, false);
-  canvas_img.event = update_img;
-  canvas_img.style.width  = '450px';
-  canvas_img.style.height = '303px';
-  // we're going to do something hacky to get the adorbs_img
-  // file loaded properly
-  // load it to the canvas
-  ctx_img.drawImage(adorbs,0,0);
-  // Now we need to contrast normalize the pixels
-  // for each pixel, (150,101), subtract local mean and div
-  // by local stdev
-  // Normalization computed according to Carrandini, Heeger
-  // 2013: http://www.nature.com/nrn/journal/v13/n1/pdf/nrn3136.pdf
-  image_px = zeros(150*101);
-  for (var x=0;x<150;x++) {
-    for (var y=0;y<101;y++) {
-      var val = ctx_img.getImageData(x,y,1,1).data[0];
-      var local = ctx_img.getImageData(math.max(x-3,0),math.max(y-3,0),math.min(151-x,7),math.min(151-y,7)).data;
-      var local_ = createArray(local.length/4);
-      for (var i=0;i<local_.length;i++) {
-        local_[i] = local[i*4];
-      }
-      image_px[y*150+x] = (val) / (500 + sum(local_));
-    }
+  completeSound = new Audio("sounds/secretsound.mp3");
+  spikes = [];
+  for (var i=0;i<50;i++) {
+    spikes.push(new Audio("sounds/spike.wav"));
   }
-  // We re-normalize to 0->1 space
-  image_px = add(image_px,math.min(image_px));
-  image_px = divide(image_px,math.max(image_px));
-
-	hodgkinhuxley = new HH();
-
-  for (var x =0; x<7;x++) {
-    for (var y = 0; y < 7;y++) {
-      rf[x][y] = 0;
-    }
-  }
-
-  document.getElementById("bonus1").style.display="none";
-  ctx_bonus.drawImage(adorbs,0,0,ctx_bonus.width,ctx_bonus.height);
+  cur = 0;
 }
 
-
-// BONUS CODE
-var canvas_bonus = document.getElementById("canvas-bonus");
-var ctx_bonus = canvas_bonus.getContext("2d");
-var pixels = zeros(150*101);
-
-function bonus1() {
-  document.getElementById("bonus1").style.display="";
-}
-
-function textarea1(e) {
-  var key = window.event.keyCode;
-  if (key===13) {
-    e.preventDefault();
-    eval(document.getElementById('textarea1').value);
-    drawBonusCanvas();
-  }
-}
-
-function drawBonusCanvas() {
-  canvas_bonus.width = 450; canvas_bonus.height = 303;
-  for (var x=0;x<150;x++) {
-    for (var y=0;y<101;y++) {
-      ctx_bonus.fillStyle = gsc2hex(pixels[y*150+x]);
-      ctx_bonus.fillRect(x*3,y*3,3,3);
-    }
-  }
-}
-
-// BONUS SOLUTION:
-// for (var x=0;x<150;x++) {
-//   for (var y=0;y<101;y++) {
-//     var val = ctx_bonus.getImageData(x,y,1,1).data[0];
-//     var local = ctx_bonus.getImageData(math.min(x-1,0),math.min(y-1,0),math.min(151-x,3),math.min(151-y,3)).data;
-//     var local_ = createArray(local.length/4);
-//     for (var i=0;i<local_.length;i++) {
-//       local_[i] = local[i*4];
-//     }
-//     pixels[y*150+x] = (val-math.mean(local_)) / math.std(local_);
-//   }
-// }
-// // You can also write:
-// pixels = image_px;
-// drawBonusCanvas();
-
-// HELPERS
-
-function init_rf() {
-	rf = createArray(7,7);
-	for (var x =0; x<7;x++) {
-		for (var y = 0; y < 7;y++) {
-			rf[x][y] = 0;
-		}
-	}
-}
-
-function updateCanvas(evt) {
-var canvas = evt.target;
-var rect = canvas.getBoundingClientRect(), // abs. size of element
+function updateCanvas(evt,canvas) {
+  var rect = canvas.getBoundingClientRect(), // abs. size of element
     scaleX = canvas.width / rect.width,    // relationship bitmap vs. element for X
     scaleY = canvas.height / rect.height;  // relationship bitmap vs. element for Y
 
-var x =  (evt.clientX - rect.left) * scaleX,   // scale mouse coordinates after they have
-		y =  (evt.clientY - rect.top) * scaleY     // been adjusted to be relative to element
-
-    canvas.event(x,y);
+  var x =  (evt.clientX - rect.left) * scaleX,   // scale mouse coordinates after they have
+    y =  (evt.clientY - rect.top) * scaleY     // been adjusted to be relative to element
+  return [x,y];
 }
 
-function HH() {
-	// From http://myselph.de/hodgkinHuxley.html
-  this.dt = 0.025; //ms
-  this.C = 1; //in muF/cm^2
-  this.GKMax = 36;
-  this.GNaMax = 120;
-  this.EK = -12; //mV
-  this.ENa = 115;
-  this.Gm = 0.3;
-  this.VRest = 10.613;
-  this.V = 0;
-  this.n = 0.32;
-  this.m = 0.05;
-  this.h = 0.60;
-  this.INa = 0;
-  this.IK = 0;
-  this.Im = 0;
-  this.Iinj = 0;
+function updateCanvasMove(evt) {
+  var canvas = evt.target;
+  out = updateCanvas(evt,canvas);
+  canvas.eventMove(out[0],out[1]);
+}
 
-  function alphaN(V) {
-    if (V===10) return alphaN(V+0.001); // 0/0 -> NaN
-    return (10-V) / (100*(Math.exp((10-V)/10)-1));
-  };
-  function betaN(V) {
-    return 0.125 * Math.exp(-V/80);
-  };
-  
-  function alphaM(V) {
-    if (V===25) return alphaM(V+0.001);  // 0/0 -> NaN
-    return (25-V) / (10 * (Math.exp((25-V)/10)-1));
-  };
-  function betaM(V) {
-    return 4 * Math.exp(-V/18)
-  };
-  
-  function alphaH(V) {
-    return 0.07*Math.exp(-V/20);
-  };
-  function betaH(V) {
-    return 1 / (Math.exp((30-V)/10)+1);
-  };
-  
-  this.step = function () {
-    var aN = alphaN(this.V);
-    var bN = betaN(this.V);
-    var aM = alphaM(this.V);
-    var bM = betaM(this.V);
-    var aH = alphaH(this.V);
-    var bH = betaH(this.V);
-    
-    var tauN = 1 / (aN + bN);
-    var tauM = 1 / (aM + bM);
-    var tauH = 1 / (aH + bH);
-    var nInf = aN * tauN;
-    var mInf = aM * tauM;
-    var hInf = aH * tauH;
-    
-    this.n += this.dt / tauN * (nInf - this.n);
-    this.m += this.dt / tauM * (mInf - this.m);
-    this.h += this.dt / tauH * (hInf - this.h);
-    this.INa = this.GNaMax * this.m * this.m * this.m * this.h * (this.ENa - this.V);
-    this.IK = this.GKMax * this.n * this.n * this.n * this.n * (this.EK - this.V);
-    this.Im = this.Gm * (this.VRest - this.V);
-    this.V += this.dt / this.C * (this.INa + this.IK + this.Im + this.Iinj);
-  };
-};
-
-
-// STart
-
-
+function updateCanvasClick(evt) {
+  var canvas = evt.target;
+  out = updateCanvas(evt,canvas);
+  canvas.eventClick(out[0],out[1]);
+}
