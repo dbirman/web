@@ -354,7 +354,7 @@ function run(i) {
 
   switch (i) {
     case 3:
-      if (!done) {
+      if (!done3) {
         launch3();
         $("#continue").hide();
         $("#endblock3").hide();
