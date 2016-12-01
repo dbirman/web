@@ -80,7 +80,7 @@ function sectionComplete() {
 
 function computeRF3() {
   var diam = size*2; //diameter
-  rf = zeros(diam**2);
+  rf = zeros(pow(diam,2)[0]);
   for (var x=0;x<diam;x++) {
     for (var y=0;y<diam;y++) {
       var dist = Math.hypot(x-size,y-size);
@@ -301,7 +301,7 @@ function getImage(ctx,canvas,flag) {
     data[i] = adata[i*4];
   }
   if (!flag) {return data;}
-  var dataRed = zeros(data.length/(pixReduction**2));
+  var dataRed = zeros(data.length/(pow(pixReduction,2)[0]));
   // the last thing we have to do is reduce the quality by our factor
   for (var x=0;x<(canvas.width/pixReduction);x++) {
     for (var y=0;y<(canvas.height/pixReduction);y++) {
