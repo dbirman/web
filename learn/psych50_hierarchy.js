@@ -18,6 +18,7 @@ var correctCount = 0;
 // Stimulus parameters
 var size;
 var sizeOut;
+var sizeOutText;
 //  - Circles: adjusts radius
 //  - Bars: adjusts length
 var theta;
@@ -43,104 +44,181 @@ var done3 = false;
 function launch3() {
   can_vis = document.getElementById("visual1");
   can_out = document.getElementById("output1");
-  sizeOut = document.getElementById("size1");
   ctx_vis = can_vis.getContext("2d");
   ctx_out = can_out.getContext("2d");
 
   can_vis.addEventListener("click",updateCanvasClick,false);
-  can_vis.eventClick = eventClick3;
+  can_vis.eventClick = eventClick;
   can_vis.addEventListener("mousemove",updateCanvasMove,false);
-  can_vis.eventMove = eventMove3;
+  can_vis.eventMove = eventMove;
+
+  sizeOut = document.getElementById("size1");
+  sizeOutText = "radius=";
 
   computeRF = computeRF3;
 
+  checkDone = function() {checkDone3();};
   // Launch
   addRGCrf();
 
   changeSize(2); // initial size
-  drawBlock3();
+  drawBlock();
   spike();
+}
+
+function end3() {
+  done3 = true;
+  $("#endblock3").show();
+  sectionComplete();
+}
+
+function checkDone3() {
+  if (!done3 && correctCount>15 && clickListPos.length>3 && clickListNeg.length>3) {end3();}
+  console.log(correctCount);
 }
 
 // Visual variables
 var clickListPos = [];
 var clickListNeg = [];
 
-function sectionComplete() {
-  // stop animations
-  window.cancelAnimationFrame(tick);
-  clearTimeout(stick);
-  // show true 
-  // completeSound.play();
-  drawRawRF(ctx_vis,can_vis);
-  done3 = true;
-  $("#continue").show();
-  $("#endblock3").show();
-}
-
 function computeRF3() {
-  var diam = size*2; //diameter
+  var rad = size/pixReduction, diam=rad*2;
   rf = zeros(pow(diam,2)[0]);
   for (var x=0;x<diam;x++) {
     for (var y=0;y<diam;y++) {
-      var dist = Math.hypot(x-size,y-size);
-      rf[y*diam+x] = (dist<size) ? 1 : 0;
+      var dist = Math.hypot(x-rad,y-rad);
+      rf[y*diam+x] = (dist<rad) ? 1 : 0;
     }
   }
 }
 
-function updateBlock3() {
+////////////////////
+///// BLOCK 7 //////
+////////////////////
+
+var done7 = false;
+
+function launch7() {
+  can_vis = document.getElementById("visual7");
+  can_out = document.getElementById("output7");
+  ctx_vis = can_vis.getContext("2d");
+  ctx_out = can_out.getContext("2d");
+
+  can_vis.addEventListener("click",updateCanvasClick,false);
+  can_vis.eventClick = eventClick;
+  can_vis.addEventListener("mousemove",updateCanvasMove,false);
+  can_vis.eventMove = eventMove;
+
+  sizeOut = document.getElementById("size7");
+  sizeOutText = "radius=";
+
+  computeRF = computeRF7;
+
+  checkDone = function() {checkDone7();};
+  // Launch
+  addSCrf();
+
+  changeSize(2); // initial size
+  drawBlock();
+  spike();
+}
+
+function end7() {
+  done3 = true;
+  $("#endblock7").show();
+  sectionComplete();
+}
+
+function checkDone7() {
+  if (!done3 && correctCount>15 && clickListPos.length>3 && clickListNeg.length>3) {end3(); sectionComplete();}
+}
+
+// Visual variables
+var clickListPos = [];
+var clickListNeg = [];
+
+function computeRF7() {
+  // var rad = size/pixReduction, diam=rad*2;
+  // rf = zeros(pow(diam,2)[0]);
+  // for (var x=0;x<diam;x++) {
+  //   for (var y=0;y<diam;y++) {
+  //     var dist = Math.hypot(x-rad,y-rad);
+  //     rf[y*diam+x] = (dist<rad) ? 1 : 0;
+  //   }
+  // }
+}
+////////////////////
+///// SHARED ///////
+////////////////////
+
+function updateBlock() {
+  var rad = size/pixReduction, diam=rad*2;
   curData = zeros(rf.length); var count = 0;
-  for (var x=cursorPos[0]-size;x<=cursorPos[0]+size-1;x++) {
-    for (var y=cursorPos[1]-size;y<=cursorPos[1]+size-1;y++) {
+  for (var x=cursorPos[0]-rad;x<=cursorPos[0]+rad-1;x++) {
+    for (var y=cursorPos[1]-rad;y<=cursorPos[1]+rad-1;y++) {
       curData[count++] = imageData[y*can_vis.width/pixReduction+x];
     }
   }
-  var val = sum(multiply(curData,rf)); 
-  if (val>0) {val=val*3;}
+  var val = sum(multiply(curData,rf));
   updateSpikeRate(val);
 }
 
 function updateSpikeRate(val) {
-  spk_rate = 3 + val;
+  spk_rate = 3 + val*2;
   if (spk_rate<0) {spk_rate=0;}
 }
 
-function eventClick3(x,y) {
+function eventClick(x,y,shift) {
+  // get current pos
   var x = Math.floor(x/pixReduction), y = Math.floor(y/pixReduction);
-  for (var i=0;i<clickListNeg.length;i++) {
-    if (clickListNeg[i][0]==x && clickListNeg[i][1]==y) {
-      if (imageDataRound[y*100+x]==-1) {correctCount--;}
-      clickListNeg.splice(i,1); return;
+
+  if (shift) {
+    // Deal with negatives
+    for (var i=0;i<clickListNeg.length;i++) {
+      if (clickListNeg[i][0]==x && clickListNeg[i][1]==y) {
+        // FOUND IN LIST
+        if (imageDataRound[y*100+x]==-1) {correctCount--;}
+        clickListNeg.splice(i,1); checkDone(); return;
+      }
     }
-  }
-  for (var i=0;i<clickListPos.length;i++) {
-    if (clickListPos[i][0]==x && clickListPos[i][1]==y) {
-      if (imageDataRound[y*100+x]==1) {correctCount--;}
-      // move to neg
-      clickListNeg.push(clickListPos.splice(i,1)[0]);
-      // check if that position is neg
-      if (imageDataRound[y*100+x]==-1) {correctCount++;}
-      return;
+    
+    // NOT IN LIST, ADD
+    if (imageDataRound[y*100+x]==-1) {correctCount++;}
+    clickListNeg.push([x,y]); checkDone(); return;
+
+  } 
+  else {
+    for (var i=0;i<clickListPos.length;i++) {
+      if (clickListPos[i][0]==x && clickListPos[i][1]==y) {
+          // FOUND IN LIST
+        if (imageDataRound[y*100+x]==1) {correctCount--;}
+        clickListPos.splice(i,1); checkDone(); return;
+      }
     }
+      
+    // NOT IN LIST, ADD
+    if (imageDataRound[y*100+x]==1) {correctCount++;}
+      clickListPos.push([x,y]); checkDone(); return;
   }
-  clickListPos.push([x,y]);
-  if (imageDataRound[y*100+x]==1) {correctCount++;}
-  if (correctCount>25 && clickListPos.length>0 && clickListNeg.length>0) {sectionComplete();}
 }
 
-function eventMove3(x,y) {
+function eventMove(x,y) {
   cursorPosRaw = [x,y];
   cursorPos = [Math.floor(x/pixReduction),Math.floor(y/pixReduction)];
 }
 
-function updateVisual3() {
-  // draw clicks
-  for (var i=0;i<clickListNeg.length;i++) {   
-    drawCross(clickListNeg[i][0]*pixReduction,clickListNeg[i][1]*pixReduction,false,"#CD6155"); 
-  }
-  for (var i=0;i<clickListPos.length;i++) {
-    drawCross(clickListPos[i][0]*pixReduction,clickListPos[i][1]*pixReduction,true,"#55CD61");
+function updateVisual() {
+  if (!done3) {
+    // draw clicks
+    for (var i=0;i<clickListNeg.length;i++) {   
+      drawCross(clickListNeg[i][0]*pixReduction,clickListNeg[i][1]*pixReduction,false,"#CD6155"); 
+    }
+    for (var i=0;i<clickListPos.length;i++) {
+      drawCross(clickListPos[i][0]*pixReduction,clickListPos[i][1]*pixReduction,true,"#55CD61");
+    }
+  } else {
+    // show true RF
+    drawRawRF(ctx_vis,can_vis);
   }
   // draw cursor (over everything)
   ctx_vis.beginPath();
@@ -154,28 +232,16 @@ function updateVisual3() {
   ctx_vis.stroke();
 }
 
-function drawCross(x,y,cross,color) {
-  ctx_vis.beginPath();
-  ctx_vis.strokeStyle = color;
-  ctx_vis.moveTo(x-5,y);
-  ctx_vis.lineTo(x+5,y);
-  if (cross) {
-    ctx_vis.moveTo(x,y-5);
-    ctx_vis.lineTo(x,y+5);
-  } 
-  ctx_vis.stroke();
-}
+function drawBlock() {
+  tick = window.requestAnimationFrame(drawBlock);
 
-function drawBlock3() {
-  tick = window.requestAnimationFrame(drawBlock3);
-
-  updateBlock3();
+  updateBlock();
   // Clear contexts
   ctx_vis.clearRect(0,0,can_vis.width,can_vis.height);
   ctx_out.clearRect(0,0,can_out.width,can_out.height);
   // Block visual context + update
   clipCtx(ctx_vis,can_vis);
-  updateVisual3();
+  updateVisual();
   ctx_vis.restore();
   // Update output context
   ctx_out.strokeStyle = "#CD6155"; // low saturation red
@@ -188,83 +254,27 @@ function drawBlock3() {
 }
 
 ////////////////////
-///// SHARED ///////
+///// HELPERS //////
 ////////////////////
 
 
+function drawCross(x,y,cross,color) {
+  ctx_vis.beginPath();
+  ctx_vis.strokeStyle = color;
+  ctx_vis.moveTo(x-3,y);
+  ctx_vis.lineTo(x+3,y);
+  if (cross) {
+    ctx_vis.moveTo(x,y-3);
+    ctx_vis.lineTo(x,y+3);
+  } 
+  ctx_vis.stroke();
+}
+
 function changeSize(nSize) {
   size = nSize*pixReduction;
-  sizeOut.innerHTML = "size="+size+"px"
+  sizeOut.innerHTML = sizeOutText+size+"px"
   // Recompute the RF based on this new radius
   computeRF();
-}
-
-function computeSpikeRate(x,y,shape) {
-  // Shape is an array that defines the size of the current
-  // object that is being shown. We use this size to obtain
-  // the corresponding space of the receptive field and dot
-  // product the two to obtain the current firing rate.
-  // We set spk_rate to that firing rate (scaled if necessary)
-}
-
-function addRGCrf() {
-  // Sets up the retinal ganglion cell receptive field
-  // we do this by drawing quickly on the canvas the retinal
-  // ganglion cell RF, and then using getImageData to recover
-  // what the image looks like (gray everywhere, except at 
-  // areas where there is excitatory/inhibitory activity).
-  // Finally we reduce the resolution of the image by the pixReduction
-  // factor, and re-scale into the [0 1] space.
-
-  // pick an x y coordinate to center at
-  x0 = Math.random() * can_vis.width;
-  y0 = Math.random() * can_vis.height;
-  while (Math.hypot(x0-can_vis.width/2, y0-can_vis.height/2)>(can_vis.width/2-30)) {
-    x0 = Math.random() * can_vis.width;
-    y0 = Math.random() * can_vis.height;
-  }
-  x0r = Math.floor(x0/pixReduction);
-  y0r = Math.floor(y0/pixReduction);
-  // clear context
-  ctx_vis.fillStyle = "#808080";
-  ctx_vis.fillRect(0,0,can_vis.width,can_vis.height);
-  // we will use the mexican hat function (gaussian windowed sin wave)
-  // based on the hypotenuse distance from x,y coordinates
-  rf_size = 100/pixReduction; // how far to do the test coordinate region
-  var f = 0.1; 
-  var sigma = 2.5; // largeish sigma
-  var theta = 0; // no phase offset
-  var xRange = divide(range(0,101),10);
-  var outRange = mexicanHat(xRange,f,sigma,theta);
-  for (var x=0;x<can_vis.width;x++) {
-    for (var y =0;y<can_vis.height;y++) {
-      var dist = Math.hypot(x-x0,y-y0);
-      if (dist<75) {
-        var i=0;
-        while (i<dist) {i+=1;}
-        ctx_vis.fillStyle = gsc2hex(Math.round(outRange[i]*1000)/1000);
-        ctx_vis.fillRect(x,y,1,1);
-      } else {
-        ctx_vis.fillStyle = "#808080";
-        ctx_vis.fillRect(x,y,1,1);
-      }
-    }
-  }
-  imageDataRaw = getImage(ctx_vis,can_vis,false);
-  // Whew! That was a fucking pain. Now we get the image data
-  // Note that rescale the imageData into the [-1 1] space
-  // This is so that when we do firing rates later and things
-  // work out nicely.
-  imageData = getImage(ctx_vis,can_vis,true);
-
-  for (var i=0;i<imageData.length;i++) {
-    imageData[i] = imageData[i]/128-1;
-  }
-  imageDataRound = zeros(imageData.length);
-  for (var i=0;i<imageDataRound.length;i++) {
-    imageDataRound[i] = (imageData[i]>0.02)?1:((imageData[i]<0.02)?-1:0);
-  }
-
 }
 
 function mexicanHat(x,f,sigma,theta) {
@@ -273,24 +283,33 @@ function mexicanHat(x,f,sigma,theta) {
   return add(0.5,multiply(0.5,multiply(pow(Math.exp(1),multiply(-1,divide(pow(x,2),multiply(2,pow(sigma,2))[0]))),cos(subtract(multiply(2*Math.PI*f,x),theta))))); 
 }
 
+function mexicanHat2d(x,dist,f,sigma,theta) {
+  return add(0.5,multiply(0.5,multiply(pow(Math.exp(1),multiply(-1,divide(pow(dist,2),multiply(2,pow(sigma,2))[0]))),cos(subtract(multiply(2*Math.PI*f,x),theta))))); 
+}
 
-////////////////////
-///// HELPERS //////
-////////////////////
-
-function drawRawRF(ctx,canvas) {
-  clipCtx(ctx_vis,can_vis);  
+function drawRawRF_test(ctx,canvas) {
   for (var x=0;x<canvas.width;x++) {
     for (var y=0;y<canvas.width;y++) {
-      ctx.fillStyle = gsc2hex(imageDataRaw[y*canvas.width+x]/255);
-      ctx.fillRect(x,y,1,1);
+      var val = imageDataRaw[y*400+x];
+      if (!(val==128)) {
+        ctx.fillStyle = gsc2hex(val/255);
+        ctx.fillRect(x,y,1,1);
+      }
     }
   }
-  ctx_vis.beginPath();
-  ctx_vis.arc(x0,y0,size*7, 0, 2 * Math.PI, false);
-  ctx_vis.strokeStyle = "#ffffff";
-  ctx_vis.stroke();
-  ctx_vis.restore();
+}
+
+function drawRawRF(ctx,canvas) {
+  for (var x=0;x<canvas.width/pixReduction;x+=2) {
+    for (var y=0;y<canvas.width/pixReduction;y+=2) {
+      if (imageDataRound[y*100+x]==1) {
+        // draw +
+        drawCross(x*pixReduction,y*pixReduction,true,"#55CD61"); 
+      } else if (imageDataRound[y*100+x]==-1) {
+        drawCross(x*pixReduction,y*pixReduction,true,"#CD6155"); 
+      }
+    }
+  }
 }
 
 function getImage(ctx,canvas,flag) {
@@ -350,16 +369,25 @@ function run(i) {
   // start tracking time
   prev_tick = now();
 
+  // reset hidden
+  $("#continue").show();
+
   correctCount = 0;
 
   switch (i) {
-    case 3:
+    case 5:
       if (!done3) {
         launch3();
         $("#continue").hide();
         $("#endblock3").hide();
       }
       break;
+    case 7:
+      if (!done7) {
+        launch7();
+        $("#continue").hide();
+        $("#endblock7").hide();
+      }
   }
 }
 
@@ -369,7 +397,8 @@ function launch_local() {
   for (var i=0;i<50;i++) {
     spikes.push(new Audio("sounds/spike.wav"));
   }
-  cur = 0;
+  cur = 0; 
+  katex.render("out=f(in)",document.getElementById("katex1"),{displayMode:true});
 }
 
 function updateCanvas(evt,canvas) {
@@ -392,5 +421,141 @@ function updateCanvasClick(evt) {
   evt.preventDefault();
   var canvas = evt.target;
   out = updateCanvas(evt,canvas);
-  canvas.eventClick(out[0],out[1]);
+  canvas.eventClick(out[0],out[1],evt.shiftKey);
+}
+
+function sectionComplete() {
+  // completeSound.play();
+  // mark that this section is complete (so it doesn't restart if we come back)
+  $("#continue").show();
+}
+
+function rotatePoint(x,y,angle) {
+  var cos = Math.cos(angle),
+    sin = Math.sin(angle),
+    dX = x - x0,
+    dY = y - y0;
+
+  return [cos * dX - sin * dY + x0,sin * dX + cos * dY + y0];
+}
+
+////////////////////
+///// RECEPTIVE //////
+////////////////////
+
+////////////////////
+///// FIELD //////
+////////////////////
+
+////////////////////
+///// FUNCTIONS //////
+////////////////////
+
+function pickRFCenter() {
+  // pick an x y coordinate to center at
+  x0 = Math.random() * can_vis.width;
+  y0 = Math.random() * can_vis.height;
+  while (Math.hypot(x0-can_vis.width/2, y0-can_vis.height/2)>(can_vis.width/2-50)) {
+    x0 = Math.random() * can_vis.width;
+    y0 = Math.random() * can_vis.height;
+  }
+  x0r = Math.floor(x0/pixReduction);
+  y0r = Math.floor(y0/pixReduction);
+}
+
+function pullData() {
+  // Now we get the image data
+  // Note that rescale the imageData into the [-1 1] space
+  // This is so that when we do firing rates later and things
+  // work out nicely.
+  imageDataRaw = getImage(ctx_vis,can_vis,false);
+  imageData = getImage(ctx_vis,can_vis,true);
+
+  for (var i=0;i<imageData.length;i++) {
+    imageData[i] = imageData[i]/128-1;
+  }
+  imageDataRound = zeros(imageData.length);
+  for (var i=0;i<imageDataRound.length;i++) {
+    imageDataRound[i] = (imageData[i]>0.02)?1:((imageData[i]<-0.02)?-1:0);
+  }
+}
+
+function addSCrf() {
+  // Sets up the simple cell receptive field
+  // see RGCrf for technical detials
+
+  // The SC receptive field is a gaussian windowed
+  // mexican hat function in *one dimension*
+  pickRFCenter();
+
+  // clear context to grey
+  ctx_vis.fillStyle = "#808080";
+  ctx_vis.fillRect(0,0,can_vis.width,can_vis.height);
+  // pick an angle for the receptive field
+  var angle = Math.floor(Math.random()*9)/4*Math.PI;
+  //
+  var f = 0.015; 
+  var sigma = 25; // largeish sigma
+  var theta = 0; // no phase offset
+  // To run the algorithm we compute for every x,y coordinate a rotated
+  // coordinate around the point x0,y0
+  for (var x=0;x<can_vis.width;x++) {
+    for (var y =0;y<can_vis.height;y++) {
+      var dist = Math.hypot(x-x0,y-y0);
+      if (dist<75) {
+        // note: rotates around x0,y0, -angle so that it doesn't go backwards
+        var rot = rotatePoint(x,y,-angle); 
+        gsc = mexicanHat2d(rot[0]-x0,dist,f,sigma,theta);
+        ctx_vis.fillStyle = gsc2hex(gsc);
+        ctx_vis.fillRect(x,y,1,1);
+      } else {
+        ctx_vis.fillStyle = "#808080";
+        ctx_vis.fillRect(x,y,1,1);
+      }
+    }
+  }
+
+  // get imageData, raw, round
+  pullData();
+}
+
+function addRGCrf() {
+  // Sets up the retinal ganglion cell receptive field
+  // we do this by drawing quickly on the canvas the retinal
+  // ganglion cell RF, and then using getImageData to recover
+  // what the image looks like (gray everywhere, except at 
+  // areas where there is excitatory/inhibitory activity).
+  // Finally we reduce the resolution of the image by the pixReduction
+  // factor, and re-scale into the [0 1] space.
+
+  // The RGC receptive field is a gaussian windowed
+  // mexican hat function in *zero dimensions*
+  pickRFCenter();
+  // clear context to grey
+  ctx_vis.fillStyle = "#808080";
+  ctx_vis.fillRect(0,0,can_vis.width,can_vis.height);
+  // we will use the mexican hat function (gaussian windowed sin wave)
+  // based on the hypotenuse distance from x,y coordinates
+  rf_size = 100/pixReduction; // how far to do the test coordinate region
+  var f = 0.1; 
+  var sigma = 2.5; // largeish sigma
+  var theta = 0; // no phase offset
+  var xRange = divide(range(0,101),10);
+  var outRange = mexicanHat(xRange,f,sigma,theta);
+  for (var x=0;x<can_vis.width;x++) {
+    for (var y =0;y<can_vis.height;y++) {
+      var dist = Math.hypot(x-x0,y-y0);
+      if (dist<75) {
+        var i=0;
+        while (i<dist) {i+=1;}
+        ctx_vis.fillStyle = gsc2hex(Math.round(outRange[i]*1000)/1000);
+        ctx_vis.fillRect(x,y,1,1);
+      } else {
+        ctx_vis.fillStyle = "#808080";
+        ctx_vis.fillRect(x,y,1,1);
+      }
+    }
+  }
+  // get imageData, raw, round
+  pullData();
 }
