@@ -19,6 +19,10 @@ var correctCount = 0;
 var size;
 var sizeOut;
 var sizeOutText;
+var rotation;
+var rotationOut;
+var rotationOutText;
+var drawStimulus; // draw function called by update()
 //  - Circles: adjusts radius
 //  - Bars: adjusts length
 var theta;
@@ -34,6 +38,7 @@ var ctx_vis;
 var ctx_out;
 // requestAnimationFrame 
 var tick;
+var isDone;
 
 ////////////////////
 ///// BLOCK 3 //////
@@ -57,7 +62,9 @@ function launch3() {
 
   computeRF = computeRF3;
 
-  checkDone = function() {checkDone3();};
+  isDone = function() {return done3;}
+  checkDone = checkDone3;
+  drawStimulus = drawStimulus3;
   // Launch
   addRGCrf();
 
@@ -92,6 +99,13 @@ function computeRF3() {
   }
 }
 
+function drawStimulus3() {
+  ctx_vis.beginPath();
+  ctx_vis.arc(cursorPosRaw[0], cursorPosRaw[1], size*2, 0, 2 * Math.PI, false);
+  ctx_vis.fillStyle = "rgba(255,255,255,0.5)";
+  ctx_vis.fill();
+}
+
 ////////////////////
 ///// BLOCK 7 //////
 ////////////////////
@@ -110,52 +124,85 @@ function launch7() {
   can_vis.eventMove = eventMove;
 
   sizeOut = document.getElementById("size7");
-  sizeOutText = "radius=";
+  sizeOutText = "length=";
+  rotationOut = document.getElementById("rotation7");
+  rotationOutText="rotation=";
+
+  isDone = function() {return done7;}
 
   computeRF = computeRF7;
+  // only change after compute is set
+  changeSize(3); // initial size
+  changeRotation(0);
 
-  checkDone = function() {checkDone7();};
+  checkDone = checkDone7;
+  drawStimulus = drawStimulus7;
   // Launch
   addSCrf();
 
-  changeSize(2); // initial size
   drawBlock();
   spike();
 }
 
 function end7() {
-  done3 = true;
+  done7 = true;
   $("#endblock7").show();
   sectionComplete();
 }
 
 function checkDone7() {
-  if (!done3 && correctCount>15 && clickListPos.length>3 && clickListNeg.length>3) {end3(); sectionComplete();}
+  if (!done7 && correctCount>15 && clickListPos.length>3 && clickListNeg.length>3) {end7(); sectionComplete();}
 }
 
 // Visual variables
 var clickListPos = [];
 var clickListNeg = [];
 
+canvast = document.getElementById("test");
+ctxt = canvast.getContext("2d");
+
 function computeRF7() {
-  // var rad = size/pixReduction, diam=rad*2;
-  // rf = zeros(pow(diam,2)[0]);
-  // for (var x=0;x<diam;x++) {
-  //   for (var y=0;y<diam;y++) {
-  //     var dist = Math.hypot(x-rad,y-rad);
-  //     rf[y*diam+x] = (dist<rad) ? 1 : 0;
-  //   }
-  // }
+  // Build the receptive field--this is square, min size is
+  // the diagonal of the stimulus size. Use rotatePoint to
+  // build stimulus at the correct angle.
+
+  ctxt.clearRect(0,0,canvast.width,canvast.height);
+
+  var diam = Math.round(size/pixReduction*1.5*2);
+  var rad = diam/2;
+  rf = zeros(pow(diam,2)[0]);
+  for (var x=0;x<diam;x++) {
+    for (var y=0;y<diam;y++) {
+      var rot = rotatePoint(x,y,rad,rad,rotation*Math.PI/180);
+      var ydist = Math.abs(rot[1]-rad);
+      rf[y*diam+x] = (ydist<(diam/1.5/4)) ? 1 : 0;
+      ctxt.fillStyle = gsc2hex(rf[y*diam+x]);
+      ctxt.fillRect(x*pixReduction,y*pixReduction,pixReduction,pixReduction);
+    }
+  }
+
+}
+
+function drawStimulus7() {
+  // draw a rotated bar
+  ctx_vis.save();
+  ctx_vis.translate(cursorPosRaw[0],cursorPosRaw[1]);
+  ctx_vis.rotate(-rotation*Math.PI/180);
+  ctx_vis.fillStyle = "rgba(255,255,255,0.5)";
+  var lsize = size*1.5;
+  ctx_vis.fillRect(-lsize,-size/4,lsize*2,size/2);
+  ctx_vis.restore();
 }
 ////////////////////
 ///// SHARED ///////
 ////////////////////
 
 function updateBlock() {
-  var rad = size/pixReduction, diam=rad*2;
-  curData = zeros(rf.length); var count = 0;
-  for (var x=cursorPos[0]-rad;x<=cursorPos[0]+rad-1;x++) {
-    for (var y=cursorPos[1]-rad;y<=cursorPos[1]+rad-1;y++) {
+  var rad = Math.sqrt(rf.length); // should always be square
+  var curData = zeros(rf.length); var count = 0;
+  var win_xy = [Math.round(cursorPos[0]-rad/2),Math.round(cursorPos[1]-rad/2)];
+  for (var x=win_xy[0];x<win_xy[0]+rad;x++) {
+    for (var y=win_xy[1];y<win_xy[1]+rad;y++) {
       curData[count++] = imageData[y*can_vis.width/pixReduction+x];
     }
   }
@@ -164,7 +211,7 @@ function updateBlock() {
 }
 
 function updateSpikeRate(val) {
-  spk_rate = 3 + val*2;
+  spk_rate = 3 + val*4;
   if (spk_rate<0) {spk_rate=0;}
 }
 
@@ -208,7 +255,7 @@ function eventMove(x,y) {
 }
 
 function updateVisual() {
-  if (!done3) {
+  if (!isDone()) {
     // draw clicks
     for (var i=0;i<clickListNeg.length;i++) {   
       drawCross(clickListNeg[i][0]*pixReduction,clickListNeg[i][1]*pixReduction,false,"#CD6155"); 
@@ -216,15 +263,13 @@ function updateVisual() {
     for (var i=0;i<clickListPos.length;i++) {
       drawCross(clickListPos[i][0]*pixReduction,clickListPos[i][1]*pixReduction,true,"#55CD61");
     }
-  } else {
+  } 
+  else {
     // show true RF
     drawRawRF(ctx_vis,can_vis);
   }
   // draw cursor (over everything)
-  ctx_vis.beginPath();
-  ctx_vis.arc(cursorPosRaw[0], cursorPosRaw[1], size*2, 0, 2 * Math.PI, false);
-  ctx_vis.fillStyle = "rgba(255,255,255,0.5)";
-  ctx_vis.fill();
+  drawStimulus();
   // draw outer edge
   ctx_vis.beginPath();
   ctx_vis.arc(can_vis.width/2,can_vis.height/2,can_vis.width/2-1, 0, 2 * Math.PI, false);
@@ -272,8 +317,14 @@ function drawCross(x,y,cross,color) {
 
 function changeSize(nSize) {
   size = nSize*pixReduction;
-  sizeOut.innerHTML = sizeOutText+size+"px"
+  sizeOut.innerHTML = sizeOutText+size+"px";
   // Recompute the RF based on this new radius
+  computeRF();
+}
+
+function changeRotation(nRotation) {
+  rotation = nRotation;
+  rotationOut.innerHTML = rotationOutText+rotation+"deg";
   computeRF();
 }
 
@@ -430,13 +481,13 @@ function sectionComplete() {
   $("#continue").show();
 }
 
-function rotatePoint(x,y,angle) {
+function rotatePoint(x,y,xo,yo,angle) {
   var cos = Math.cos(angle),
     sin = Math.sin(angle),
-    dX = x - x0,
-    dY = y - y0;
+    dX = x - xo,
+    dY = y - yo;
 
-  return [cos * dX - sin * dY + x0,sin * dX + cos * dY + y0];
+  return [cos * dX - sin * dY + xo,sin * dX + cos * dY + yo];
 }
 
 ////////////////////
@@ -496,7 +547,7 @@ function addSCrf() {
   //
   var f = 0.015; 
   var sigma = 25; // largeish sigma
-  var theta = 0; // no phase offset
+  var theta = Math.PI/2; // no phase offset
   // To run the algorithm we compute for every x,y coordinate a rotated
   // coordinate around the point x0,y0
   for (var x=0;x<can_vis.width;x++) {
@@ -504,17 +555,17 @@ function addSCrf() {
       var dist = Math.hypot(x-x0,y-y0);
       if (dist<75) {
         // note: rotates around x0,y0, -angle so that it doesn't go backwards
-        var rot = rotatePoint(x,y,-angle); 
-        gsc = mexicanHat2d(rot[0]-x0,dist,f,sigma,theta);
+        var rot = rotatePoint(x,y,x0,y0,angle); 
+        var gsc = mexicanHat2d(rot[0]-x0,dist,f,sigma,theta);
         ctx_vis.fillStyle = gsc2hex(gsc);
         ctx_vis.fillRect(x,y,1,1);
-      } else {
+      }
+      else {
         ctx_vis.fillStyle = "#808080";
         ctx_vis.fillRect(x,y,1,1);
       }
     }
   }
-
   // get imageData, raw, round
   pullData();
 }

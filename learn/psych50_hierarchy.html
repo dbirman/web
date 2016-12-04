@@ -131,12 +131,19 @@
 	<p>About five years after Kuffler mapped cells in the retina two researchers at Johns Hopkins, Torsten Wiesel and David Hubel began setting up their own cat lab, now attempting to record from cells in the early visual cortex. The story of how they discovered what kinds of features activate V1 cells is <a href="https://youtu.be/IOHayh06LJ4?t=13">here on YouTube</a> and is quite surprising: it was a complete accident. If you want to skip the video the answer turns out to be <b>oriented bars</b>. But the real question is: what kind of a receptive field do you need to detect oriented bars? For figuring out the answer (among many other contributions) Hubel and Wiesel received the 1981 Nobel Prize. Now you get the opportunity to repeat their classic experiment below:</p>
 	<div style="text-align:center;">
 		<div class="4u" style="text-align:center">
-			<input type="range" min="1" max="5" value="2" step="1" oninput="changeSize(this.value);"/>
+			<input type="range" min="4" max="16" value="4" step="2" oninput="changeSize(this.value);"/>
 		</div>
 		<div class="4u">
-			<output id="size7">length=10</output>
+			<output id="size7"></output>
+		</div>
+		<div class="4u" style="text-align:center">
+			<input type="range" min="0" max="180" value="0" step="45" oninput="changeRotation(this.value);"/>
+		</div>
+		<div class="4u">
+			<output id="rotation7"></output>
 		</div>
 		<canvas width=200 height=100 id="output7"></canvas>	
+		<canvas width=200 height=200 id="test"></canvas>
 	</div>
 	<canvas style="cursor:none" width=400 height=400 id="visual7"></canvas>
  	<div id="endblock7"><p>Nice work! We've now revealed to you the true receptive field. You can keep trying different stimuli now to help you understand why this particular setup is responsible for generating the pattern of responses you observed. While you do this think about the next question in our tutorial: we know that V1 simple cells get inputs from retinal ganglion cells, can you imagine how you might sum up the output of multiple retinal ganglion cells to get a receptive field like the one above?</p></div>
@@ -153,30 +160,36 @@
 	<br>
 	<div id="bonus1"><br>
 		<h2>Bonus content: Simple cell model</h2>
-		<p>When we built up the receptive field on this page we didn't actually connect retinal ganglion cells together to generate a simple cell (although we could have done this). It's simpler in practice to make a model of the simple cells directly, and this was also something that Hubel and Wiesel outlined in their early papers. </p>
+		<p>When we built up the receptive field on this page we didn't actually connect retinal ganglion cells together to generate a simple cell. It's simpler in practice to make a model of the simple cells directly, and this was also something that Hubel and Wiesel outlined in their early papers. </p>
 	</div>
 
 </div>
-<!-- 
-<div id="block7"> 
-	<h2>The simple cell model (code + visual)</h2>
-</div>
 
-<div id="block8"> 
+<div id="block9"> 
 	<h2>1963: Complex cells</h2>
 </div>
 
-<div id="block9"> 
+<div id="block10"> 
 	<h2>Cells as filters (visual)</h2>
 </div>
 
-<div id="block10"> 
+<div id="block11"> 
 	<h2>Complexity (visual)</h2>
 </div>
 
-<div id="block11"> 
+<div id="block12"> 
 	<h2>Cat detectors</h2>
-</div> -->
+	<p>You've now seen a whole lot of examples of how the early visual cortex processes stimuli to understand the world. We've shown you:
+	<ul>
+		<li>How retinal ganglion cells detect the location of light on the retina.</li>
+		<li>How simple cells use that information to extract the "edges" in a scene</li>
+		<li>How more complex features can be detected by simply layering repeated simple detectors on top of each other</li>
+		<li>How a property such as invariance can be constructed by pooling similar inputs together</li>
+	</ul>
+	This covers much of how early visual cortex works which brings us to a final question for this tutorial: are these simple ideas sufficient to understand how the cortex might represent extremely complex features like objects? We aren't totally sure at this point, but recent developments in computer vision suggest that we're getting closer to an answer. Geoff Hinton in 2005 revealed that a <b>deep neural network</b> which simply repeated a similar computation across many dozens of layers could perform object recognition at near human performance. This approach was so successful that it spawned millions of offshoot projects--which have developed into the technology used for voice recognition in your phone, for building driverless cars, and are now used to perform better searches on Google. Below we're going to show you one of these deep neural networks in action. We've got a set of images that each contain an assortment of different objects, animals, etc, and what we're going to let you do is point a "searchlight" so to speak onto the image. The deep neural network will tell you what it "sees" at the location you're pointing to. Press the button to refresh the image with a new one. Have fun!</p>
+	<!-- STUFF -->
+	<p>As you saw, the neural network still "sees" things even when you're pointing at pure noise. This is one region people are hesitant to suggest that deep neural networks are doing the same thing that human brains are. Nonetheless, when you pointed your searchlight at any of the objects or animals you should have seen that the network successfully identified them a vast majority of the time. A more in-depth view of ConvNetJS is available <a href="https://cs.stanford.edu/people/karpathy/convnetjs/demo/cifar10.html">here</a>, and your TAs would be happy to discuss how this deep neural network works in more detail during office hours.</p>
+</div> 
 
 <div id="endblock">
 	<h2>Tutorial complete!</h2>
