@@ -9,7 +9,7 @@
 		<title>Sensory perception lab</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<!--[if lte IE 8]><script src="assets/js/ie/html5shiv.js"></script><![endif]-->
+		<!-- [if lte IE 8]><script src="assets/js/ie/html5shiv.js"></script><![endif] -->
 		<link rel="stylesheet" href="../assets/css/main.css" />
 		<!--[if lte IE 9]><link rel="stylesheet" href="assets/css/ie9.css" /><![endif]-->
 		<!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
@@ -22,7 +22,9 @@
 			<script src="../assets/js/jquery.dropotron.min.js"></script>
 			<script src="../assets/js/jquery.scrollex.min.js"></script>
 			<script src="../assets/js/skel.min.js"></script>
-			<script src="../assets/js/util.js"></script>
+			<script src="../assets/js/util.js"></script>			
+			<script src="../assets/js/convnet.min.js"></script>
+
 			<!--[if lte IE 8]><script src="assets/js/ie/respond.min.js"></script><![endif]-->
 			<script src="../assets/js/main.js"></script>
 		<!-- Math KaTeX -->
@@ -36,7 +38,7 @@
 
 			<!-- Header -->
 				<header id="header">
-					<h1 id="logo"><a href="../index.html">Sensory perception lab</a></h1>
+					<h1 id="logo"><a href="../learn.html">Sensory perception lab</a></h1>
 					<nav id="nav">
 						<ul>
 							<li><a href="../learn.html">Learn</a></li>
@@ -71,10 +73,6 @@
 	<li>Be able to explain why invariance is an important property to have in the highest levels of visual cortex.</li>
 	</ul>
 
-	<h1 id="sectionlabs">Lab sections in Psych 50</h1>
-
-	<p>This is our first section in Psych 50 so we want to take a brief moment to orient you to how these lab tutorials work. Your TA probably aleady mentioned that we will have a mixture of open discussions, demonstrations, and tutorials. The tutorials are an introduction to <b>computation models</b> as a tool for understanding the brain, and we use programming to run our models. You'll get the most out of these labs if you work together with a partner and discuss what's happening at each step. Your TA is available to answer questions that you can't solve on your own. In today's lab you'll just be going through examples that we've made for you, but in future labs you will have to write some parts of the computational models yourself. We don't expect you to learn to program during this class but we do expect you to (1) learn the computational models presented in lab, and (2) understand the value of modeling as a tool to understand the brain.</p>
-
 	<p>If you already know how to program you will find bonus content sprinkled throughout the tutorials. This content is not required but will help you get a more in-depth understanding of what's happening behind the scenes.</p>
 </div>
 
@@ -86,7 +84,7 @@
 	<img width=400 src="images/verbalmodel2.png"/>
 	<p>Now a <b>computational</b> model is simply a verbal model rephrased in terms of specific numbers. For example our model from above can be rephrased as:</p>
 	<div id="katex1"></div>
-	<p>The <b>f</b> is a placeholder for the computation we're doing in deciding where the ball will end up. We'll come back to these more formal ideas later in the class. For now we want you to simply keep this core idea in mind: a <b>computational model</b> is a simplified explanation of some behavior we observed, formalized to take an input and <b>compute</b> an output. Let's go on and use this idea to think about the visual cortex.</p>		
+	<p>The <b>f</b> is a placeholder for the computation we're doing in deciding where the ball will end up. We'll come back to these more formal ideas later in the class. For now we want you to simply keep this core idea in mind: a <b>model</b> is a simplified explanation of some behavior we have observed, formalized to take an input and <b>compute</b> an output. Let's go on and use this idea to think about the visual cortex.</p>		
 </div>
 
 <div id="block3">
@@ -104,7 +102,7 @@
 
 <div id="block5">
 	<h2>1953: Retinal ganglion cells</h2>
-	<p>You've placed an electrode in the retina of an anesthetized cat and you're now showing pinpricks of light. Remember: your goal is to find and <b>map</b> the receptive field: it has areas that are <b>excitatory</b> or activated by light and areas that are <b>inhibitory</b>. When you're successful the tutorial will display the true receptive field for you and allow you to continue</p>
+	<p>You've placed an electrode in the retina of an anesthetized cat and you're now showing pinpricks of light. Remember: your goal is to find and <b>map</b> the receptive field: it has areas that are <b>excitatory</b> or activated by light and areas that are <b>inhibitory</b>. Click to mark a region as excitatory, shift+click to mark it as inhibitory. When you're successful the tutorial will display the true receptive field for you and allow you to continue</p>
 	<div style="text-align:center;">
 		<div class="4u" style="text-align:center">
 			<input type="range" min="1" max="5" value="2" step="1" oninput="changeSize(this.value);"/>
@@ -116,22 +114,24 @@
 	</div>
 	<canvas style="cursor:none" width=400 height=400 id="visual1"></canvas>
  	<div id="endblock3"><p>Congratulations! You've mapped your first receptive field. You can now see the areas that were excitatory and inhibitory. We call this particular kind of neuron a center-surround neuron, because it has a center that is excited by light, but a surrounding region that is inhibited by light.</p>
- 	<p>Before going on we want you to do two things: First, try using a very large radius stimulus (20px+), what do you notice happens to the response of the neuron if you overlap both the excitatory and inhibitory regions? Why is this happening? Second, what do you expect the purpose of a neuron like this to be? By this we mean: what <b>feature</b> do you think this kind of a neuron detects? You should know that there are both center-surround neurons that have an excitatory center and inhibitory surround and the reverse. What aspect of an image does this make you think of?</p></div>
+ 	<p>Before going on we want you to do two things: First, try using a very large radius stimulus (20px+), what do you notice happens to the response of the neuron if you overlap both the excitatory and inhibitory regions? Why is this happening? Second, what do you expect the purpose of a neuron like this to be? By this we mean: what <b>feature</b> do you think this kind of a neuron detects? You should know that there are both center-surround neurons that have an excitatory center and inhibitory surround and the reverse.</p></div>
 </div>
 
 <div id="block6">
 	<h2>Center-surround cells detect edges</h2>
-	<p>The answer to the question we posed on the previous page is that center-surround cells detect edges. In the image below we're showing you a raw image and a version that has been "filtered" by a center-surround type cell. The filtering process involved re-calculating each pixel in the image based on the response of a center-surround cell with a receptive field centered at that pixel. This results in the new image that you see.</p>
-	<img src=""/>
-	<p>As you can see the edges have been highlighted, as promised! This is what we mean when we say that neurons in visual cortex prefer certain kinds of features. You can also now describe a verbal model for center-surround cells: what is the input? what is the computation performed? what is the output?</p>
+	<p>The answer to the question we posed on the previous page is that center-surround cells detect edges. In the image below we're showing you a raw image and a version that has been "filtered" by a center-surround type cell. The filtering process involved re-calculating each pixel in the image based on the response of a center-surround cell with a receptive field centered at that pixel. See the graphic below for a visual of what's going on.</p>
+	<img width=500 src="images/filtering.png"/><br><br>
+	<p>To complete the filtering this process is repeated, moving the receptive field (and thus the corresponding response position) across the entire image. It's as if we had hundreds of the same cell copied, each one seeing a different location on the original image. This is in fact how the brain works in practice. Here again is the filtered image, but zoomed in so you can identify the edges that have no been highlighted, as promised!</p>
+	<img width=800 src="images/adorbs2.jpg"/><br><br>
+	<p>This is what we mean when we say that neurons in visual cortex prefer certain kinds of features. You can also now describe a verbal model for center-surround cells: what is the input? what is the computation performed? what is the output? Discuss this with your partner before moving on--make sure you understand what these cells are doing as things are only going to get more complicated!</p>
 </div>
 
 <div id="block7"> 
 	<h2>1963: Simple cells</h2>
-	<p>About five years after Kuffler mapped cells in the retina two researchers at Johns Hopkins, Torsten Wiesel and David Hubel began setting up their own cat lab, now attempting to record from cells in the early visual cortex. The story of how they discovered what kinds of features activate V1 cells is <a href="https://youtu.be/IOHayh06LJ4?t=13">here on YouTube</a> and is quite surprising: it was a complete accident. If you want to skip the video the answer turns out to be <b>oriented bars</b>. But the real question is: what kind of a receptive field do you need to detect oriented bars? For figuring out the answer (among many other contributions) Hubel and Wiesel received the 1981 Nobel Prize. Now you get the opportunity to repeat their classic experiment below:</p>
+	<p>About five years after Kuffler mapped cells in the retina two researchers at Johns Hopkins, Torsten Wiesel and David Hubel began setting up their own cat lab, now attempting to record from cells in the early visual cortex. The story of how they discovered what kinds of features activate V1 cells is <a href="https://youtu.be/IOHayh06LJ4?t=13">here on YouTube</a> and is quite surprising: it was a complete accident. If you want to skip the video the answer turns out to be <b>oriented bars</b>. But the real question is: what kind of a receptive field do you need to detect oriented bars? For figuring out the answer (among many other contributions) Hubel and Wiesel received the 1981 Nobel Prize. Now you get the opportunity to repeat their classic experiment below (same game as before!):</p>
 	<div style="text-align:center;">
 		<div class="4u" style="text-align:center">
-			<input type="range" min="4" max="16" value="4" step="2" oninput="changeSize(this.value);"/>
+			<input type="range" min="4" max="16" value="12" step="2" oninput="changeSize(this.value);"/>
 		</div>
 		<div class="4u">
 			<output id="size7"></output>
@@ -143,7 +143,7 @@
 			<output id="rotation7"></output>
 		</div>
 		<canvas width=200 height=100 id="output7"></canvas>	
-		<canvas width=200 height=200 id="test"></canvas>
+		<!-- <canvas width=200 height=200 id="test"></canvas> -->
 	</div>
 	<canvas style="cursor:none" width=400 height=400 id="visual7"></canvas>
  	<div id="endblock7"><p>Nice work! We've now revealed to you the true receptive field. You can keep trying different stimuli now to help you understand why this particular setup is responsible for generating the pattern of responses you observed. While you do this think about the next question in our tutorial: we know that V1 simple cells get inputs from retinal ganglion cells, can you imagine how you might sum up the output of multiple retinal ganglion cells to get a receptive field like the one above?</p></div>
@@ -152,33 +152,61 @@
 <div id="block8"> 
 	<h2>Simple cells from retinal ganglion cells</h2>
 	<p>The graphic below walks you through how to build a V1 simple cell using the output of center-surround cells. It turns out to be quite simple--it's just a matter of combining a few cells in a line.</p>
-	<img src=""/>
-	<p>What's particularly interesting about this is that we've gone one synapse (neuron-to-neuron connection) further and simultaneously gone one stage up in complexity. In fact instead of just responding to points (one dimension), we can now respond to lines (two dimensions). As you might expect when we go further into the visual cortex hierarchy things will continue to become more complex. If you're curious there is a bonus content section below which explains the computational model we use to build simple cell receptive fields. This bonus content is not required! But if you have time do check it out, it's quite interesting.</p>
+	<img width=500 src="images/simplecells.png"/>
+	<p>What's particularly interesting about this is that we've gone one synapse (neuron-to-neuron connection) further and simultaneously gone one stage up in complexity. In fact instead of just responding to points (one dimension), we can now respond to lines (two dimensions). As you might expect when we go further into the visual cortex hierarchy things will continue to become more complex. If you're curious there is a bonus content section below which explains the computational model we use to build simple cell receptive fields.</p>
 
 	<br><br>
 	<a class="button" width=150 height=15 onclick="bonus1();">Bonus content (not required)</a>
 	<br>
 	<div id="bonus1"><br>
 		<h2>Bonus content: Simple cell model</h2>
-		<p>When we built up the receptive field on this page we didn't actually connect retinal ganglion cells together to generate a simple cell. It's simpler in practice to make a model of the simple cells directly, and this was also something that Hubel and Wiesel outlined in their early papers. </p>
-	</div>
+		<p>When we built up the receptive field on this page we didn't actually connect retinal ganglion cells together to generate a simple cell. It's simpler in practice to make a model of the simple cells directly. The model that has been suggested (I believe by Marcelja and Daugman) is a "Gaussian windowed sinusoid". We'll break this down with some plots below so that you can better understand what this looks like </p>
+		<h2>The mexican hat function</h2>
+		<p>Simple cells tend to have excitatory and inhibitory regions that are cyclical, as in they repeat across the receptive field. These also tend to fall along one axis. This should sound a bit like a sinusoidal function. But as you discovered, the receptive fields are quite small and "fall off" quite quickly. This is usually modeled using a gaussian probability density function. Combining this creates a "mexican hat" function, which arguably looks somewhat like its namesake. Take a look below at the two functions (sinusoid and gaussian) and their combination.</p>
+		<div id="plot1"></div><br>
+		<p>As we explained before this a <b>computational model</b> of the receptive field properties. It doesn't perfectly match the truth, but it captures enough of the characteristics of simple cells that it becomes quite useful for calculations.</p><br>
+	</div><br>	
 
 </div>
 
 <div id="block9"> 
 	<h2>1963: Complex cells</h2>
+	<p>Hubel and Wiesel went far beyond identifying simple cells, they actually characterized a whole set of different kinds of cells in early visual cortex. We've shown you one <i>type</i> of simple cell, but there is quite a variety of them. In addition there are cells that they named "complex cells". Below we have a stimulus (an oriented bar) and controls like you had for the retinal ganglion cells and simple cells. But this time we've already centered the stimulus on the receptive field for you, so no need to search for it. All you need to do is adjust the controls and do your best to map the excitatory and inhibitory regions of the receptive field. When you've done the best job you can, call over the TA so they can take a look.</p>
+	<div style="text-align:center;">
+		<div class="4u" style="text-align:center">
+			<input type="range" min="-40" max="40" value="0" step="5" oninput="changeSize(this.value);"/>
+		</div>
+		<div class="4u">
+			<output id="position9"></output>
+		</div>
+		<div class="4u" style="text-align:center">
+			<input type="range" min="0" max="135" value="0" step="45" oninput="changeRotation(this.value);"/>
+		</div>
+		<div class="4u">
+			<output id="rotation9"></output>
+		</div>
+		<canvas width=200 height=100 id="output9"></canvas>	
+		<!-- <canvas width=200 height=200 id="test"></canvas> -->
+	</div><br>
+	<canvas width=400 height=400 id="visual9"></canvas>
+	<br><br>
+	<textarea rows=1 id="textarea9" onkeypress="textarea9(event);" placeholder="(see TA when finished: //testing input:trickquestion//)"></textarea><br>
+	<div id="end9">
+	<!-- In case you forget the code is: "trickquestion" -->
+	<p>So this was a trick question, sorry about that! The receptive field of this cell is impossible to "draw" on the retina. This is because complex cells build up their receptive field features from the retinal ganglion cells and various kinds of simple cells. This causes them to have a property that cannot be represented visually on the retina: <b>invariance</b>. Try moving the stimulus along the "shift" axis again: notice that at the optimal orientation there is no change in the firing rate! Why is this? If you imagine the responses of several simple cells (see the visual) being combined you can get a sense of what's happening.</p>
+	<img width=600 src="images/complexcells.png"/><br>
+	<p>Invariance is crucial because it means that a representation is becoming more abstract. Instead of saying that a simple cell sees "an oriented bar at a specific location", you could now say that a complex cell sees "an oriented bar in a general region". Presumably if you go up another layer or two you will find cells that can be described as seeing "whether there is an oriented bar visible". This is a key concept: as you pool together simple neurons the features become more abstract and more complex.</p>
+	</div>
 </div>
 
 <div id="block10"> 
-	<h2>Cells as filters (visual)</h2>
+	<h2>Complexity</h2>
+	<p>As simple feature detectors repeat and invariance increases there are two interesting effects as you go up the visual cortical hierarchy. First, by virtue of pooling the responses of neurons you get increasing large receptive fields. Second, the complexity of the detected features increases substantially, from pinpoints of light, to edges, to complex things like motion, faces, places, etc. It is still not understand exactly how visual cortex is organized, but the increase in complexity is a well known defining feature. Taken together this means that neurons at the "top" of the visual cortex (such as in ventral temporal cortex, VTC) have a receptive field that covers most of the visual field and are responsive to very complex features like the presence or absence of human faces. In other words, these cells are excited when you see a face, regardless of where that face is exactly. You should be keeping in mind an image like the one that follows as you move forward in the course:</p>
+	<img src="images/complexity.png"/>
 </div>
 
 <div id="block11"> 
-	<h2>Complexity (visual)</h2>
-</div>
-
-<div id="block12"> 
-	<h2>Cat detectors</h2>
+	<h2>Category detectors</h2>
 	<p>You've now seen a whole lot of examples of how the early visual cortex processes stimuli to understand the world. We've shown you:
 	<ul>
 		<li>How retinal ganglion cells detect the location of light on the retina.</li>
@@ -186,13 +214,26 @@
 		<li>How more complex features can be detected by simply layering repeated simple detectors on top of each other</li>
 		<li>How a property such as invariance can be constructed by pooling similar inputs together</li>
 	</ul>
-	This covers much of how early visual cortex works which brings us to a final question for this tutorial: are these simple ideas sufficient to understand how the cortex might represent extremely complex features like objects? We aren't totally sure at this point, but recent developments in computer vision suggest that we're getting closer to an answer. Geoff Hinton in 2005 revealed that a <b>deep neural network</b> which simply repeated a similar computation across many dozens of layers could perform object recognition at near human performance. This approach was so successful that it spawned millions of offshoot projects--which have developed into the technology used for voice recognition in your phone, for building driverless cars, and are now used to perform better searches on Google. Below we're going to show you one of these deep neural networks in action. We've got a set of images that each contain an assortment of different objects, animals, etc, and what we're going to let you do is point a "searchlight" so to speak onto the image. The deep neural network will tell you what it "sees" at the location you're pointing to. Press the button to refresh the image with a new one. Have fun!</p>
-	<!-- STUFF -->
-	<p>As you saw, the neural network still "sees" things even when you're pointing at pure noise. This is one region people are hesitant to suggest that deep neural networks are doing the same thing that human brains are. Nonetheless, when you pointed your searchlight at any of the objects or animals you should have seen that the network successfully identified them a vast majority of the time. A more in-depth view of ConvNetJS is available <a href="https://cs.stanford.edu/people/karpathy/convnetjs/demo/cifar10.html">here</a>, and your TAs would be happy to discuss how this deep neural network works in more detail during office hours.</p>
+	This covers much of how early visual cortex works which brings us to a final question for this tutorial: are these simple ideas sufficient to understand how the cortex might represent extremely complex features like the identity of objects? We aren't totally sure at this point, but recent developments in computer vision suggest that we're getting closer to an answer. Geoff Hinton in 2005 revealed that a <b>deep neural network</b> which strings together simple feature detectors (like simple cells) can perform object recognition at near human performance. Below we're going to show you one of these deep neural networks in action. We've generated images with noise and random objects, animals, etc. What you're going to do is point a searchlight so to speak onto the image. The deep neural network will tell you what it "sees" in the searchlight. Click the image to refresh it. Have fun!</p>
+	<div class="row"><div style="font-size:20px;width:200px" id="conv_out">None</div>
+	<canvas width=32 height=32 style="width:160px; height:160px;" id="conv_view"></canvas></div>
+	<br>
+	<canvas width=150 height=150 style="width:300px; height:300px;" id="conv_canvas" onclick="reset_image();"></canvas>
+	<p>As you probably noticed the network is very sensitive to noise! This particular network happens to have an error rate of 25%, but other networks have achieved error rates as low as 3% on these images. This extreme sensitivity to small amounts of noise is one reason researchers are hesitant to believe that deep neural networks are doing the same thing that human brains are. Curiously, networks like these are not confused by look-a-like images like these (click for more silly images):</p>
+	<!-- Credit to twitter.com/teenybiscuit -->
+	<img width=400 id="mix" onclick="new_mix()"/>
+	<p>Instead, networks like this one are extremely confused by minor changes (for example adding random noise like we did above). Nonetheless, when you pointed your searchlight at any of the objects or animals you should have seen that the network often correctly identified them, and a fancier network (which are usually not programmed to run on browsers like this) could do an even better job.</p>
 </div> 
 
 <div id="endblock">
 	<h2>Tutorial complete!</h2>
+	<p> Your TAs would be happy to discuss any aspect of the tutorial. As a reminder, you should now have a better understanding of the following:</p>
+		<ul>
+		<li>How cells in visual cortex can act as filters, only detecting certain patterns of information.</li>
+		<li>How representations in the cortical visual hierarchy become more complex as you proceed deeper through cortical areas.</li>
+		<li>Be able to explain why invariance is an important property to have in the highest levels of visual cortex.</li>
+		</ul>
+	</p>
 </div>
 
 
@@ -216,9 +257,12 @@
 
 		<!-- Local CSS -->
 			<link rel="stylesheet" href="psych50_hierarchy.css" />
+			<!-- <link rel="stylesheet" href="psych50.css" /> -->
 		<!-- Scripts -->
+			<script src="convnetjs/images/cifar10_labels.js"></script>
 			<script src="shared_code.js"></script>
 			<script src="psych50_hierarchy.js"></script>
+
 			<script>launch();</script>
 	</body>
 </html>

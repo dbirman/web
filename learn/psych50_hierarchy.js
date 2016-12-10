@@ -33,6 +33,7 @@ var can_vis;
 var can_out;
 var cursorPosRaw = [-10,-10];
 var cursorPos = [-10,-10]; // REDUCED POSITION-- NOT REAL
+var updateBlock;
 // Contexts
 var ctx_vis;
 var ctx_out;
@@ -60,6 +61,7 @@ function launch3() {
   sizeOut = document.getElementById("size1");
   sizeOutText = "radius=";
 
+  updateBlock = updateBlockGen;
   computeRF = computeRF3;
 
   isDone = function() {return done3;}
@@ -128,11 +130,14 @@ function launch7() {
   rotationOut = document.getElementById("rotation7");
   rotationOutText="rotation=";
 
+  updateBlock = updateBlockGen;
   isDone = function() {return done7;}
+
+  correctCount = 0; clickListPos = []; clickListNeg = [];
 
   computeRF = computeRF7;
   // only change after compute is set
-  changeSize(3); // initial size
+  changeSize(12); // initial size
   changeRotation(0);
 
   checkDone = checkDone7;
@@ -158,15 +163,12 @@ function checkDone7() {
 var clickListPos = [];
 var clickListNeg = [];
 
-canvast = document.getElementById("test");
-ctxt = canvast.getContext("2d");
-
 function computeRF7() {
   // Build the receptive field--this is square, min size is
   // the diagonal of the stimulus size. Use rotatePoint to
   // build stimulus at the correct angle.
 
-  ctxt.clearRect(0,0,canvast.width,canvast.height);
+  // ctxt.clearRect(0,0,canvast.width,canvast.height);
 
   var diam = Math.round(size/pixReduction*1.5*2);
   var rad = diam/2;
@@ -175,9 +177,9 @@ function computeRF7() {
     for (var y=0;y<diam;y++) {
       var rot = rotatePoint(x,y,rad,rad,rotation*Math.PI/180);
       var ydist = Math.abs(rot[1]-rad);
-      rf[y*diam+x] = (ydist<(diam/1.5/4)) ? 1 : 0;
-      ctxt.fillStyle = gsc2hex(rf[y*diam+x]);
-      ctxt.fillRect(x*pixReduction,y*pixReduction,pixReduction,pixReduction);
+      rf[y*diam+x] = (ydist<(diam/1.5/pixReduction/2)) ? 1 : 0;
+      // ctxt.fillStyle = gsc2hex(rf[y*diam+x]);
+      // ctxt.fillRect(x*pixReduction,y*pixReduction,pixReduction,pixReduction);
     }
   }
 
@@ -193,25 +195,376 @@ function drawStimulus7() {
   ctx_vis.fillRect(-lsize,-size/4,lsize*2,size/2);
   ctx_vis.restore();
 }
+
+//////////////////////
+///// BLOCK 8  ///////
+//////////////////////
+
+function bonus1() {$("#bonus1").show();}
+
+function drawPlot8() {
+  var f = 0.25; 
+  var sigma = 2; // largeish sigma
+  var theta = 0; // no phase offset
+
+  var x = divide(range(-50,101),10);
+
+  traceS = {
+    x: x,
+    y: cos(subtract(multiply(2*Math.PI*f,x),theta)),
+    mode:'line',
+    line:{color:'black'},
+    type:'scatter',
+    name:'Sinusoid'
+  }
+  traceG = {
+    x: x,
+    y: pow(Math.exp(1),multiply(-1,divide(pow(x,2),multiply(2,pow(sigma,2))[0]))),
+    mode:'line',
+    line: {color:'white'},
+    type:'scatter',
+    name:'Gaussian'
+  }
+  traceM = {
+    x: x,
+    y: subtract(mexicanHat(x,f,sigma,theta),0.5),
+    mode:'line',
+    marker: {color:'red'},
+    type:'scatter',
+    name:'Mexican hat'
+  }
+  var layout1 = layout;
+  layout1.title = 'Building a single cell model';
+  layout1.xaxis.title = 'Position (a.u.)';
+  layout1.xaxis.range = [-5,5];
+  layout1.yaxis.title = 'Response (a.u.)';
+  layout1.yaxis.range = [-1,1];
+  layout1.width = 600;
+  layout1.height = 400;
+  Plotly.newPlot('plot1',[traceS,traceG,traceM],layout1);
+}
+
+//////////////////////
+///// BLOCK 9  ///////
+//////////////////////
+
+$("#textarea9").keydown(function(event) {textarea9(event)});
+
+function changePosition(nPos) {
+
+}
+function textarea9(e) {
+  var key = e.which;
+  if (key===13) {
+    e.preventDefault();
+    if (document.getElementById('textarea9').value.indexOf('trickquestion') !== -1) {
+      $("#end9").show();
+      $("#continue").show();
+    }
+  }
+}
+
+var respOffset = [];
+
+function launch9() {
+  can_vis = document.getElementById("visual9");
+  can_out = document.getElementById("output9");
+  ctx_vis = can_vis.getContext("2d");
+  ctx_out = can_out.getContext("2d");
+
+  can_vis.addEventListener("click",updateCanvasClick,false);
+  can_vis.eventClick = eventClick;
+  can_vis.addEventListener("mousemove",updateCanvasMove,false);
+  can_vis.eventMove = eventMove;
+
+  sizeOut = document.getElementById("position9");
+  sizeOutText = "offset=";
+  rotationOut = document.getElementById("rotation9");
+  rotationOutText="rotation=";
+
+  isDone = function() {return false;} // they type in a code from the TA
+
+  correctCount = 0; clickListPos = []; clickListNeg = [];
+
+  updateBlock = updateBlock9;
+
+  computeRF = computeRF7;
+  // only change after compute is set
+  changeSize(0); // initial size
+  changeRotation(0);
+
+  checkDone = function() {return false;}; // they type in a code from the TA
+  drawStimulus = drawStimulus9;
+  
+  preCompute();
+
+  // Launch
+  drawBlock();
+  spike();
+}
+
+var preCompVals;
+
+function preCompute() {
+  // Precompute values for block 9
+  var vals = range(-8,17);
+  var maxDir = Math.floor(Math.random()*4);
+  var oppDir = (maxDir+2) % 4;
+  var oDir1 = (maxDir+1) % 4;
+  var oDir2 = (maxDir+3) % 4;
+
+  // 4 directions, with +- 8 values, centered at zero
+  preCompVals = createArray(4,17);
+  preCompVals[maxDir] = [0,0,-0.1,1,1,1,1,1,1,1,1,1,1,1,-0.1,0,0];
+  preCompVals[oppDir] = [0,0,-0.1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-0.1,0,0];
+  preCompVals[oDir1] = zeros(17);
+  preCompVals[oDir2] = zeros(17);
+}
+
+function updateBlock9() {
+  // In block 9 we don't actuall compute the receptive field
+  // we just check the stimulus position and use this
+  // 
+  lsize = size/20;
+  lrot = rotation/45;
+
+  var val = preCompVals[lrot][lsize+8]*10 + preCompVals[lrot][lsize+8]*randn()*5;
+  
+  updateSpikeRate(val*50);
+}
+
+function drawStimulus9() {
+  // draw a rotated bar
+  ctx_vis.save();
+  ctx_vis.translate(can_vis.width/2,can_vis.height/2);
+  ctx_vis.rotate(-rotation*Math.PI/180);
+  ctx_vis.translate(0,size);
+  ctx_vis.fillStyle = "rgba(255,255,255,0.5)";
+  var lsize = 48;
+  ctx_vis.fillRect(-100,-15,200,30);
+  ctx_vis.restore();
+}
+
+//////////////////////
+///// CIFAR-10 ///////
+//////////////////////
+
+// This code is based on: https://cs.stanford.edu/people/karpathy/convnetjs/demo/cifar10.html
+
+var classes = ['airplane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck'];
+var num_batches = 1; // 20 training batches, 1 test
+var data_img_elts = new Array(num_batches);
+var img_data = new Array(num_batches);
+var loaded = new Array(num_batches);
+var loaded_train_batches = [];
+var net;
+
+// Load a single batch
+var load_data_batch = function(batch_num) {
+  // Load the dataset with JS in background
+  data_img_elts[batch_num] = new Image();
+  var data_img_elt = data_img_elts[batch_num];
+  data_img_elt.onload = function() { 
+    var data_canvas = document.createElement('canvas');
+    data_canvas.width = data_img_elt.width;
+    data_canvas.height = data_img_elt.height;
+    var data_ctx = data_canvas.getContext("2d");
+    data_ctx.drawImage(data_img_elt, 0, 0); // copy it over... bit wasteful :(
+    img_data[batch_num] = data_ctx.getImageData(0, 0, data_canvas.width, data_canvas.height);
+    loaded[batch_num] = true;
+    loaded_train_batches.push(batch_num);
+    console.log('finished loading data batch ' + batch_num);
+  };
+  data_img_elt.src = "convnetjs/images/cifar10_batch_" + batch_num + ".png";
+}
+
+// Load the pretrained network
+var load_pretrained = function() {
+  $.getJSON("convnetjs/cifar10_snapshot.json", function(json){
+    net = new convnetjs.Net();
+    net.fromJSON(json);
+    // trainer.learning_rate = 0.0001;
+    // trainer.momentum = 0.9;
+    // trainer.batch_size = 2;
+    // trainer.l2_decay = 0.00001;
+  });
+}
+
+var get_image = function() {
+  // pick a batch
+  var bi = Math.floor(Math.random()*loaded_train_batches.length);
+  // get the num of the batch
+  var b = loaded_train_batches[bi];
+  // sample within the batch
+  var k = Math.floor(Math.random()*1000);
+  // actual position in labels
+  var n = b*1000+k;
+
+  var p = img_data[0].data;
+  var data = zeros(3072);
+
+  for(var xc=0;xc<32;xc++) {
+    for(var yc=0;yc<32;yc++) {
+      for (var dc=0;dc<4;dc++) {
+        var i = yc*32*4+xc*4; // position in the image
+        // var i = yc*32*4
+        data[i+dc] = p[k*4096+i+dc];
+      }
+    }
+  }
+
+  return {data:data, label:labels[n]};
+
+}
+
+function launch_conv() {
+  can_conv.addEventListener("mousemove",updateCanvasMove,false);
+  can_conv.eventMove = eventMove_conv;
+
+  load_pretrained();
+  load_data_batch(0);
+
+  new_mix();
+
+  waitForLoad();
+}
+
+function new_mix() {
+  document.getElementById("mix").src = "images/mix" + Math.ceil(Math.random()*6) + ".jpg";
+}
+
+function waitForLoad() {
+  if (!loaded[0] || !net) {
+    setTimeout(waitForLoad,50);
+  } else {
+    a = get_image();
+    out = net.forward(a);
+
+    reset_image();
+    draw_conv();
+  }
+}
+
+function draw_conv() {
+  tick = window.requestAnimationFrame(draw_conv);
+
+  ctx_conv.clearRect(0,0,can_conv.width,can_conv.height);
+  ctx_conv.putImageData(conv_imgData,0,0);
+
+  var x = Math.round(cursorPosRaw[0]);
+  var y = Math.round(cursorPosRaw[1]);
+
+  ctx_conv.fillStyle = "rgba(255,255,255,0.25)";
+  ctx_conv.fillRect(x-15,y-15,31,31);
+}
+
+var can_conv = document.getElementById("conv_canvas");
+
+var ctx_conv = can_conv.getContext("2d");
+var conv_imgData = ctx_conv.createImageData(can_conv.width,can_conv.height);
+
+var img_xs;
+var img_ys;
+
+function reset_image() {
+  // We'll pick 5 random images and stick them in the canvas
+  var pixels = can_conv.width*can_conv.height;
+  for (var i=0; i<pixels;i++) {
+    for (var dc=0;dc<3;dc++) {
+      var val = Math.random()*255;
+      conv_imgData.data[i*4+dc] = (val>0)?(val<255?val:255):0;
+    }
+    conv_imgData.data[i*4+3] = 255;
+  }
+
+  img_xs = zeros(10);
+  img_ys = zeros(10);
+
+  for (var i=0; i<5; i++) {
+    var img = get_image();
+
+    // pick an x/y coordinate 
+    img_xs[i] = Math.round((Math.random()*.8+0.05)*can_conv.width);
+    img_ys[i] = Math.round((Math.random()*.8+0.05)*can_conv.height);
+
+    for (var x=0;x<32;x++) {
+      for (var y=0;y<32;y++) {
+        var can_pos = (img_ys[i]+y)*can_conv.width*4+(img_xs[i]+x)*4; // position on canvas
+        var img_pos = 4*(y*32+x); // position in img
+        for (var j=0;j<4;j++) {
+          conv_imgData.data[can_pos+j] = img.data[img_pos+j]; //Math.min(Math.max(img.data[img_pos+j]+randn()*25,0),255);
+        }
+      }
+    }
+  }
+}
+
+function eventMove_conv(x,y) {
+  xlim = 255-32; ylim = 255-32;
+  x = x>xlim ? x=xlim : x;
+  y = y>ylim ? y=ylim : y;
+  cursorPosRaw = [x,y];
+  see_image(Math.floor(x),Math.floor(y));
+}
+
+var cant = document.getElementById("conv_view");
+var ctxt = cant.getContext("2d");
+
+
+function see_image(x,y) {
+  ctxt.clearRect(0,0,cant.width,cant.height);
+
+  var dat = new convnetjs.Vol(32,32,3,0.0);
+  for(var xc=-15;xc<16;xc++) {
+    for(var yc=-15;yc<16;yc++) {
+      var rgb = [];
+      for(var dc=0;dc<3;dc++) {
+        var can_pos = (y+yc)*4*can_conv.width + (x+xc) * 4 + dc;
+        var val = conv_imgData.data[can_pos];
+        dat.set(yc,xc,dc,val/255.0-0.5);
+        rgb.push(val);
+      }
+      ctxt.fillStyle = "rgb("+rgb[0]+","+rgb[1]+","+rgb[2]+")";
+      ctxt.fillRect(xc+15,yc+15,1,1);
+    }
+  }
+
+  out = net.forward(dat);
+
+  oclass = findMaxIndex(out.w);
+  oclass2 = findSecondMaxIndex(out.w);
+
+  document.getElementById("conv_out").innerHTML = "I see a <b>" + classes[oclass] +"</b> but it could also be a <b>" + classes[oclass2] +"</b>";
+
+  // before giving to conv: /255.0-0.5
+}
+
+// Run on an image
+
 ////////////////////
 ///// SHARED ///////
 ////////////////////
 
-function updateBlock() {
+function updateBlockGen() {
   var rad = Math.sqrt(rf.length); // should always be square
   var curData = zeros(rf.length); var count = 0;
   var win_xy = [Math.round(cursorPos[0]-rad/2),Math.round(cursorPos[1]-rad/2)];
-  for (var x=win_xy[0];x<win_xy[0]+rad;x++) {
-    for (var y=win_xy[1];y<win_xy[1]+rad;y++) {
+  for (var y=win_xy[1];y<win_xy[1]+rad;y++) {
+    for (var x=win_xy[0];x<win_xy[0]+rad;x++) {
       curData[count++] = imageData[y*can_vis.width/pixReduction+x];
     }
   }
-  var val = sum(multiply(curData,rf));
+  var val = 0;
+  for (var i=0;i<curData.length;i++) {
+    if (!isnan(curData[i]) && !isnan(rf[i])) {
+      val+=curData[i]*rf[i];
+    }
+  }
   updateSpikeRate(val);
 }
 
 function updateSpikeRate(val) {
-  spk_rate = 3 + val*4;
+  spk_rate = 3 + val*2;
   if (spk_rate<0) {spk_rate=0;}
 }
 
@@ -334,6 +687,12 @@ function mexicanHat(x,f,sigma,theta) {
   return add(0.5,multiply(0.5,multiply(pow(Math.exp(1),multiply(-1,divide(pow(x,2),multiply(2,pow(sigma,2))[0]))),cos(subtract(multiply(2*Math.PI*f,x),theta))))); 
 }
 
+function findSecondMaxIndex(arr) {
+  var maxi = findMaxIndex(arr);
+  arr[maxi] = -Infinity;
+  return findMaxIndex(arr);
+}
+
 function mexicanHat2d(x,dist,f,sigma,theta) {
   return add(0.5,multiply(0.5,multiply(pow(Math.exp(1),multiply(-1,divide(pow(dist,2),multiply(2,pow(sigma,2))[0]))),cos(subtract(multiply(2*Math.PI*f,x),theta))))); 
 }
@@ -439,6 +798,19 @@ function run(i) {
         $("#continue").hide();
         $("#endblock7").hide();
       }
+      break;
+    case 8:
+      $("#bonus1").hide();
+      drawPlot8();
+      break;
+    case 9:
+      launch9();
+      $("#continue").hide();
+      $("#end9").hide();
+      break;
+    case 11:
+      launch_conv();
+      break;
   }
 }
 

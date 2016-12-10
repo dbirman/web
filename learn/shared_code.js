@@ -50,6 +50,8 @@ function next() {
 		document.getElementById("endblock").style.display="";
 	}
 	run(curBlock);
+	
+	$("body").scrollTop(0);
 }
 
 function launch() {
@@ -774,6 +776,24 @@ function greaterThan(first, second) {
 	} else {
 		return first > second ? [1] : [0];
 	}
+}
+
+function findMaxIndex(arr) {
+    if (arr.length === 0) {
+        return -1;
+    }
+
+    var max = arr[0];
+    var maxIndex = 0;
+
+    for (var i = 1; i < arr.length; i++) {
+        if (arr[i] > max) {
+            maxIndex = i;
+            max = arr[i];
+        }
+    }
+
+    return maxIndex;
 }
 
 function max(first, second) {
