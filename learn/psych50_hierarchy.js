@@ -536,27 +536,28 @@ function removeClick() {down=false;}
 // var cant = document.getElementById("conv_view");
 // var ctxt = cant.getContext("2d");
 
+var conv_out;
 
 function see_image(x,y) {
   // ctxt.clearRect(0,0,cant.width,cant.height);
 
-  var dat = new convnetjs.Vol(24,24,3,0.0);
-  for(var x=0;x<24;x++) {
-    for(var y=0;y<24;y++) {
-      for(var dc=0;dc<3;dc++) {
-        var val = conv_imgData.data[4*(y*24+x) + dc];
-        dat.set(y,x,dc,val/255);
-      }
-    }
+  dat = new convnetjs.Vol(24,24,1,0.0);
+  for (var i=0;i<(24*24);i++) {
+    dat.w[i] = conv_imgData.data[i*4];
   }
+  // for(var x=0;x<24;x++) {
+  //   for(var y=0;y<24;y++) {
+  //     var val = conv_imgData.data[4*(y*24+x)];
+  //     dat.set(y,x,1,val/255);
+  //   }
+  // }
 
-  var out = net.forward(dat);
+  conv_out = net.forward(dat);
 
-  var oclass = findMaxIndex(out.w);
-  var oclass2 = findSecondMaxIndex(out.w);
+  var oclass = findMaxIndex(conv_out.w);
+  var oclass2 = findSecondMaxIndex(conv_out.w);
 
-  document.getElementById("conv_out").innerHTML = Math.round(out.w[oclass]*100) + "% chance it's a <b>" + classes[oclass] +"</b>, " + Math.round(out.w[oclass2]*100) + "% it's a <b>" + classes[oclass2] +"</b>";
-
+  document.getElementById("conv_out").innerHTML = "I see a <b>" + classes[oclass] +"</b>";
 }
 
 // Run on an image
@@ -856,14 +857,14 @@ function updateCanvas(evt,canvas) {
 
 function updateCanvasMove(evt) {
   var canvas = evt.target;
-  out = updateCanvas(evt,canvas);
+  var out = updateCanvas(evt,canvas);
   canvas.eventMove(out[0],out[1]);
 }
 
 function updateCanvasClick(evt) {
   evt.preventDefault();
   var canvas = evt.target;
-  out = updateCanvas(evt,canvas);
+  var out = updateCanvas(evt,canvas);
   canvas.eventClick(out[0],out[1],evt.shiftKey);
 }
 
