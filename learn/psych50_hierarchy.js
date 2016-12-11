@@ -330,7 +330,7 @@ function updateBlock9() {
 
   var val = preCompVals[lrot][lsize+8]*10 + preCompVals[lrot][lsize+8]*randn()*5;
   
-  updateSpikeRate(val*50);
+  updateSpikeRate(val*20);
 }
 
 function drawStimulus9() {
@@ -424,14 +424,14 @@ function launch_conv() {
   load_pretrained();
   // load_data_batch(0);
 
-  new_mix();
+  // new_mix();
 
   waitForLoad();
 }
 
-function new_mix() {
-  document.getElementById("mix").src = "images/mix" + Math.ceil(Math.random()*6) + ".jpg";
-}
+// function new_mix() {
+//   document.getElementById("mix").src = "images/mix" + Math.ceil(Math.random()*6) + ".jpg";
+// }
 
 function waitForLoad() {
   // if (!loaded[0] || !net) {
