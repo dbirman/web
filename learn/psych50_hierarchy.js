@@ -521,7 +521,7 @@ function see_image(x,y) {
       for(var dc=0;dc<3;dc++) {
         var can_pos = (y+yc)*4*can_conv.width + (x+xc) * 4 + dc;
         var val = conv_imgData.data[can_pos];
-        dat.set(yc,xc,dc,val/255.0-0.5);
+        dat.set(yc+15,xc+15,dc,val/255.0-0.5);
         rgb.push(val);
       }
       ctxt.fillStyle = "rgb("+rgb[0]+","+rgb[1]+","+rgb[2]+")";
