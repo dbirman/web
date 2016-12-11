@@ -330,7 +330,7 @@ function updateBlock9() {
 
   var val = preCompVals[lrot][lsize+8]*10 + preCompVals[lrot][lsize+8]*randn()*5;
   
-  updateSpikeRate(val*20);
+  updateSpikeRate(val*10);
 }
 
 function drawStimulus9() {
