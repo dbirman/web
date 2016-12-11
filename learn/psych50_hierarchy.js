@@ -351,78 +351,78 @@ function drawStimulus9() {
 
 // This code is based on: https://cs.stanford.edu/people/karpathy/convnetjs/demo/cifar10.html
 
-var classes = ['airplane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck'];
-var num_batches = 1; // 20 training batches, 1 test
-var data_img_elts = new Array(num_batches);
-var img_data = new Array(num_batches);
-var loaded = new Array(num_batches);
-var loaded_train_batches = [];
+var classes = ['0','1','2','3','4','5','6','7','8','9'];
+// var num_batches = 1; // 20 training batches, 1 test
+// var data_img_elts = new Array(num_batches);
+// var img_data = new Array(num_batches);
+// var loaded = new Array(num_batches);
+// var loaded_train_batches = [];
 var net;
 
 // Load a single batch
-var load_data_batch = function(batch_num) {
-  // Load the dataset with JS in background
-  data_img_elts[batch_num] = new Image();
-  var data_img_elt = data_img_elts[batch_num];
-  data_img_elt.onload = function() { 
-    var data_canvas = document.createElement('canvas');
-    data_canvas.width = data_img_elt.width;
-    data_canvas.height = data_img_elt.height;
-    var data_ctx = data_canvas.getContext("2d");
-    data_ctx.drawImage(data_img_elt, 0, 0); // copy it over... bit wasteful :(
-    img_data[batch_num] = data_ctx.getImageData(0, 0, data_canvas.width, data_canvas.height);
-    loaded[batch_num] = true;
-    loaded_train_batches.push(batch_num);
-    console.log('finished loading data batch ' + batch_num);
-  };
-  data_img_elt.src = "convnetjs/images/cifar10_batch_" + batch_num + ".png";
-}
+// var load_data_batch = function(batch_num) {
+//   // Load the dataset with JS in background
+//   data_img_elts[batch_num] = new Image();
+//   var data_img_elt = data_img_elts[batch_num];
+//   data_img_elt.onload = function() { 
+//     var data_canvas = document.createElement('canvas');
+//     data_canvas.width = data_img_elt.width;
+//     data_canvas.height = data_img_elt.height;
+//     var data_ctx = data_canvas.getContext("2d");
+//     data_ctx.drawImage(data_img_elt, 0, 0); // copy it over... bit wasteful :(
+//     img_data[batch_num] = data_ctx.getImageData(0, 0, data_canvas.width, data_canvas.height);
+//     loaded[batch_num] = true;
+//     loaded_train_batches.push(batch_num);
+//     console.log('finished loading data batch ' + batch_num);
+//   };
+//   data_img_elt.src = "convnetjs/images/cifar10_batch_" + batch_num + ".png";
+// }
 
-// Load the pretrained network
+//Load the pretrained network
 var load_pretrained = function() {
-  $.getJSON("convnetjs/cifar10_snapshot.json", function(json){
+  $.getJSON("convnetjs/mnist_snapshot.json", function(json){
     net = new convnetjs.Net();
     net.fromJSON(json);
-    // trainer.learning_rate = 0.0001;
-    // trainer.momentum = 0.9;
-    // trainer.batch_size = 2;
-    // trainer.l2_decay = 0.00001;
   });
 }
 
-var get_image = function() {
-  // pick a batch
-  var bi = Math.floor(Math.random()*loaded_train_batches.length);
-  // get the num of the batch
-  var b = loaded_train_batches[bi];
-  // sample within the batch
-  var k = Math.floor(Math.random()*1000);
-  // actual position in labels
-  var n = b*1000+k;
+// var get_image = function() {
+//   // pick a batch
+//   var bi = Math.floor(Math.random()*loaded_train_batches.length);
+//   // get the num of the batch
+//   var b = loaded_train_batches[bi];
+//   // sample within the batch
+//   var k = Math.floor(Math.random()*1000);
+//   // actual position in labels
+//   var n = b*1000+k;
 
-  var p = img_data[0].data;
-  var data = zeros(3072);
+//   var p = img_data[0].data;
+//   var data = zeros(3072);
 
-  for(var xc=0;xc<32;xc++) {
-    for(var yc=0;yc<32;yc++) {
-      for (var dc=0;dc<4;dc++) {
-        var i = yc*32*4+xc*4; // position in the image
-        // var i = yc*32*4
-        data[i+dc] = p[k*4096+i+dc];
-      }
-    }
-  }
+//   for(var xc=0;xc<32;xc++) {
+//     for(var yc=0;yc<32;yc++) {
+//       for (var dc=0;dc<4;dc++) {
+//         var i = yc*32*4+xc*4; // position in the image
+//         // var i = yc*32*4
+//         data[i+dc] = p[k*4096+i+dc];
+//       }
+//     }
+//   }
 
-  return {data:data, label:labels[n]};
+//   return {data:data, label:labels[n]};
 
-}
+// }
 
 function launch_conv() {
+  can_conv.addEventListener("mousedown",updateCanvasClick,false);
+  can_conv.eventClick = eventClick_conv;
   can_conv.addEventListener("mousemove",updateCanvasMove,false);
   can_conv.eventMove = eventMove_conv;
+  can_conv.addEventListener("mouseup",removeClick,false);
+
 
   load_pretrained();
-  load_data_batch(0);
+  // load_data_batch(0);
 
   new_mix();
 
@@ -434,32 +434,33 @@ function new_mix() {
 }
 
 function waitForLoad() {
-  if (!loaded[0] || !net) {
-    setTimeout(waitForLoad,50);
-  } else {
-    a = get_image();
-    out = net.forward(a);
+  // if (!loaded[0] || !net) {
+  //   setTimeout(waitForLoad,50);
+  // } else {
+    // a = get_image();
+    // out = net.forward(a);
 
-    reset_image();
-    draw_conv();
-  }
+  reset_image();
+  draw_conv();
+  // }
 }
 
 function draw_conv() {
   tick = window.requestAnimationFrame(draw_conv);
 
   ctx_conv.clearRect(0,0,can_conv.width,can_conv.height);
+  ctx_conv.fillStyle = "#000000";
+  ctx_conv.fillRect(0,0,can_conv.width,can_conv.height);
   ctx_conv.putImageData(conv_imgData,0,0);
 
-  var x = Math.round(cursorPosRaw[0]);
-  var y = Math.round(cursorPosRaw[1]);
+  var x = Math.floor(cursorPosRaw[0]);
+  var y = Math.floor(cursorPosRaw[1]);
 
-  ctx_conv.fillStyle = "rgba(255,255,255,0.25)";
-  ctx_conv.fillRect(x-15,y-15,31,31);
+  ctx_conv.fillStyle = "rgba(128,128,128,1)";
+  ctx_conv.fillRect(x,y,1,1);
 }
 
 var can_conv = document.getElementById("conv_canvas");
-
 var ctx_conv = can_conv.getContext("2d");
 var conv_imgData = ctx_conv.createImageData(can_conv.width,can_conv.height);
 
@@ -467,76 +468,96 @@ var img_xs;
 var img_ys;
 
 function reset_image() {
-  // We'll pick 5 random images and stick them in the canvas
-  var pixels = can_conv.width*can_conv.height;
-  for (var i=0; i<pixels;i++) {
+  for (var i=0;i<(24*24);i++) {
     for (var dc=0;dc<3;dc++) {
-      var val = Math.random()*255;
-      conv_imgData.data[i*4+dc] = (val>0)?(val<255?val:255):0;
+      conv_imgData.data[i*4+dc] = 0;
     }
     conv_imgData.data[i*4+3] = 255;
   }
+  // We'll pick 5 random images and stick them in the canvas
+  // var pixels = can_conv.width*can_conv.height;
+  // for (var i=0; i<pixels;i++) {
+  //   for (var dc=0;dc<3;dc++) {
+  //     var val = Math.random()*255;
+  //     conv_imgData.data[i*4+dc] = (val>0)?(val<255?val:255):0;
+  //   }
+  //   conv_imgData.data[i*4+3] = 255;
+  // }
 
-  img_xs = zeros(10);
-  img_ys = zeros(10);
+  // img_xs = zeros(10);
+  // img_ys = zeros(10);
 
-  for (var i=0; i<5; i++) {
-    var img = get_image();
+  // for (var i=0; i<5; i++) {
+  //   var img = get_image();
 
-    // pick an x/y coordinate 
-    img_xs[i] = Math.round((Math.random()*.8+0.05)*can_conv.width);
-    img_ys[i] = Math.round((Math.random()*.8+0.05)*can_conv.height);
+  //   // pick an x/y coordinate 
+  //   img_xs[i] = Math.round((Math.random()*.8+0.05)*can_conv.width);
+  //   img_ys[i] = Math.round((Math.random()*.8+0.05)*can_conv.height);
 
-    for (var x=0;x<32;x++) {
-      for (var y=0;y<32;y++) {
-        var can_pos = (img_ys[i]+y)*can_conv.width*4+(img_xs[i]+x)*4; // position on canvas
-        var img_pos = 4*(y*32+x); // position in img
-        for (var j=0;j<4;j++) {
-          conv_imgData.data[can_pos+j] = img.data[img_pos+j]; //Math.min(Math.max(img.data[img_pos+j]+randn()*25,0),255);
-        }
-      }
-    }
-  }
+  //   for (var x=0;x<32;x++) {
+  //     for (var y=0;y<32;y++) {
+  //       var can_pos = (img_ys[i]+y)*can_conv.width*4+(img_xs[i]+x)*4; // position on canvas
+  //       var img_pos = 4*(y*32+x); // position in img
+  //       for (var j=0;j<4;j++) {
+  //         conv_imgData.data[can_pos+j] = img.data[img_pos+j]; //Math.min(Math.max(img.data[img_pos+j]+randn()*25,0),255);
+  //       }
+  //     }
+  //   }
+  // }
 }
 
 function eventMove_conv(x,y) {
-  xlim = 255-32; ylim = 255-32;
-  x = x>xlim ? x=xlim : x;
-  y = y>ylim ? y=ylim : y;
+  // xlim = 255-32; ylim = 255-32;
+  // x = x>xlim ? x=xlim : x;
+  // y = y>ylim ? y=ylim : y;
   cursorPosRaw = [x,y];
-  see_image(Math.floor(x),Math.floor(y));
+  x = Math.floor(x), y = Math.floor(y);
+  see_image(x,y);
+  if (down) {
+    for (var j=0;j<3;j++) {conv_imgData.data[4*(y*24+x)+j] = 255;}
+  }
 }
 
-var cant = document.getElementById("conv_view");
-var ctxt = cant.getContext("2d");
+var down = false;
 
+function eventClick_conv(x,y,shift) {
+  down = true;
+  x = Math.floor(x), y = Math.floor(y);
+  if (shift) {reset_image();}
+  else {
+    // Whiten position
+    for (var j=0;j<3;j++) {conv_imgData.data[4*(y*24+x)+j] = 255;}
+  }
+  see_image();
+}
+
+function removeClick() {down=false;}
+
+// var cant = document.getElementById("conv_view");
+// var ctxt = cant.getContext("2d");
+
+var conv_out;
 
 function see_image(x,y) {
-  ctxt.clearRect(0,0,cant.width,cant.height);
+  // ctxt.clearRect(0,0,cant.width,cant.height);
 
-  var dat = new convnetjs.Vol(32,32,3,0.0);
-  for(var xc=-15;xc<16;xc++) {
-    for(var yc=-15;yc<16;yc++) {
-      var rgb = [];
-      for(var dc=0;dc<3;dc++) {
-        var can_pos = (y+yc)*4*can_conv.width + (x+xc) * 4 + dc;
-        var val = conv_imgData.data[can_pos];
-        dat.set(yc+15,xc+15,dc,val/255.0-0.5);
-        rgb.push(val);
-      }
-      ctxt.fillStyle = "rgb("+rgb[0]+","+rgb[1]+","+rgb[2]+")";
-      ctxt.fillRect(xc+15,yc+15,1,1);
-    }
+  dat = new convnetjs.Vol(24,24,1,0.0);
+  for (var i=0;i<(24*24);i++) {
+    dat.w[i] = conv_imgData.data[i*4];
   }
+  // for(var x=0;x<24;x++) {
+  //   for(var y=0;y<24;y++) {
+  //     var val = conv_imgData.data[4*(y*24+x)];
+  //     dat.set(y,x,1,val/255);
+  //   }
+  // }
 
-  out = net.forward(dat);
+  conv_out = net.forward(dat);
 
-  oclass = findMaxIndex(out.w);
-  oclass2 = findSecondMaxIndex(out.w);
+  var oclass = findMaxIndex(conv_out.w);
+  var oclass2 = findSecondMaxIndex(conv_out.w);
 
-  document.getElementById("conv_out").innerHTML = "I see a <b>" + classes[oclass] +"</b> but it could also be a <b>" + classes[oclass2] +"</b>";
-
-  // before giving to conv: /255.0-0.5
+  document.getElementById("conv_out").innerHTML = "I see a <b>" + classes[oclass] +"</b>";
 }
 
 // Run on an image
@@ -836,14 +857,14 @@ function updateCanvas(evt,canvas) {
 
 function updateCanvasMove(evt) {
   var canvas = evt.target;
-  out = updateCanvas(evt,canvas);
+  var out = updateCanvas(evt,canvas);
   canvas.eventMove(out[0],out[1]);
 }
 
 function updateCanvasClick(evt) {
   evt.preventDefault();
   var canvas = evt.target;
-  out = updateCanvas(evt,canvas);
+  var out = updateCanvas(evt,canvas);
   canvas.eventClick(out[0],out[1],evt.shiftKey);
 }
 
