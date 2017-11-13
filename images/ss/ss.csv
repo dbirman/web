@@ -19,7 +19,7 @@ The Ogre,ogre,41.17689,-122.33692
 Outer Space,outer_space,47.52963,-120.71869
 Burgundy Dome,pinnacles,36.4895,-121.1979
 Mt Sir Donald,sir_donald,51.26301,-117.43131
-Snake Dike,snake,37.7442,-119.5349
+Snake Dike,snake,37.741359,-119.537710
 Transylvania - Monte Casale,transylvania,46.032358,10.932489
 Tunnel Vision,tunnelvision,36.16894,-115.48726
 East Butt - Mt Whitney,whitney_butt,36.57844,-118.29229
@@ -33,7 +33,7 @@ Emmons Glacier - Mt Baker,baker,48.77969,-121.82043
 Kautz Glacier - Rainier,rainier,46.85280,-121.759
 East Butt - Middle Cathedral,middlecathedral,37.7165,-119.6363
 Southwest Face - Liberty Cap,libertycap,37.72751,-119.53364
-Regular NW - Half Dome,reg_nw,37.7432,-119.5449
+Regular NW - Half Dome,reg_nw,37.746198,-119.533470
 Italian Route - Mont Blanc,mont_blanc,45.83270,6.8643
 Big Ben - Halong Bay,big_ben,20.76825,107.08773
 East Arete - Carl Heller,carl_heller,36.61118,-118.30178
@@ -43,3 +43,8 @@ Joshua Tree,jtree1,34.042166,-116.148418
 Zion - Smith Rock,zebra_zion,44.367097,-121.143818
 Robbers Roost,roost_canyon,38.320440,-110.535297
 Sarche - Italy,italy_ice,46.046758,10.953693
+Cave Route - Mt Diablo,caveroute,37.880573,-121.985575
+Pagoda Rock - Mt Diablo,pagoda,37.880497,-121.985829
+Upper Crust - Pinnacles,pinnacles_friends,36.472732,-121.185746
+East Buttress - Middle Cathedral,east_butt2,37.717282,-119.634327
+Super Slide,super_slide,37.749255,-119.572375
