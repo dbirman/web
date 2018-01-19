@@ -1,0 +1,24 @@
+.svg-container { 
+	display: inline-block;
+	position: relative;
+	width: 50vw;
+	padding-bottom: 100%; 
+	vertical-align: middle; 
+	/*overflow: hidden; */
+}
+
+.svg-content { 
+	display: inline-block;
+	position: absolute;
+	top: 0vh;
+	left: 25vw;
+	transform: po;
+}
+
+.hov {
+	transition: .6s fill;
+	fill:#000000; 
+}
+.hov:hover {
+	fill:#DF1408; 
+}
