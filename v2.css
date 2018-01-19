@@ -1,24 +1,48 @@
 .svg-container { 
 	display: inline-block;
 	position: relative;
-	width: 50vw;
+	width: 75vw;
 	padding-bottom: 100%; 
 	vertical-align: middle; 
-	/*overflow: hidden; */
+	overflow: hidden; 
 }
 
 .svg-content { 
 	display: inline-block;
 	position: absolute;
 	top: 0vh;
-	left: 25vw;
-	transform: po;
+	left: 0vw;
 }
 
 .hov {
-	transition: .6s fill;
-	fill:#000000; 
+	transition: .6s opacity;
+	fill:#FFFFFF; 
+	opacity:0;
 }
 .hov:hover {
-	fill:#DF1408; 
+	fill:#FFFFFF;
+	opacity:1; 
+}
+
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
 }
