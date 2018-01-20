@@ -55,8 +55,10 @@ function showArea(n) {
 	}
 }
 
+var loaded = false;
 
 function flicker(n) {
+	if (elems[n]==undefined) {return;}
 	opacity[n] = !opacity[n];
 	elems[n].style.opacity = "" + Number(opacity[n]);
 	ticks[n] = setTimeout(function() {flicker(n);},150);
@@ -65,7 +67,12 @@ function flicker(n) {
 var hintTick;
 
 function showHint() {
-	localStorage.hinted = true;
+	try {
+		localStorage.hinted = true;
+	} catch (e) {
+		console.log('Local storage was blocked -- defaulting to session');
+		sessionStorage.hinted = true;
+	}
 	document.getElementById("hint").style.opacity = "1";
 }
 
@@ -74,8 +81,15 @@ function hideHint() {
 }
 
 function init() {
-	if (localStorage.hinted==undefined) {
-		hintTick = setTimeout(showHint,5000);
+	try {
+		if (localStorage.hinted==undefined) {
+			hintTick = setTimeout(showHint,5000);
+		}
+	} catch (e) {
+		if (sessionStorage.hinted==undefined) {
+			hintTick = setTimeout(showHint,5000);
+		}
+		console.log('Local storage was blocked');
 	}
 	for (var i=1;i<=6;i++) {
 		elems[i] = document.getElementById("circ"+i);
