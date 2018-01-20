@@ -9,7 +9,12 @@
 // When the user clicks anywhere outside of the modal, close it
 window.onclick = function(event) {
     if (event.target.className == "close") {
-        event.target.parentElement.parentElement.style.display = "none";
+    	// chain parentElements until you find the modal
+    	var parent = event.target.parentElement;
+    	while (parent.className!="modal") {
+    		parent = parent.parentElement;
+    	}
+        parent.style.display = "none";
     }
     if (event.target.className == "modal") {
         event.target.style.display = "none";
@@ -60,6 +65,7 @@ function init() {
 	for (var i=1;i<=6;i++) {
 		elems[i] = document.getElementById("circ"+i);
 		modals[i] = document.getElementById("modal"+i);
+		document.getElementById(""+i).style.cursor = "pointer";
 	}
 }
 
