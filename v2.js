@@ -47,6 +47,7 @@ var elems = [];
 // Callbacks
 
 function showArea(n) {
+	hideHint();
 	areas[n-1].style.display="block";
 
 	if (n==6) {
@@ -61,7 +62,21 @@ function flicker(n) {
 	ticks[n] = setTimeout(function() {flicker(n);},150);
 }
 
+var hintTick;
+
+function showHint() {
+	localStorage.hinted = true;
+	document.getElementById("hint").style.opacity = "1";
+}
+
+function hideHint() {
+	document.getElementById("hint").style.opacity = "0";
+}
+
 function init() {
+	if (localStorage.hinted==undefined) {
+		hintTick = setTimeout(showHint,5000);
+	}
 	for (var i=1;i<=6;i++) {
 		elems[i] = document.getElementById("circ"+i);
 		modals[i] = document.getElementById("modal"+i);

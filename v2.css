@@ -83,3 +83,58 @@ svg { position:fixed; z-index:0; top:0; left:0; height:100%; width:100% }
 .popup-img {
 	border-radius:5px;
 }
+
+
+ul.img-list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+ul.img-list li {
+  display: inline-block;
+  height: 30vh;
+  margin: 0 1em 1em 0;
+  position: relative;
+  width: 30vh;
+}
+
+span.text-content {
+  /*background: rgba(0,0,0,0.5);*/
+  color: white;
+  cursor: pointer;
+  display: table;
+  height: 30vh;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 30vh;
+}
+
+span.text-content span {
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+}
+
+span.text-content {
+  /*background: rgba(0,0,0,0.5);*/
+  color: black;
+  cursor: pointer;
+  display: table;
+  height: 30vh;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 30vh;
+  opacity: 0;
+}
+
+ul.img-list li:hover img {
+  opacity: 0;
+}
+
+ul.img-list li:hover span.text-content {
+  opacity: 1;
+} 
