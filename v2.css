@@ -1,34 +1,11 @@
-.svg-container { 
-	display: inline-block;
-	position: relative;
-	width: 75vw;
-	padding-bottom: 100%; 
-	vertical-align: middle; 
-	overflow: hidden; 
-}
-
-.svg-content { 
-	display: inline-block;
-	position: absolute;
-	top: 0vh;
-	left: 0vw;
-}
-
-.hov {
-	transition: .6s opacity;
-	fill:#FFFFFF; 
-	opacity:0;
-}
-.hov:hover {
-	fill:#FFFFFF;
-	opacity:1; 
-}
+html, body { margin:0; padding:0; overflow:hidden }
+svg { position:fixed; z-index:0; top:0; left:0; height:100%; width:100% }
 
 .modal {
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
     z-index: 1; /* Sit on top */
-    padding-top: 100px; /* Location of the box */
+    padding-top: 10vh; /* Location of the box */
     left: 0;
     top: 0;
     width: 100%; /* Full width */
