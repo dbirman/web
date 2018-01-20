@@ -6,6 +6,17 @@
 //     }
 // }
 
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+    if (event.target.className == "close") {
+        event.target.parentElement.parentElement.style.display = "none";
+    }
+    if (event.target.className == "modal") {
+        event.target.style.display = "none";
+    }
+}
+
+
 function over(n) {
 	flicker(n);
 	document.getElementById("circ"+n).style.opacity = "0";
@@ -17,47 +28,27 @@ function out(n) {
 }
 
 var modals = [];
-var areas = [cAbout,cCohcon,cLibet,cFBSear,cLearn,cSelfies];
+var cAbout = document.getElementById("cM_about"),
+	cCohcon = document.getElementById("cM_cohcon"),
+	cLibet = document.getElementById("cM_libet"), 
+	cFBSear = document.getElementById("cM_fbsear"), 
+	cLearn = document.getElementById("cM_learn"), 
+	cSelfies = document.getElementById("cM_selfies");
+var areas = [cAbout,cCohcon,cFBSear,cLibet,cLearn,cSelfies];
 var ticks = [-1,-1,-1,-1,-1,-1];
 var opacity = [true,true,true,true,true,true];
 var elems = [];
 
 // Callbacks
 
-function area(n) {
-	areas[n]();
-}
+function showArea(n) {
+	areas[n-1].style.display="block";
 
-var cM_about = document.getElementById("cM_about");
-
-function cAbout(show) {
-	console.log('aboot');
-	if (show) {
-		cM_about.style.display="block";
-	} else {
-		cM_about.style.display="";
+	if (n==6) {
+		window.dispatchEvent(new Event('resize'));
 	}
 }
 
-function cCohcon() {
-
-}
-
-function cLibet() {
-
-}
-
-function cFBSear() {
-
-}
-
-function cLearn() {
-
-}
-
-function cSelfies() {
-
-}
 
 function flicker(n) {
 	opacity[n] = !opacity[n];
