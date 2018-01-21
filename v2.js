@@ -160,13 +160,6 @@ function init() {
 
 window.onload = init;
 
-
-
-
-
-
-
-
 var map;
 
 function getData() {
