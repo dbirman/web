@@ -9,7 +9,7 @@
   <link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32" />
   <link rel="icon" type="image/png" href="favicon-16x16.png" sizes="16x16" />
   <meta charset="utf-8" />
-  <link rel="stylesheet" href="v2_min.css" />
+  <link rel="stylesheet" href="v2.css" />
   <link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
   <link href='https://api.mapbox.com/mapbox-gl-js/v0.39.1/mapbox-gl.css' rel='stylesheet' />
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -37,38 +37,40 @@
   <div id="cM_about" class="modal">
 
     <!-- Modal content -->
-    <div class="modal-content" style="min-height:60%">
+    <div class="modal-content sixty">
       <span class="close">&times;</span>
       <div>
-        <img style="padding:2%; border-radius:50%; width:30vh;" align="left" src="images/danface_big.jpg"/>
+        <div>
+          <img class="face" align="left" src="images/danface_big.jpg"/>
+        </div>
         <div>
           <br>
           <h2>How does the brain create our mind?</h2>
           <br>
-          <h3>I am currently a PhD student at <span class="inline-color">Stanford University</span> in the lab of <a target="_blank" style="color:black" href="http://gru.stanford.edu/">Justin Gardner</a> studying how perception and action are linked to sensory representations in the brain.</h3>
+          <h3>I am currently a PhD student at <span class="inline-color">Stanford University</span> in the lab of <a target="_blank" href="http://gru.stanford.edu/">Justin Gardner</a> studying how perception and action are linked to sensory representations in the brain.</h3>
         </div>
       </div>
       <!-- invis hover images -->
-      <div style="clear:left">
+      <div class="clear">
         <br>
         <hr>
         <br>
         <ul class="img-list">
           <li>
             <div>
-              <img src="images/culogo.png" style="width:30vh"/>
+              <img class="logo" src="images/culogo.png"/>
               <span class="text-content"><span>Cornell University<br>BA Biology: 2012</span></span>
             </div>
           </li>
           <li>
             <div>
-              <img src="images/ber2.png" style="width:30vh"/>
+              <img class="logo" src="images/ber2.png"/>
               <span class="text-content"><span>BCCN Berlin<br>Research Assistant<br>2012-2013</span></span>
             </div>
           </li>
           <li>
             <div>
-              <img src="images/SU_Seal_Red.png" style="width:30vh"/>
+              <img class="logo" src="images/SU_Seal_Red.png"/>
               <span class="text-content"><span>Stanford University<br>PhD Cognitive Neuroscience<br>2014-Present</span></span>
             </div>
           </li>
@@ -78,7 +80,7 @@
       <hr>
       <br>
       <div>
-        <p style="text-align:center">&copy; Dan Birman 2015-Present . <a href="https://github.com/dbirman/web/" target="_blank">Code</a></p>
+        <p class="copyright">&copy; Dan Birman 2015-Present . <a href="https://github.com/dbirman/web/" target="_blank">Code</a></p>
       </div>
     </div>
   </div>
@@ -86,14 +88,14 @@
   <div id="cM_cohcon" class="modal">
 
     <!-- Modal content -->
-    <div class="modal-content" style="min-height:50%">
+    <div class="modal-content fifty">
       <span class="close">&times;</span>
-      <p>As a graduate student working with <a style="color:#C41E3A" href="gru.stanford.edu">Justin Gardner</a> one of my major projects has been to look at how we can use contrast and coherence to understand how the brain reads out from sensory representations during perceptual decision making.</p>
-      <h3 style="color:#ff5050">Mapping the sensitivity of early visual cortex to motion contrast and coherence</h3>
+      <p>As a graduate student working with <a class="red" href="gru.stanford.edu">Justin Gardner</a> one of my major projects has been to look at how we can use contrast and coherence to understand how the brain reads out from sensory representations during perceptual decision making.</p>
+      <h3 class="red">Mapping the sensitivity of early visual cortex to motion contrast and coherence</h3>
       <p>I started this project by showing that we can jointly model the perception of contrast and motion coherence using neural responses in early visual cortex and presented that work at SFN 2016. We are now preparing this manuscript for submission.</p>
-      <a href="./pdfs/poster_sfn_2016.pdf"><img style="display:block; margin:0 auto;" src="./images/ico/poster_sfn_2016.png" style="width:10%"/></a><br>
+      <a href="./pdfs/poster_sfn_2016.pdf"><img class="paper" src="./images/ico/poster_sfn_2016.png"/></a><br>
       <br>
-      <h3 style="color:#ff5050">Flexible readout of stable cortical representations support motion visibility perception</h3>
+      <h3 class="red">Flexible readout of stable cortical representations support motion visibility perception</h3>
       <p>Using the sensitivity maps that we built in the first part of this project we then looked to understand how <i>readout</i> of motion visibility perception is performed. We are also preparing this manuscript for submission.</p>
       <br>
       <p>with Justin Gardner at <a href="http://gru.stanford.edu/doku.php" target="_blank">Gardner Lab</a>; <a href="https://github.com/dbirman/att_awe/" target="_blank">Code</a>; <a href="https://github.com/justingardner/grustim/blob/master/cohcon.m" target="_blank">Stim</a>; Data (available after publication)</p>
@@ -103,15 +105,15 @@
   <div id="cM_libet" class="modal">
 
     <!-- Modal content -->
-    <div class="modal-content" style="min-height:50%">
+    <div class="modal-content fifty">
       <span class="close">&times;</span>
-      <h3 style="color:#ff5050">The point of no return in vetoing self-initiated movements</h3>
+      <h3 class="red">The point of no return in vetoing self-initiated movements</h3>
       <p>In 2013 I lived in Berlin and worked in the lab of John-Dylan Haynes on this project.</p>
       <p>
         We have an intuition that we "commit" to a decision at a specific moment. Despite this intuition early neuroscience researchers found that brain activity becomes predictive of our intentions far in advance, sometimes up to 10 seconds. In this experiment we showed that in reality the <i>point of no return</i>, after which an action is guaranteed to happen, occurs only about 200 ms before motor activity. Until the point of no return the brain has not committed with no possibility of cancelling.
       </p>
       <p>
-        <a href="./pdfs/birman_pnas_2015.pdf"><img style="display:block; margin:0 auto;" src="./images/libet.png" style="width:10%"/></a><br>
+        <a href="./pdfs/birman_pnas_2015.pdf"><img class="paper" src="./images/libet.png"/></a><br>
         Birman, D.*, Schultze-Kraft, M.*, Rusconi, M., Allefeld, C., Görgen, K., Dähne, S., ... & Haynes, J. D. (2015). The point of no return in vetoing self-initiated movements. Proceedings of the National Academy of Sciences, 201513569. *Equal author contribution. at <a href="https://sites.google.com/site/hayneslab/" target="_blank">hayneslab</a> 
       </p>
     </div>
@@ -120,15 +122,15 @@
   <div id="cM_fbsear" class="modal">
 
     <!-- Modal content -->
-    <div class="modal-content" style="min-height:50%">
+    <div class="modal-content fifty">
       <span class="close">&times;</span>    
       <p>I am very interested in the idea of building better models to link human and non-human animal behavior as a way of better connecting physiological data from different model systems. We got interested in this project while looking at a set of monkey physiology data where the <i>order</i> of task training turned out to be critical to interpreting the results.</p>
-      <h3 style="color:#ff5050">Comparing monkey and human learning</h3>
-      <a href="./pdfs/birman_nn_2016.pdf"><img style="display:block; margin:0 auto;" src="./images/ico/nn.png" style="width:10%"/></a><br>
+      <h3 class="red">Comparing monkey and human learning</h3>
+      <a href="./pdfs/birman_nn_2016.pdf"><img class="paper" src="./images/ico/nn.png"/></a><br>
       <p>Birman, D., & Gardner, J. L. (2016). Parietal and prefrontal: categorical differences?. Nature neuroscience, 19(1), 5-7. at <a href="http://gru.stanford.edu/doku.php" target="_blank">Gardner Lab</a>.</p>
       <hr>
-      <p>As a graduate student working with <a style="color:#C41E3A" href="gru.stanford.edu">Justin Gardner</a> my dissertation project is looking at whether we can understand what is usually called feature-based (or category) attention through brain mechanisms that are more classically associated with spatial attention. These projects are at the pilot stage.</p>
-      <h3 style="color:#ff5050">Spatial attention as a mechanism for categorical attention</h3>
+      <p>As a graduate student working with <a class="red" href="gru.stanford.edu">Justin Gardner</a> my dissertation project is looking at whether we can understand what is usually called feature-based (or category) attention through brain mechanisms that are more classically associated with spatial attention. These projects are at the pilot stage.</p>
+      <h3 class="red">Spatial attention as a mechanism for categorical attention</h3>
       <p>with Justin Gardner at <a href="http://gru.stanford.edu/doku.php" target="_blank">Gardner Lab</a>; <a href="https://github.com/dbirman/fbsear/" target="_blank">Code</a>; <a href="https://github.com/justingardner/grustim/blob/master/fbsear.m" target="_blank">Stim</a>; Data (available after publication)</p>
 
     </div>
@@ -137,25 +139,25 @@
   <div id="cM_learn" class="modal">
 
     <!-- Modal content -->
-    <div class="modal-content" style="min-height:50%">
+    <div class="modal-content fifty">
       <span class="close">&times;</span>
-      <h1 style="color:#ff5050; text-align:center;">Cognitive neuroscience tutorials</h1>
+      <h1 class="red center">Cognitive neuroscience tutorials</h1>
       <p>Lets face it. We are awful at teaching cognitive neuroscience! When you learn about physics you get to <i>play</i> with kinetics, electricity, magnetism, and thermodynamics. When you learn about chemistry you get to blow things up! But for some reason we seem to think that students will get excited if we show them pictures and movies about psychology and call it a day?</p>
       <p>In my time at Stanford I've invested a lot of work into building <i>playful</i> brain simulation tutorials about cognitive neuroscience. These tutorials help students re-discover classic experiments such as Hubel and Wiesel's observations of simple and complex cells or Newsome and Shadlen's mapping of the MT->LIP circuit during perceptual decision making.
       </p>
       <hr>
-      <h3 style="color:#000000">Gardner Lab</h3>
+      <h3 class="black">Gardner Lab</h3>
       <h4>Introduction to receptive field mapping</h4>
-      <a target="_blank" href="https://dbirman.github.io/learn/prf/prf.html"><img src="images/tuts/prf.png" style="width:30vw"/></a>
+      <a target="_blank" href="https://dbirman.github.io/learn/prf/prf.html"><img src="images/tuts/prf.png" class="tutorial"/></a>
       <hr>
-      <h3 style="color:#000000">Psych 50 (2018): Intro to cognitive neuroscience</h3>
+      <h3 class="black">Psych 50 (2018): Intro to cognitive neuroscience</h3>
       <h4>Week 1: Early visual cortex lab</h4>
-      <a target="_blank" href="https://dbirman.github.io/learn/brain/evc_redirect.html"><img src="images/tuts/evc.png" style="width:30vw"/></a>
+      <a target="_blank" href="https://dbirman.github.io/learn/brain/evc_redirect.html"><img src="images/tuts/evc.png" class="tutorial"/></a>
       <br>
       <h4>Week 2: Motion perception experiment lab</h4>
-      <a target="_blank" href="https://dbirman.github.io/learn/brain/mt_redirect.html"><img src="images/tuts/mt.png" style="width:30vw"/></a>
+      <a target="_blank" href="https://dbirman.github.io/learn/brain/mt_redirect.html"><img src="images/tuts/mt.png" class="tutorial"/></a>
       <hr>
-      <h3 style="color:#000000">Psych 50 (2017): Intro to cognitive neuroscience</h3>
+      <h3 class="black">Psych 50 (2017): Intro to cognitive neuroscience</h3>
       <h4>Sensory perception lab - Section 1: <a target="_blank" href="https://dbirman.github.io/learn/hierarchy/psych50_hierarchy.html">Link</a></h4>
       <h4>Evidence accumulation lab - Section 2: 
         <a target="_blank" href="https://dbirman.github.io/learn/ddm/psych50_ddm.html">Link</a>
@@ -164,47 +166,47 @@
         <a target="_blank" href="https://dbirman.github.io/learn/rl/psych50_rl.html">Link</a>
       </h4>
 
-      <h1 style="color:#ff5050;text-align:center">Teaching</h1>
+      <h1 class="red center">Teaching</h1>
 
       <!-- START TIMELINE -->
       <h2>Cognitive Neuroscience</h2>
-      <h4 style="color:#ff5050">PSYCH 50: Introduction to cognitive neuroscience
-        <span style="float:right">(Winter 2016, Winter 2017, Winter 2018)</span>
+      <h4 class="red">PSYCH 50: Introduction to cognitive neuroscience
+        <span class="right">(Winter 2016, Winter 2017, Winter 2018)</span>
       </h4>
       <p>Instructor: Justin Gardner<br>Head TA: Dan Birman<br>TAs: Anna Khazenzon, Natalia Velez, Anthony Stigliani, Rosemary Le, Minyoung Lee, Lior Bugatus, Zeynep Enkavi, Guillaume Riesen, Mona Rosenke, Akshay Jagadeesh, Jon Walters<br>Undergraduate TAs: Emma Master, Stephanie Zhang, Kawena Hirayama, Henry Ingram, Storm Foley</p>
 
-      <h4 style="color:#ff5050">NEPR 207: Cognitive neuroscience - first year seminar for neuroscience graduate students
-        <span style="float:right">(Spring 2016, Spring 2017, Spring 2018)</span>
+      <h4 class="red">NEPR 207: Cognitive neuroscience - first year seminar for neuroscience graduate students
+        <span class="right">(Spring 2016, Spring 2017, Spring 2018)</span>
       </h4>
       <p>Instructors: Russ Poldrack, Justin Gardner<br>TA: Dan Birman</p>
 
 
       <h2>Statistics</h2>
-      <h4 style="color:#ff5050">PSYCH 252: Methods for behavioral and social sciences
-        <span style="float:right">(Fall 2016)</span>
+      <h4 class="red">PSYCH 252: Methods for behavioral and social sciences
+        <span class="right">(Fall 2016)</span>
       </h4>
       <p>Instructors: Ewart Thomas, Benoit Monin<br>TAs: Dan Birman, Stephanie Gagnon, Robert Hawkins</p>
 
       <hr>
       <h2>Rock Climbing</h2>
 
-      <h4 style="color:#ff5050">Vertical rescue
-        <span style="float:right">(Spring 2011, Spring 2012, Winter 2018)</span>
+      <h4 class="red">Vertical rescue
+        <span class="right">(Spring 2011, Spring 2012, Winter 2018)</span>
       </h4>
-      <h4 style="color:#ff5050">Lead climbing (clinics)
-        <span style="float:right">(2018)</span>
+      <h4 class="red">Lead climbing (clinics)
+        <span class="right">(2018)</span>
       </h4>
-      <h4 style="color:#ff5050">Crack climbing (clinics)
-        <span style="float:right">(2017)</span>
+      <h4 class="red">Crack climbing (clinics)
+        <span class="right">(2017)</span>
       </h4>
-      <h4 style="color:#ff5050">Winter camping
-        <span style="float:right">(Spring 2010, 2011, 2012)</span>
+      <h4 class="red">Winter camping
+        <span class="right">(Spring 2010, 2011, 2012)</span>
       </h4>
-      <h4 style="color:#ff5050">Multipitch climbing: Red Rock
-        <span style="float:right">(Spring 2012)</span>
+      <h4 class="red">Multipitch climbing: Red Rock
+        <span class="right">(Spring 2012)</span>
       </h4>
-      <h4 style="color:#ff5050">Multipitch climbing: Shawangunks
-        <span style="float:right">(Fall 2011)</span>
+      <h4 class="red">Multipitch climbing: Shawangunks
+        <span class="right">(Fall 2011)</span>
       </h4>
 
       <!-- END TIMELINE -->
@@ -215,9 +217,9 @@
   <div id="cM_selfies" class="modal">
 
     <!-- Modal content -->
-    <div class="modal-content-big" style="min-height:80vh">
+    <div class="modal-content-big eighty">
       <span class="close">&times;</span>
-      <div id='map' style='width: 80vw; height: 90vh;'></div>
+      <div id='map'></div>
     </div>
   </div>
 

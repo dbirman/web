@@ -23,6 +23,42 @@ svg { position:fixed; z-index:0; top:0; left:0; height:100%; width:100% }
 	cursor: pointer;
 }
 
+.face {
+  padding:2vh;
+  width:40vh; 
+  height:auto;
+  border-radius:40vh;
+}
+
+.logo {
+  width:30vh;
+}
+
+.copyright {
+  text-align:center;
+}
+
+a {
+  color:#000000;
+}
+a.red {
+  color:#C41E3A;
+}
+
+.paper {
+  display:block; 
+  margin:0 auto; 
+  /*width:50vw;*/
+}
+
+.clear {
+  clear:left;
+}
+
+.tutorial {
+  width:30vw;
+}
+
 /* Modal Content/Box */
 .modal-content {
     background-color: #fefefe;
@@ -31,13 +67,45 @@ svg { position:fixed; z-index:0; top:0; left:0; height:100%; width:100% }
     border: 1px solid #888;
     width: 80vw; /* Could be more or less, depending on screen size */
 }
+.modal-content.sixty {
+  min-height:60vh;
+}
+.modal-content.fifty {
+  min-height:50vh;
+}
 
-.model-content-big {
-    background-color: #fefefe;
-    margin: 5% auto; /* 15% from the top and centered */
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80vw; /* Could be more or less, depending on screen size */
+.modal-content-big {
+  /*background-color: #fefefe;*/
+  /*margin: 0% auto;  15% from the top and centered */
+ /* padding: 0px;
+  border: 1px solid #888;*/
+  /*width: 80vw;  */  
+}
+
+.modal-content-big.eighty {
+  min-height:80vh;
+}
+
+h1.red {
+  color:#ff5050;
+}
+h1.center {
+  text-align:center;
+}
+
+h3.red {
+  color:#ff5050;
+}
+h3.black {
+  color:#000000;
+}
+
+h4.red {
+  color:#ff5050;
+}
+
+span.right {
+  float:right;
 }
 
 .close {
@@ -72,11 +140,12 @@ svg { position:fixed; z-index:0; top:0; left:0; height:100%; width:100% }
 	color:#C41E3A;
 }
 
-
 #map {
   position:relative;
   transform:translate(10vw,5vh);
   overflow:hidden;
+  width: 80vw;
+  height: 90vh;
 }
 .mapboxgl-popup {
     max-width: 100vw;
