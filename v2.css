@@ -48,7 +48,7 @@ a.red {
 .paper {
   display:block; 
   margin:0 auto; 
-  /*width:50vw;*/
+  width:50vw;
 }
 
 .clear {
