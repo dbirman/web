@@ -1,10 +1,4 @@
-html, body {
-	margin:0; padding:0; overflow:hidden ;
 
-	font-family: 'PT Sans', sans-serif;
-	letter-spacing: -1px;
-}
-svg { position:fixed; z-index:0; top:0; left:0; height:100%; width:100% }
 /* The Modal (background) */
 .modal {
     display: none; /* Hidden by default */
