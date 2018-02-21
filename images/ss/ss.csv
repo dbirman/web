@@ -2,7 +2,7 @@ Eastpost Spire,eastpost_spire,50.74667,-116.7627,NA
 Bugaboo Spire,bugaboo_spire,50.7455,-116.7891,NA
 Goode Mountain,goode,48.48,-120.91,NA
 Angels Crest,angels_crest,49.6867,-123.135,NA
-Hermaphrodite to Boltway,hermaphrodite,37.8353,-119.46,NA
+Hermaphrodite to Boltway,hermaphrodite-min,37.8353,-119.46,NA
 Bourbon Street,bourbon_street,36.03487,-115.46322
 Recompense,cathedral,44.06298,-71.1656
 Mt Conness,conness_west,37.9672,-119.3192
@@ -32,12 +32,12 @@ Mental Physics - Lenticular Dome,mental_physics,34.04228,-116.14889
 Emmons Glacier - Mt Baker,baker,48.77969,-121.82043
 Kautz Glacier - Rainier,rainier,46.85280,-121.759
 East Butt - Middle Cathedral,middlecathedral,37.7165,-119.6363
-Southwest Face - Liberty Cap,libertycap,37.72751,-119.53364
+Southwest Face - Liberty Cap,libertycap-min,37.72751,-119.53364
 Regular NW - Half Dome,reg_nw,37.746198,-119.533470
 Italian Route - Mont Blanc,mont_blanc,45.83270,6.8643
 Big Ben - Halong Bay,big_ben,20.76825,107.08773
 East Arete - Carl Heller,carl_heller,36.61118,-118.30178
-Craven Image,craven_image,38.798224,-120.136104
+Craven Image,craven_image-min,38.798224,-120.136104
 Death Valley,sand_fever,36.459037,-117.456471
 Joshua Tree,jtree1,34.042166,-116.148418
 Zion - Smith Rock,zebra_zion,44.367097,-121.143818
@@ -50,7 +50,7 @@ East Buttress - Middle Cathedral,east_butt2,37.717282,-119.634327
 Super Slide,super_slide,37.749255,-119.572375
 Commitment,commitment-min,37.748979,-119.598181
 Breakfast of Champions - S. Astrodome,breakfast,34.038405,-116.147477
-Cuidado - Pinnacles,cuidado,36.499184,-121.201881
+Cuidado - Pinnacles,cuidado-min,36.499184,-121.201881
 Feather Canyon - Pinnacles,feather_canyon,36.488096,-121.196867
 Thimble Peak - Death Valley,thimble,36.812155,-117.040793
 Eureka Sand Dunes - Death Valley,eureka_dunes,37.095761,-117.675440
