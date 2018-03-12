@@ -83,14 +83,16 @@ function hideHint() {
 	document.getElementById("hint").style.opacity = "0";
 }
 
+var hintTime = 10000;
+
 function init() {
 	try {
 		if (localStorage.hinted==undefined) {
-			hintTick = setTimeout(showHint,5000);
+			hintTick = setTimeout(showHint,hintTime);
 		}
 	} catch (e) {
 		if (sessionStorage.hinted==undefined) {
-			hintTick = setTimeout(showHint,5000);
+			hintTick = setTimeout(showHint,hintTime);
 		}
 		console.log('Local storage was blocked');
 	}

@@ -11,7 +11,7 @@ opacity[n]=!opacity[n];elems[n].style.opacity=""+Number(opacity[n]);ticks[n]=set
 var hintTick;function showHint(){try{localStorage.hinted=!0}catch(e){console.log('Local storage was blocked -- defaulting to session');sessionStorage.hinted=!0}
 document.getElementById("hint").style.opacity="1"}
 function hideHint(){document.getElementById("hint").style.opacity="0"}
-function init(){try{if(localStorage.hinted==undefined){hintTick=setTimeout(showHint,5000)}}catch(e){if(sessionStorage.hinted==undefined){hintTick=setTimeout(showHint,5000)}
+var hintTime=10000;function init(){try{if(localStorage.hinted==undefined){hintTick=setTimeout(showHint,hintTime)}}catch(e){if(sessionStorage.hinted==undefined){hintTick=setTimeout(showHint,hintTime)}
 console.log('Local storage was blocked')}
 for(var i=1;i<=6;i++){elems[i]=document.getElementById("circ"+i);modals[i]=document.getElementById("modal"+i);document.getElementById(""+i).style.cursor="pointer"}
 mapboxgl.accessToken='pk.eyJ1IjoiZGFuYmlybWFuOTk4IiwiYSI6ImNqNzl5YjhyeTA4ejYycXAzbTc4ZTFucjQifQ.o3KPRP5zwv01xg1WskZVRg';map=new mapboxgl.Map({container:'map',style:'mapbox://styles/mapbox/outdoors-v10',center:[-98.5795,39.8283],zoom:1});map.on('load',function(){var layer={"source":{},"layout":{"icon-image":"{icon}-15","icon-allow-overlap":!0}};layer.id="places";layer.type="symbol";layer.source={};layer.source.type="geojson";layer.source.data=getData();layer.layout={"icon-image":"{icon}-15","icon-allow-overlap":!0}
