@@ -42,28 +42,28 @@ a.red {
 
 
 h1.red {
-  color:#ff5050;
+  color:#445263;
 }
 h1.center {
   text-align:center;
 }
 
 h3.red {
-  color:#ff5050;
+  color:#445263;
 }
 h3.black {
   color:#000000;
 }
 
 h4.red {
-  color:#ff5050;
+  color:#445263;
 }
 
 span.right {
   float:right;
 }
 
-.close:hover { background: #FF0000; }
+.close:hover { background: #AED2FF; }
 
 .text {
 }
