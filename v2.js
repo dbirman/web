@@ -169,6 +169,7 @@ function getData() {
 	coordsY = info.coordsY,
 	imgs = info.imgs,
 	names = info.names;
+	alts = info.alt;
 
 	var data = {};
 	data.type = "FeatureCollection";
@@ -178,7 +179,7 @@ function getData() {
 		var feature = {};
 		feature.type = "Feature";
 		feature.properties = {};
-		feature.properties.description = '<img class="popup-img" width="200vw" src="./images/ss/'+imgs[i]+'.jpg"/><h1 style="color:black;text-align:center;font-size:2.5vh">'+names[i]+'</h1>';
+		feature.properties.description = '<img class="popup-img" width="200vw" src="./images/ss/'+imgs[i]+'.jpg" alt="'+alts[i]+'"/><h1 style="color:black;text-align:center;font-size:2.5vh">'+names[i]+'</h1>';
 		feature.properties.icon = "mountain";
 		feature.geometry = {};
 		feature.geometry.type = "Point";

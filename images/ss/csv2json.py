@@ -4,7 +4,7 @@ import json
 csvfile = open('ss.csv', 'r')
 jsonfile = open('ss.js', 'w')
 
-fieldnames = ("names","imgs","coordsY","coordsX","date")
+fieldnames = ("names","imgs","coordsY","coordsX","alt")
 data = dict()
 for field in fieldnames:
 	data[field] = []
