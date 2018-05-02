@@ -100,7 +100,8 @@ function createInfo(event,eDate) {
 	if (event.type=="Open") {
 		// set just the header
 		str = str.concat('<div class="info_open">')
-		str = str.concat('<h4>'+eDate.toDateString()+'</h4>');
+		str = str.concat('<br>');
+		str = str.concat('<h5>'+eDate.toDateString()+'</h5>');
 		str = str.concat('<h5>Open date: email <a href="mailto:danbirman@gmail.com">Dan</a> or <a href="mailto:mareikegrotheer@gmail.com">Mareike</a> if you are interested in presenting.</h5>')
 		str = str.concat('</div>');
 	} else {
@@ -110,8 +111,9 @@ function createInfo(event,eDate) {
 			+'</div>')
 		// Add title
 		str = str.concat('<div class="info_right">')
-		str = str.concat('<h4>'+eDate.toDateString()+'</h4>');
-		str = str.concat('<h5>'+event.title+'</h5>')
+		str = str.concat('<h4>'+event.title+'</h4>');
+		str = str.concat('<h5>'+eDate.toDateString()+'</h5>')
+		str = str.concat('<br>')
 		str = str.concat('<h5>'+event.author+'</h5>')
 		str = str.concat('</div>');
 	}
@@ -119,15 +121,56 @@ function createInfo(event,eDate) {
 	return str;
 }
 
-function openModal(id) {
-	console.log('Opening: ' + id);
-}
-
 function createModal(event) {
 	let id = Math.round(Math.random() * 100000000);
+	console.log('Creating modal with id: ' + id);
 	// create a new modal and append to body
 	let modal_div = document.createElement('div');
 	modal_div.setAttribute("class","modal");
+	modal_div.setAttribute("id",id);
+
+	let str = '';
+
+	str = str.concat('<div class="modal-content fifty">')
+	str = str.concat('<span class="close">&times;</span>')
+	str = str.concat('<p>temp</p>')
+	str = str.concat('</div>')
+
+	document.body.appendChild(modal_div);
 
 	return id;
+}
+
+
+// <div id="temp" class="modal">
+
+//   <!-- Modal content -->
+//   <div class="modal-content sixty">
+//     <span class="close">&times;</span>
+//   </div>
+// </div>
+
+//// modal stuff
+
+function openModal(id) {
+	console.log('Opening: ' + id);
+	document.getElementById(id).style.display='block';
+}
+
+window.onclick = function(event) { closeCheck(event); }
+window.ontouchstart = function(event) {closeCheck(event); }
+
+function closeCheck(event) {
+	target = event.target;
+	if ((event.target.className == "close") || (event.target.className== "modal-content-big")) {
+    	// chain parentElements until you find the modal
+    	var parent = event.target.parentElement;
+    	while (parent.className!="modal") {
+    		parent = parent.parentElement;
+    	}
+    	parent.style.display = "none";
+    }
+    if (event.target.className == "modal") {
+    	event.target.style.display = "none";
+    }
 }

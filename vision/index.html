@@ -4,7 +4,7 @@
 
 <html>
 <head>
-  <title>Dan Birman</title>
+  <title>Vision Breakfast</title>
   <meta name="descrption" content="Vision breakfast is a weekly meeting of people at Stanford interested in vision research-related topics.">
   <meta http-equiv="Cache-control" content="public">
   <link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32" />
@@ -40,20 +40,27 @@
 
   h4 {
     color:#8c1515;
+    margin:1vh;
+    padding:0;
+    font-size:3vh;
   }
 
   h5 {
     color:#2e2d29;
     margin:0;
     padding:0;
+    font-size:2vh;
 
   }
 
   .info {
     background-color: #F9F6EF;
     margin:auto;
-    width:60vw;
-    height:16vh;
+    display:flex;
+    flex-direction:row;
+    flex-wrap:wrap;
+    max-width:60vw;
+    min-height:10vh;
     border-radius: 25px;
     border: 1px solid;
     border-color: #b6b1a9;
@@ -63,27 +70,41 @@
     cursor:pointer;
   }
   .info_left {
-    width:15vw;
+    order:1;
+    width:18vw;
+    margin:1vw;
     float:left;
     position:relative;
   }
   .info_right {
-    width:40vw;
+    order:2;
+    width:38vw;
+    margin:1vw;
     float:right;
+    position:relative;
+  }
+  .info_open {
+    order:1;
+    width:60vw;
     position:relative;
   }
 
   .info_img {
     height:14vh;
-     position: relative;
-     margin: auto;
-     top: 1vh;
-     right: 0;
-     bottom: 1vh;
-     left: 0;
+    position: relative;
+    margin: auto;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
   }
 
-  @media all and (min-width: 50px)   {  body  { font-size:0.05em;  } }
+  .restrict80 {
+    max-width:80vw;
+    margin:auto;
+  }
+
+  /*@media all and (min-width: 50px)   {  body  { font-size:0.05em;  } }
   @media all and (min-width: 100px)  {  body  { font-size:0.1em;  } }
   @media all and (min-width: 200px)  {  body  { font-size:0.2em;  } }
   @media all and (min-width: 300px)  {  body  { font-size:0.3em;  } }
@@ -101,20 +122,98 @@
   @media all and (min-width: 1500px) {  body  { font-size:1.5em;  } }
   @media all and (min-width: 1500px) {  body  { font-size:1.6em;  } }
   @media all and (min-width: 1600px) {  body  { font-size:1.7em;  } }
-  @media all and (min-width: 1700px) {  body  { font-size:1.8em;  } }
+  @media all and (min-width: 1700px) {  body  { font-size:1.8em;  } }*/
+
+
+  /* The Modal (background) */
+  .modal {
+      display: none; /* Hidden by default */
+      position: fixed; /* Stay in place */
+      z-index: 1; /* Sit on top */
+      left: 0;
+      top: 0;
+      width: 100%; /* Full width */
+      height: 100%; /* Full height */
+      overflow: auto; /* Enable scroll if needed */
+      background-color: rgb(0,0,0); /* Fallback color */
+      background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  }
+
+  /* Modal Content/Box */
+  .modal-content {
+    /*background-color: #F5F5F5;*/
+      background-color: #fefefe;
+      margin: 10% auto; /* 15% from the top and centered */
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80vw; /* Could be more or less, depending on screen size */
+  }
+  .modal-content.sixty {
+    min-height:60vh;
+  }
+  .modal-content.fifty {
+    min-height:50vh;
+  }
+
+  .modal-content-big {
+    /*background-color: #fefefe;*/
+    /*margin: 0% auto;  15% from the top and centered */
+   /* padding: 0px;
+    border: 1px solid #888;*/
+    /*width: 80vw;  */  
+  }
+
+  .modal-content-big.eighty {
+    min-height:80vh;
+  }
+  
+  .close {
+    background: #606061;
+    color: #FFFFFF;
+    line-height: 10vh;
+    /*position: absolute;*/
+    float:right;
+    cursor:pointer;
+    z-index: 999;
+    /*right: -12px;*/
+    text-align: center;
+    top: -5vh;
+    width: 10vh;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 5vh;
+    -webkit-border-radius: 12px;
+    -moz-border-radius: 12px;
+    border-radius: 12px;
+    -moz-box-shadow: 1px 1px 3px #000;
+    -webkit-box-shadow: 1px 1px 3px #000;
+    box-shadow: 1px 1px 3px #000;
+  }
+
+  .close:hover { background: #AED2FF; }
   </style>
 
 <body>
 
+<div id="temp" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content sixty">
+    <span class="close">&times;</span>
+  </div>
+</div>
+
 <div class="center">
-  <h1>Vision Breakfast</h1>
-  <p>Weekly meeting of people at and around Stanford interested in vision research-related topics.</p>
-  <p>We meet Wednesdays at <b>9:30am-11:00am</b> in room 419 at <a href="https://www.google.com/maps/search/jordan+hall+stanford+map/@37.4286074,-122.1714145,235m/data=!3m1!1e3">Jordan Hall</a>, Stanford University</p>
+  <div id="intro" class="restrict80">
+    <h1>Vision Breakfast</h1>
+    <p>Weekly meeting of people at and around Stanford interested in vision research-related topics.</p>
+    <p>We meet Wednesdays at <b>9:30am-11:00am</b> in room 419 at <a href="https://www.google.com/maps/search/jordan+hall+stanford+map/@37.4286074,-122.1714145,235m/data=!3m1!1e3">Jordan Hall</a>, Stanford University</p>
 
-  <p>Please visit <a href="https://mailman.stanford.edu/mailman/listinfo/vis-lunch-announce">vis-lunch-announce</a> to sign up!</p>
+    <p>Please visit <a href="https://mailman.stanford.edu/mailman/listinfo/vis-lunch-announce">vis-lunch-announce</a> to sign up!</p>
 
-  <p>Organizers <a href="mailto:mareikegrotheer@gmail.com">Mareike Grotheer</a> and <a href="mailto:danbirman@gmail.com">Daniel Birman</a>
-  </p>
+    <p>Organizers <a href="mailto:mareikegrotheer@gmail.com">Mareike Grotheer</a> and <a href="mailto:danbirman@gmail.com">Daniel Birman</a>
+    </p>
+  </div>
 
   <h2>Upcoming Events</h2>
   <div id="upcoming">
@@ -125,7 +224,7 @@
   <br>
 
   <h2>Presenting at Vision Breakfast</h2>
-  <div id="present">
+  <div id="present" class="restrict80">
     <p>We would like to encourage anyone in the Stanford community (or outside it) who is working on vision-related research to come and talk about their stuff. In particular, Vision Breakfasts are intended to allow people in Vision labs at Stanford to hear about each other's work early on, when feedback can be important, and the results are new and exciting.
     </p>
 
