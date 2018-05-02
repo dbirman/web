@@ -77,9 +77,13 @@ window.onload = function() {
 function buildEvent(e,eDate) {
 	let info = createInfo(e,eDate);
 	let temp_div = document.createElement('div');
-	let modal_id = createModal(e,eDate);
-	temp_div.onclick = function() {openModal(modal_id);}
-	temp_div.setAttribute("class", "info");
+	if (e.type!='Open') {
+		let modal_id = createModal(e,eDate);
+		temp_div.onclick = function() {openModal(modal_id);}
+		temp_div.setAttribute("class", "info");
+	} else {
+		temp_div.setAttribute("class", "info-open");
+	}
 	temp_div.id = e.date;
 	temp_div.innerHTML = info;
 
