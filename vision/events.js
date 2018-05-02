@@ -77,7 +77,7 @@ window.onload = function() {
 function buildEvent(e,eDate) {
 	let info = createInfo(e,eDate);
 	let temp_div = document.createElement('div');
-	let modal_id = createModal(e);
+	let modal_id = createModal(e,eDate);
 	temp_div.onclick = function() {openModal(modal_id);}
 	temp_div.setAttribute("class", "info");
 	temp_div.id = e.date;
@@ -112,7 +112,11 @@ function createInfo(event,eDate) {
 		// Add title
 		str = str.concat('<div class="info_right">')
 		str = str.concat('<h4>'+event.title+'</h4>');
-		str = str.concat('<h5>'+eDate.toDateString()+'</h5>')
+		if (event.time!=undefined) {
+			str = str.concat('<h5>'+eDate.toDateString()+' - '+event.time+'</h5>');
+		} else {
+			str = str.concat('<h5>'+eDate.toDateString()+' - 9:30 AM</h5>');
+		}
 		str = str.concat('<br>')
 		str = str.concat('<h5>'+event.author+'</h5>')
 		str = str.concat('</div>');
@@ -121,7 +125,7 @@ function createInfo(event,eDate) {
 	return str;
 }
 
-function createModal(event) {
+function createModal(event,eDate) {
 	let id = Math.round(Math.random() * 100000000);
 	console.log('Creating modal with id: ' + id);
 	// create a new modal and append to body
@@ -133,8 +137,26 @@ function createModal(event) {
 
 	str = str.concat('<div class="modal-content fifty">')
 	str = str.concat('<span class="close">&times;</span>')
-	str = str.concat('<p>temp</p>')
+	str = str.concat('<br>')
+	// str = str.concat('<div class="modal-content-info">')
+	str = str.concat('<h1>'+event.title+'</h1>')
+	str = str.concat('<img class="modal-img" src="./imgs/'+event.image+'"/>')
+	if (event.time!=undefined) {
+		str = str.concat('<h5>'+eDate.toDateString()+' - '+event.time+'</h5>');
+	} else {
+		str = str.concat('<h5>'+eDate.toDateString()+' - 9:30 AM</h5>');
+	}
+	str = str.concat('<h5>Jordan Hall (Building 420), Room 419</h5>')
+	str = str.concat('<h1>'+event.author+'</h1>')
+	str = str.concat('<h5>Presenter Affiliation: '+event.info+'</h5>')
+	str = str.concat('<h2>Abstract</h2>')
+	str = str.concat('<p>'+event.abstract+'</p>')
+	// str = str.concat('</div>')
+	// str = str.concat('<div class="modal-content-img">')
+	// str = str.concat('</div>')
 	str = str.concat('</div>')
+
+	modal_div.innerHTML = str;
 
 	document.body.appendChild(modal_div);
 

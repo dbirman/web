@@ -142,7 +142,7 @@
   /* Modal Content/Box */
   .modal-content {
     /*background-color: #F5F5F5;*/
-      background-color: #fefefe;
+    background-color: #F9F6EF;
       margin: 10% auto; /* 15% from the top and centered */
       padding: 20px;
       border: 1px solid #888;
@@ -166,19 +166,37 @@
   .modal-content-big.eighty {
     min-height:80vh;
   }
+
+  .modal-content-info {
+    /*max-width:60vw;
+    float:left;*/
+  }
+
+  .modal-content-img {
+    /*min-width:20vw;
+    float:right;*/
+  }
+
+  .modal-img {
+    display:inline-block;
+    width:30vmin;
+    float:right;
+    margin:2vw;
+  }
   
   .close {
     background: #606061;
     color: #FFFFFF;
-    line-height: 10vh;
+    line-height: 5vh;
     /*position: absolute;*/
     float:right;
     cursor:pointer;
     z-index: 999;
+    margin:1vmin;
     /*right: -12px;*/
     text-align: center;
     top: -5vh;
-    width: 10vh;
+    width: 5vh;
     text-decoration: none;
     font-weight: bold;
     font-size: 5vh;
@@ -190,18 +208,11 @@
     box-shadow: 1px 1px 3px #000;
   }
 
-  .close:hover { background: #AED2FF; }
+  .close:hover { background: #8c1515; }
   </style>
 
 <body>
 
-<div id="temp" class="modal">
-
-  <!-- Modal content -->
-  <div class="modal-content sixty">
-    <span class="close">&times;</span>
-  </div>
-</div>
 
 <div class="center">
   <div id="intro" class="restrict80">
