@@ -18,21 +18,90 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style> 
   body {
-
+    background-color: #F4F4F4;
     font-family: 'Source Sans Pro', sans-serif;
   }
+
   .center {
     text-align:center;
   }
+
   p {
     color:#4d4f53;
   }
+
   a {
     color:#820000;
   }
-  h1,h2,h3,h4 {
+
+  h1,h2,h3 {
     color:#2e2d29;
   }
+
+  h4 {
+    color:#8c1515;
+  }
+
+  h5 {
+    color:#2e2d29;
+    margin:0;
+    padding:0;
+
+  }
+
+  .info {
+    background-color: #F9F6EF;
+    margin:auto;
+    width:60vw;
+    height:16vh;
+    border-radius: 25px;
+    border: 1px solid;
+    border-color: #b6b1a9;
+  }
+  .info:hover {
+    background-color:#dad7cb;
+    cursor:pointer;
+  }
+  .info_left {
+    width:15vw;
+    float:left;
+    position:relative;
+  }
+  .info_right {
+    width:40vw;
+    float:right;
+    position:relative;
+  }
+
+  .info_img {
+    height:14vh;
+     position: relative;
+     margin: auto;
+     top: 1vh;
+     right: 0;
+     bottom: 1vh;
+     left: 0;
+  }
+
+  @media all and (min-width: 50px)   {  body  { font-size:0.05em;  } }
+  @media all and (min-width: 100px)  {  body  { font-size:0.1em;  } }
+  @media all and (min-width: 200px)  {  body  { font-size:0.2em;  } }
+  @media all and (min-width: 300px)  {  body  { font-size:0.3em;  } }
+  @media all and (min-width: 400px)  {  body  { font-size:0.4em;  } }
+  @media all and (min-width: 500px)  {  body  { font-size:0.5em;  } }
+  @media all and (min-width: 600px)  {  body  { font-size:0.6em;  } }
+  @media all and (min-width: 700px)  {  body  { font-size:0.7em;  } }
+  @media all and (min-width: 800px)  {  body  { font-size:0.8em;  } }
+  @media all and (min-width: 900px)  {  body  { font-size:0.8em;  } }
+  @media all and (min-width: 1000px) {  body  { font-size:1.0em;  } }
+  @media all and (min-width: 1100px) {  body  { font-size:1.1em;  } }
+  @media all and (min-width: 1200px) {  body  { font-size:1.2em;  } }
+  @media all and (min-width: 1300px) {  body  { font-size:1.3em;  } }
+  @media all and (min-width: 1400px) {  body  { font-size:1.4em;  } }
+  @media all and (min-width: 1500px) {  body  { font-size:1.5em;  } }
+  @media all and (min-width: 1500px) {  body  { font-size:1.6em;  } }
+  @media all and (min-width: 1600px) {  body  { font-size:1.7em;  } }
+  @media all and (min-width: 1700px) {  body  { font-size:1.8em;  } }
   </style>
 
 <body>
@@ -47,15 +116,40 @@
   <p>Organizers <a href="mailto:mareikegrotheer@gmail.com">Mareike Grotheer</a> and <a href="mailto:danbirman@gmail.com">Daniel Birman</a>
   </p>
 
-  <hr>
   <h2>Upcoming Events</h2>
+  <div id="upcoming">
+  </div>
 
+  <br>
   <hr>
+  <br>
+
+  <h2>Presenting at Vision Breakfast</h2>
+  <div id="present">
+    <p>We would like to encourage anyone in the Stanford community (or outside it) who is working on vision-related research to come and talk about their stuff. In particular, Vision Breakfasts are intended to allow people in Vision labs at Stanford to hear about each other's work early on, when feedback can be important, and the results are new and exciting.
+    </p>
+
+    <p>
+      Please email <a href="mailto:mareikegrotheer@gmail.com">Mareike</a> or <a href="mailto:danbirman@gmail.com">Dan</a> if you're interested in presenting.
+    </p>
+
+    <p>In general, it should be no problem to bump journal clubs to a later week, so if you see a date you're interested in, chances are we can accommodate you.
+    </p>
+
+
+  </div>
+
+
+  <br>
+  <hr>
+  <br>
 
   <h2>Past Events</h2>
+  <div id="past">
+  </div>
 </div>
 
-<script src="vision/events.js"></script>
+<script src="./events.js"></script>
 
 </body>
 
