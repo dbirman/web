@@ -64,7 +64,7 @@
     border: 1px solid;
     border-color: #b6b1a9;
   }
-  
+
   .info {
     background-color: #F9F6EF;
     margin:auto;
@@ -102,13 +102,16 @@
   }
 
   .info_img {
+    object-fit: cover;
     height:14vh;
+    width:14vh;
     position: relative;
     margin: auto;
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
+    border-radius:7vh;
   }
 
   .restrict80 {
@@ -151,6 +154,10 @@
       background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
   }
 
+  .modal h1 {
+    color:#8c1515;
+  }
+
   /* Modal Content/Box */
   .modal-content {
     /*background-color: #F5F5F5;*/
@@ -190,11 +197,12 @@
   }
 
   .modal-img {
-    display:inline-block;
+    /*display:inline-block;*/
     width:30vmin;
     float:right;
-    margin:2vw;
+    margin:1vw;
   }
+
   
   .close {
     background: #606061;
@@ -268,6 +276,14 @@
 
   <h2>Past Events</h2>
   <div id="past">
+  </div>
+
+  <br>
+  <hr>
+  <br>
+
+  <h2>Archive</h2>
+  <div id="archive">
   </div>
 </div>
 

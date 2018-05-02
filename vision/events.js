@@ -34,14 +34,58 @@ var events = [
 		"author":"Kathryn Bonnen",
 		"type":"Talk",
 		"date":"2018/05/09",
-		"info":"PhD Student, Huk Lab, Stanford",
+		"info":"PhD Student, Huk Lab, UT Austin",
 		"image":"bonnen.jpeg",
 		"abstract":"Much is known about how retinal stimulation is processed through later stages of the visual system. But understanding the meaning of these cortical activity patterns for making inferences about the dynamic three-dimensional environment is a distinct computational problem. We show that treating patterns of retinal stimulation as proxies for the visual world oversimplifies the problem of how neural activity can be read out to infer the properties of the environment. This is because the projection of the environment onto the two retinas fundamentally shapes the information available in the tuning and responses of cortical neurons. In the case of three-dimensional (3D) motion this environment-to-retinae perspective predicts non-canonical shapes of neuronal tuning functions. These non-canonical shapes are consistent with existing electrophysiological recordings in middle temporal area (MT) and explain unintuitive misperceptions of 3D motion in existing psychophysical data."	
 	},
 	{
 		"date":"2018/05/23",
 		"type":"Open"
-	}
+	},
+	{
+		"title":"Dissonant Representations of Visual Space in Prefrontal Cortex during Eye Movements",
+		"author":"Xiaomo Chen",
+		"type":"Talk",
+		"date":"2018/05/16",
+		"info":"Postdoc, Moore Lab, Stanford",
+		"image":"xiaomo.jpeg",
+		"abstract":"TBA"	
+	},
+	{
+		"title":"TBA",
+		"author":"Guillaume Riesen",
+		"type":"Talk",
+		"date":"2018/05/29",
+		"info":"PhD Student, Gardner Lab, Stanford",
+		"image":"riesen_guillaume.jpg",
+		"abstract":"TBA"	
+	},
+	{
+		"title":"Image reconstruction by domain-transform manifold learning",
+		"link":"https://www.nature.com/articles/nature25988",
+		"author":"Elias Wang",
+		"type":"Journal Club",
+		"date":"2018/06/06",
+		"abstract":"Image reconstruction is essential for imaging applications across the physical and life sciences, including optical and radar systems, magnetic resonance imaging, X-ray computed tomography, positron emission tomography, ultrasound imaging and radio astronomy1,2,3. During image acquisition, the sensor encodes an intermediate representation of an object in the sensor domain, which is subsequently reconstructed into an image by an inversion of the encoding function. Image reconstruction is challenging because analytic knowledge of the exact inverse transform may not exist a priori, especially in the presence of sensor non-idealities and noise. Thus, the standard reconstruction approach involves approximating the inverse function with multiple ad hoc stages in a signal processing chain4,5, the composition of which depends on the details of each acquisition strategy, and often requires expert parameter tuning to optimize reconstruction performance. Here we present a unified framework for image reconstruction—automated transform by manifold approximation (AUTOMAP)—which recasts image reconstruction as a data-driven supervised learning task that allows a mapping between the sensor and the image domain to emerge from an appropriate corpus of training data. We implement AUTOMAP with a deep neural network and exhibit its flexibility in learning reconstruction transforms for various magnetic resonance imaging acquisition strategies, using the same network architecture and hyperparameters. We further demonstrate that manifold learning during training results in sparse representations of domain transforms along low-dimensional data manifolds, and observe superior immunity to noise and a reduction in reconstruction artefacts compared with conventional handcrafted reconstruction methods. In addition to improving the reconstruction performance of existing acquisition methodologies, we anticipate that AUTOMAP and other learned reconstruction approaches will accelerate the development of new acquisition strategies across imaging modalities."	
+	},
+	{
+		"title":"TBA",
+		"author":"Hsin-hung Li",
+		"type":"Talk",
+		"date":"2018/06/13",
+		"info":"PhD Student, Moore Lab, Stanford",
+		"image":"default.jpg",
+		"abstract":"TBA"	
+	},
+	{
+		"title":"Set summary perception, outlier pop out, and categorization: a common underlying computation?",
+		"author":"Shaul Hochstein",
+		"type":"Talk",
+		"date":"2018/06/20",
+		"info":"Professor, Hebrew University of Jerusalem",
+		"image":"hochstein.jpg",
+		"abstract":"TBA"	
+	},
 ];
 
 window.onload = function() {
@@ -77,9 +121,12 @@ window.onload = function() {
 function buildEvent(e,eDate) {
 	let info = createInfo(e,eDate);
 	let temp_div = document.createElement('div');
-	if (e.type!='Open') {
+	if (e.type=='Talk') {
 		let modal_id = createModal(e,eDate);
 		temp_div.onclick = function() {openModal(modal_id);}
+		temp_div.setAttribute("class", "info");
+	} else if (e.type=='Journal Club') {
+		temp_div.onclick = function() {window.open(e.link,"_self");}
 		temp_div.setAttribute("class", "info");
 	} else {
 		temp_div.setAttribute("class", "info-open");
@@ -107,6 +154,19 @@ function createInfo(event,eDate) {
 		str = str.concat('<br>');
 		str = str.concat('<h5>'+eDate.toDateString()+'</h5>');
 		str = str.concat('<h5>Open date: email <a href="mailto:danbirman@gmail.com">Dan</a> or <a href="mailto:mareikegrotheer@gmail.com">Mareike</a> if you are interested in presenting.</h5>')
+		str = str.concat('</div>');
+	} else if (event.type=="Journal Club") {
+		str = str.concat('<div class="info_left"></div>')
+		// Add title
+		str = str.concat('<div class="info_right">')
+		str = str.concat('<h4>Journal club: '+event.title+'</h4>');
+		if (event.time!=undefined) {
+			str = str.concat('<h5>'+eDate.toDateString()+' - '+event.time+'</h5>');
+		} else {
+			str = str.concat('<h5>'+eDate.toDateString()+' - 9:30 AM</h5>');
+		}
+		str = str.concat('<br>')
+		str = str.concat('<h5>Journal club led by '+event.author+'</h5>')
 		str = str.concat('</div>');
 	} else {
 		// Create left div (img)
@@ -151,7 +211,7 @@ function createModal(event,eDate) {
 		str = str.concat('<h5>'+eDate.toDateString()+' - 9:30 AM</h5>');
 	}
 	str = str.concat('<h5>Jordan Hall (Building 420), Room 419</h5>')
-	str = str.concat('<h1>'+event.author+'</h1>')
+	str = str.concat('<h2>'+event.author+'</h2>')
 	str = str.concat('<h5>Presenter Affiliation: '+event.info+'</h5>')
 	str = str.concat('<h2>Abstract</h2>')
 	str = str.concat('<p>'+event.abstract+'</p>')
