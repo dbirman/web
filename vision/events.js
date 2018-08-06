@@ -3,6 +3,24 @@
 
 var events = [
 	{
+		"title":"Interpreting Deep Neural Networks by Explaining their Predictions",
+		"author":"Wojciech Samek",
+		"type":"Talk",
+		"date":"2018/08/09",
+		"info":"FHI Berlin",
+		"image":"samek.jpg",
+		"abstract":"Deep neural networks (DNNs) are reaching or even exceeding the human level on an increasing number of complex tasks. However, due to their complex non-linear structure, these models are usually applied in a black box manner, i.e., no information is provided about what exactly makes them arrive at their predictions. This lack of transparency can be a major drawback in practice. In my talk I will present a general technique, Layer-wise Relevance Propagation (LRP), for interpreting DNNs by explaining their predictions. I will demonstrate the effectivity of LRP when applied to various datatypes (images, text, audio, video, EEG/fMRI signals) and neural architectures (ConvNets, LSTMs), and will summarize what we have learned so far by peering inside these black boxes."	
+	},
+	{
+		"title":"Applications of deep learning to clinical vision care",
+		"author":"Rory Sayres",
+		"type":"Talk",
+		"date":"2018/08/08",
+		"info":"Google Brain",
+		"image":"sayres.jpg",
+		"abstract":"I will describe some work from Google Brain, a research group within Google, on topics in ophthalmology. Retinal fundus images are a widespread method of assessing eye health, and can detect a range of health issues. These include complications of diabetes such as diabetic retinopathy (DR), which has a high prevalence (up to 30% of diabetic populations) and is a leading cause of blindness worldwide. Using deep learning methods, our team developed and validated models to predict DR severity with doctor-level accuracy. We are using these models to assist screening programs to increase health care access. I will also describe research using these models to assist clinicians. Touching on recent work in developing interpretable models, I will show conditions in which a clinician plus a model is more accurate than either alone."	
+	},
+	{
 		"title":"Visual communication in context",
 		"author":"Judith E. Fan",
 		"type":"Talk",
@@ -90,35 +108,50 @@ var events = [
 
 window.onload = function() {
 	cDate = new Date(Date.now());
+	let thisweek = [];
 	let upcoming = [];
 	let past = [];
 	// parse events by date and sort into upcoming and past
 	for (let ei = 0; ei<events.length; ei++) {
 		let e = events[ei],
 			eDate = new Date(events[ei].date);
+
 		if (eDate.valueOf()>cDate.valueOf()) {
-			console.log('Date is in the future');
-			upcoming.push(e);
+			let eV = eDate.valueOf()/1000/60/60/24;
+			let cV = cDate.valueOf()/1000/60/60/24;
+			if (eV<(cV+7)) {
+				console.log('Date is within one week');
+				thisweek.unshift(e);
+			} else {
+				console.log('Date is in the future');
+				upcoming.push(e);
+			}
 		} else {
 			console.log('Date is in the past');
 			past.unshift(e);
 		}
 	}
+	// 
+	for (let ei = 0; ei<thisweek.length; ei++) {
+		let e = thisweek[ei],
+			eDate = new Date(thisweek[ei].date);
+		buildEvent(e,eDate,'thisweek');
+	}
 	// build upcoming events
 	for (let ei = 0; ei<upcoming.length; ei++) {
 		let e = upcoming[ei],
 			eDate = new Date(upcoming[ei].date);
-		buildEvent(e,eDate);
+		buildEvent(e,eDate,'upcoming');
 	}
 	// build past events
 	for (let ei = 0; ei<past.length; ei++) {
 		let e = past[ei],
 			eDate = new Date(past[ei].date);
-		buildEvent(e,eDate);
+		buildEvent(e,eDate,'past');
 	}
 }
 
-function buildEvent(e,eDate) {
+function buildEvent(e,eDate,type) {
 	let info = createInfo(e,eDate);
 	let temp_div = document.createElement('div');
 	if (e.type=='Talk') {
@@ -134,15 +167,8 @@ function buildEvent(e,eDate) {
 	temp_div.id = e.date;
 	temp_div.innerHTML = info;
 
-	if (eDate.valueOf()>cDate.valueOf()) {
-		console.log('Date is in the future');
-		document.getElementById("upcoming").appendChild(temp_div);
-		document.getElementById("upcoming").appendChild(document.createElement('br'));
-	} else {
-		console.log('Date is in the past');
-		document.getElementById("past").appendChild(temp_div);
-		document.getElementById("past").appendChild(document.createElement('br'));
-	}
+	document.getElementById(type).appendChild(temp_div);
+	document.getElementById(type).appendChild(document.createElement('br'));
 }
 
 function createInfo(event,eDate) {
