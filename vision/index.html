@@ -52,6 +52,13 @@
     font-size:2vh;
 
   }
+
+  tr,td {
+    /*border-bottom: 1px solid black;*/
+    border-top: 1px solid black;
+    border-collapse: collapse;
+  } ​
+
   .info-open {
     background-color: #F9F6EF;
     margin:auto;
@@ -278,7 +285,7 @@
   <hr>
   <br>
 
-  <h2>Past Events</h2>
+  <h2>Recent Events</h2>
   <div id="past">
   </div>
 
@@ -287,7 +294,14 @@
   <br>
 
   <h2>Archive</h2>
-  <div id="archive">
+  <div id="archive" style="margin:auto;width:90%">
+    <table id="archive_table" style="width:100%">
+      <tr>
+        <th>Date</th>
+        <th>Speaker</th> 
+        <th>Title</th>
+      </tr>
+    </table>
   </div>
 </div>
 

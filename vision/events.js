@@ -111,14 +111,15 @@ window.onload = function() {
 	let thisweek = [];
 	let upcoming = [];
 	let past = [];
+	let archive = [];
 	// parse events by date and sort into upcoming and past
 	for (let ei = 0; ei<events.length; ei++) {
 		let e = events[ei],
 			eDate = new Date(events[ei].date);
 
+		let eV = eDate.valueOf()/1000/60/60/24;
+		let cV = cDate.valueOf()/1000/60/60/24;
 		if (eDate.valueOf()>cDate.valueOf()) {
-			let eV = eDate.valueOf()/1000/60/60/24;
-			let cV = cDate.valueOf()/1000/60/60/24;
 			if (eV<(cV+7)) {
 				console.log('Date is within one week');
 				thisweek.unshift(e);
@@ -126,9 +127,14 @@ window.onload = function() {
 				console.log('Date is in the future');
 				upcoming.push(e);
 			}
-		} else {
-			console.log('Date is in the past');
-			past.unshift(e);
+		} else if (e.type.toLowerCase()!="open") {
+			if (eV<(cV-90)) {
+				console.log('Date is more than 3 months past');
+				archive.push(e);
+			} else {
+				console.log('Date is within 3 months');
+				past.unshift(e);
+			}
 		}
 	}
 	// 
@@ -149,6 +155,29 @@ window.onload = function() {
 			eDate = new Date(past[ei].date);
 		buildEvent(e,eDate,'past');
 	}
+	// archive
+	for (let ei = 0; ei<archive.length; ei++) {
+		let e = archive[ei],
+			eDate = new Date(archive[ei].date);
+		archiveEvent(e,eDate);
+	}
+}
+
+function archiveEvent(e,eDate) {
+	let table = document.getElementById("archive_table");
+
+	row = table.insertRow(1);
+
+	let date = row.insertCell(0);
+	date.innerHTML = eDate.toDateString();
+	let speaker = row.insertCell(1);
+	speaker.innerHTML = e.author;
+	let title = row.insertCell(2);
+	title.innerHTML = e.title;
+
+	row.style.borderBottom = "1px solid";
+	row.style.borderTop = "1 px solid";
+	row.style.borderCollapse = "collapse";
 }
 
 function buildEvent(e,eDate,type) {
