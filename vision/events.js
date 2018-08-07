@@ -3,6 +3,23 @@
 
 var events = [
 	{
+		"title":"TBA",
+		"link":"TBA",
+		"author":"Sonia Poltoratski",
+		"type":"Journal Club",
+		"date":"2018/08/22",
+		"abstract":""
+	},
+	{
+		"title":"TBA",
+		"author":"Justin Gardner",
+		"type":"Talk",
+		"date":"2018/08/29",
+		"info":"Dept of Psychology, Stanford",
+		"image":"gardner.jpg",
+		"abstract":""
+	},
+	{
 		"title":"Interpreting Deep Neural Networks by Explaining their Predictions",
 		"author":"Wojciech Samek",
 		"type":"Talk",
