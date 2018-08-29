@@ -235,5 +235,8 @@
 	<image:image>
 		<image:loc>https://danbirman.com/images/ss/tenaya_daniel.jpg</image:loc>
 	</image:image>
+	<image:image>
+		<image:loc>https://danbirman.com/images/ss/clouds_rest.jpg</image:loc>
+	</image:image>
 </url>
 </urlset>
