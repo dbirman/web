@@ -52,6 +52,7 @@ var elems = [];
 function showArea(n) {
 	hideHint();
 	areas[n-1].style.display="block";
+	document.getElementById("svg").className = "svg-container blur";
 
 	if (n==6) {
 		window.dispatchEvent(new Event('resize'));
