@@ -50,6 +50,9 @@ var elems = [];
 // Callbacks
 
 function showArea(n) {
+	if (hintOTick!=undefined) {
+		cancelTimeout(showHint);
+	}
 	hideHint();
 	areas[n-1].style.display="block";
 	document.getElementById("svg").className = "svg-container blur";
