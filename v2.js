@@ -49,10 +49,11 @@ var elems = [];
 
 // Callbacks
 
+let areaVisible = false;
+
 function showArea(n) {
-	if (hintOTick!=undefined) {
-		cancelTimeout(showHint);
-	}
+	areaVisible = true;
+
 	hideHint();
 	areas[n-1].style.display="block";
 	document.getElementById("svg").className = "svg-container blur";
@@ -80,7 +81,9 @@ function showHint() {
 		console.log('Local storage was blocked -- defaulting to session');
 		sessionStorage.hinted = true;
 	}
-	document.getElementById("hint").style.opacity = "1";
+	if (!areaVisible) {
+		document.getElementById("hint").style.opacity = "1";
+	}
 }
 
 function hideHint() {
