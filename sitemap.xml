@@ -198,7 +198,7 @@
 		<image:loc>https://danbirman.com/images/ss/gunks_allison.jpg</image:loc>
 	</image:image>
 	<image:image>
-		<image:loc>https://danbirman.com/images/ss/crimson_crysalis.jpg</image:loc>
+		<image:loc>https://danbirman.com/images/ss/crimson_chrysalis.jpg</image:loc>
 		<image:caption>dan birman climbing chrimson chrysalis in red rock</image:caption>
 	</image:image>
 	<image:image>
@@ -261,6 +261,18 @@
 	</image:image>
 	<image:image>
 		<image:loc>https://danbirman.com/images/ss/italy2.jpg</image:loc>
+	</image:image>
+	<image:image>
+		<image:loc>https://danbirman.com/images/ss/community_pillar.jpg</image:loc>
+	</image:image>
+	<image:image>
+		<image:loc>https://danbirman.com/images/ss/diet_delight.jpg</image:loc>
+	</image:image>
+	<image:image>
+		<image:loc>https://danbirman.com/images/ss/tunnel_vision_19.jpg</image:loc>
+	</image:image>
+	<image:image>
+		<image:loc>https://danbirman.com/images/ss/wilson.jpg</image:loc>
 	</image:image>
 </url>
 </urlset>
