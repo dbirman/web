@@ -274,5 +274,11 @@
 	<image:image>
 		<image:loc>https://danbirman.com/images/ss/wilson.jpg</image:loc>
 	</image:image>
+	<image:image>
+		<image:loc>https://danbirman.com/images/ss/gunks_highe_bachelorx.jpg</image:loc>
+	</image:image>
+	<image:image>
+		<image:loc>https://danbirman.com/images/ss/gunks_house_bachelorx.jpg</image:loc>
+	</image:image>
 </url>
 </urlset>
