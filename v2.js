@@ -93,6 +93,7 @@ function hideHint() {
 var hintTime = 10000;
 
 function init() {
+
 	try {
 		if (localStorage.hinted==undefined) {
 			hintTick = setTimeout(showHint,hintTime);
@@ -204,3 +205,92 @@ function getData() {
     img.removeAttribute('data-src');
   };
 });
+
+// 1: 1.1191 66.9272
+// 2: 358.5762 89.5557
+// 3: 318.4414 24.833
+// 4: 113.769 9.1948
+// 5: 90 221.8154
+// 6: 367.2197 225.1553
+
+// Original x/y positions for text, these are based on a wide screen format (i.e. about Dan goes off the left side of the brain, etc)
+let wideSVGx = [30, 358.6, 318.4, 113.8, 90, 367.2],
+	wideSVGy = [40, 89.6, 24.8, 9.2, 221.8, 225.2];
+
+// New x/y positions for when the screen is vertical, like on mobile
+let vertSVGx = [70, 310, 250, 113.8, 90, 300],
+	vertSVGy = [40, 50, 0, -10, 221.8, 260];
+
+let wideOffx = [50,0,0,50,50,-10],
+	vertOffx = [20,20,30,50,50,20];
+
+let diffSVGx = [], diffSVGy = [], diffOffx = [];
+
+for (var i=0;i<6;i++) {
+	diffSVGx[i] = wideSVGx[i]-vertSVGx[i];
+	diffSVGy[i] = wideSVGy[i]-vertSVGy[i];
+	diffOffx[i] = wideOffx[i] - vertOffx[i];
+}
+
+let origSVGx = 0,
+	origSVGwidth = 443,
+	dSVGx = 60,
+	dSVGwidth = -143;
+
+function moveSVGPos() {
+	// get the width and height
+	let w = window.innerWidth,
+		h = window.innerHeight;
+	// if width is greater, just go with a ratio of 1
+	let ratio =0;
+	if (w>1.25*h) {
+		ratio = 1;
+	} else if (w < h) {
+		ratio = 0;
+	} else {
+		let d = w-h;
+		ratio = d / (0.25*h);
+	}
+
+	for (var i=1;i<=6;i++) {
+		baseX = vertSVGx[i-1] + ratio*diffSVGx[i-1];
+		baseY = vertSVGy[i-1] + ratio*diffSVGy[i-1];
+		offX = vertOffx[i-1] + ratio*diffOffx[i-1];
+
+		setTextId(i,baseX,baseY);
+		setCircId(i,baseX+20,baseY+7);
+		setLvId(i,baseX+offX,baseY+7);
+
+		setLhId(i,baseX+offX,baseX+20,baseY+7);
+	}
+
+	document.getElementById("svgsvg").viewBox.baseVal.width = origSVGwidth + (1-ratio) * dSVGwidth;
+	document.getElementById("svgsvg").viewBox.baseVal.x = origSVGx + (1-ratio) * dSVGx;
+}
+
+function setTextId(id,x,y) {
+	let mat = document.getElementById("text"+id).transform.baseVal.getItem(0).matrix;
+	mat.e = x;
+	mat.f = y;
+}
+
+function setCircId(id,x,y) {
+	document.getElementById("circ"+id).setAttribute("cx",x);
+	document.getElementById("circ"+id).setAttribute("cy",y);
+}
+
+function setLvId(id,x,y) {
+	document.getElementById("l"+id+"v").setAttribute("x2",x);
+	document.getElementById("l"+id+"v").setAttribute("y2",y);
+	// document.getElementById("l"+id+"v").back();
+}
+function setLhId(id,x1,x2,y) {
+	document.getElementById("l"+id+"h").setAttribute("x1",x1);
+	document.getElementById("l"+id+"h").setAttribute("x2",x2);
+	document.getElementById("l"+id+"h").setAttribute("y1",y);
+	document.getElementById("l"+id+"h").setAttribute("y2",y);
+}
+
+// Move SVG text positions
+moveSVGPos();
+window.addEventListener("resize",moveSVGPos);
