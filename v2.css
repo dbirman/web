@@ -4,11 +4,22 @@
 	cursor: pointer;
 }
 
-.face {
-  padding:2vh;
-  width:40vh; 
-  height:auto;
-  border-radius:40vh;
+@media only screen and (max-width: 600px) {
+  .face {
+    padding:2vh;
+    width:40vw; 
+    height:auto;
+    border-radius:40vh;
+  }
+}
+
+@media only screen and (min-width: 601px) {
+  .face {
+    padding:2vh;
+    width:40vh; 
+    height:auto;
+    border-radius:40vh;
+  }
 }
 
 .logo {
