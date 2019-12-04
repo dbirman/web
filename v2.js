@@ -111,6 +111,8 @@ var layersLoaded = false;
 function checkLayersLoaded() {
 	if (!layersLoaded) {
 
+		// Note that if necessary you could delay the javascript loading even further by using the
+		// tips on this site: https://stackoverflow.com/questions/14521108/dynamically-load-js-inside-js
 
 		map = new mapboxgl.Map({
 			container: 'map',
