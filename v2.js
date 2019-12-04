@@ -51,6 +51,11 @@ var elems = [];
 
 let areaVisible = false;
 
+// The areas are:
+// 1  2  3   4  5  
+//  6 = climbing
+// 
+
 function showArea(n) {
 	areaVisible = true;
 
@@ -60,6 +65,7 @@ function showArea(n) {
 
 	if (n==6) {
 		window.dispatchEvent(new Event('resize'));
+		checkLayersLoaded();
 	}
 }
 
@@ -92,34 +98,9 @@ function hideHint() {
 
 var hintTime = 10000;
 
-function init() {
-
-	try {
-		if (localStorage.hinted==undefined) {
-			hintTick = setTimeout(showHint,hintTime);
-		}
-	} catch (e) {
-		if (sessionStorage.hinted==undefined) {
-			hintTick = setTimeout(showHint,hintTime);
-		}
-		console.log('Local storage was blocked');
-	}
-	for (var i=1;i<=6;i++) {
-		elems[i] = document.getElementById("circ"+i);
-		modals[i] = document.getElementById("modal"+i);
-		document.getElementById(""+i).style.cursor = "pointer";
-	}
-	mapboxgl.accessToken = 'pk.eyJ1IjoiZGFuYmlybWFuOTk4IiwiYSI6ImNqNzl5YjhyeTA4ejYycXAzbTc4ZTFucjQifQ.o3KPRP5zwv01xg1WskZVRg';
-
-	map = new mapboxgl.Map({
-		container: 'map',
-		style: 'mapbox://styles/mapbox/outdoors-v10',
-		center: [-98.5795, 39.8283],
-		zoom: 1
-	});
-
-
-	map.on('load', function() {
+var layersLoaded = false;
+function checkLayersLoaded() {
+	if (!layersLoaded) {
 
     // Add a layer showing the places.
     var layer = {
@@ -163,9 +144,39 @@ function init() {
     map.on('mouseleave', 'places', function() {
     	map.getCanvas().style.cursor = '';
     	popup.remove();
-    });
-});
+  	});
+	}
+}
 
+function init() {
+
+	try {
+		if (localStorage.hinted==undefined) {
+			hintTick = setTimeout(showHint,hintTime);
+		}
+	} catch (e) {
+		if (sessionStorage.hinted==undefined) {
+			hintTick = setTimeout(showHint,hintTime);
+		}
+		console.log('Local storage was blocked');
+	}
+	for (var i=1;i<=6;i++) {
+		elems[i] = document.getElementById("circ"+i);
+		modals[i] = document.getElementById("modal"+i);
+		document.getElementById(""+i).style.cursor = "pointer";
+	}
+	mapboxgl.accessToken = 'pk.eyJ1IjoiZGFuYmlybWFuOTk4IiwiYSI6ImNqNzl5YjhyeTA4ejYycXAzbTc4ZTFucjQifQ.o3KPRP5zwv01xg1WskZVRg';
+
+	map = new mapboxgl.Map({
+		container: 'map',
+		style: 'mapbox://styles/mapbox/outdoors-v10?optimize=true',
+		center: [-98.5795, 39.8283],
+		zoom: 1
+	});
+
+	// map.on('load', function() {
+
+	// });
 }
 
 window.onload = init;
