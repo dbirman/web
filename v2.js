@@ -62,7 +62,9 @@ function showArea(n) {
 	hideHint();
 	areas[n-1].style.display="block";
 	document.getElementById("svg").className = "svg-container blur";
-
+  if (n==5) {
+  	checkVideoLoaded();
+  }
 	if (n==6) {
 		window.dispatchEvent(new Event('resize'));
 		checkLayersLoaded();
@@ -97,6 +99,13 @@ function hideHint() {
 }
 
 var hintTime = 10000;
+
+var videoLoaded = false;
+function checkVideoLoaded() {
+	if (!videoLoaded) {
+		document.getElementById("teachingEmbedVideo").innerHTML = "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/--sBEWfPfKA\" frameborder=\"0\" allow=\"accelerometer; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>";
+	}
+}
 
 var layersLoaded = false;
 function checkLayersLoaded() {
