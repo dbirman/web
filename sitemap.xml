@@ -283,5 +283,8 @@
 	<image:image>
 		<image:loc>https://danbirman.com/images/ss/cathedral_mattbinji.jpg</image:loc>
 	</image:image>
+	<image:image>
+		<image:loc>https://danbirman.com/images/ss/crosstown.jpg</image:loc>
+	</image:image>
 </url>
 </urlset>
