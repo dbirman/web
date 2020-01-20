@@ -116,7 +116,7 @@ function checkLayersLoaded() {
 
 		map = new mapboxgl.Map({
 			container: 'map',
-			style: 'mapbox://styles/mapbox/outdoors-v10?optimize=true',
+			style: 'mapbox://styles/mapbox/outdoors-v11?optimize=true',
 			center: [-98.5795, 39.8283],
 			zoom: 1
 		});
@@ -187,7 +187,7 @@ function init() {
 		modals[i] = document.getElementById("modal"+i);
 		document.getElementById(""+i).style.cursor = "pointer";
 	}
-	mapboxgl.accessToken = 'pk.eyJ1IjoiZGFuYmlybWFuOTk4IiwiYSI6ImNqNzl5YjhyeTA4ejYycXAzbTc4ZTFucjQifQ.o3KPRP5zwv01xg1WskZVRg';
+	mapboxgl.accessToken = 'pk.eyJ1IjoiZGFuYmlybWFuOTk4IiwiYSI6ImNrNW1xaHh6ODEyYzgzZGx2b2pxb21zcDcifQ.blmfpeZjUvm9dG0wh2k7hg';
 }
 
 window.onload = init;
