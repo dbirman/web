@@ -42,9 +42,10 @@ cLibet = document.getElementById("cM_libet"),
 cFBSear = document.getElementById("cM_fbsear"), 
 cLearn = document.getElementById("cM_learn"), 
 cSelfies = document.getElementById("cM_selfies");
-var areas = [cAbout,cCohcon,cFBSear,cLibet,cLearn,cSelfies];
-var ticks = [-1,-1,-1,-1,-1,-1];
-var opacity = [true,true,true,true,true,true];
+cBLM = document.getElementById("cM_blm");
+var areas = [cAbout,cCohcon,cFBSear,cLibet,cLearn,cSelfies,cBLM];
+var ticks = [-1,-1,-1,-1,-1,-1,-1];
+var opacity = [true,true,true,true,true,true,true];
 var elems = [];
 
 // Callbacks
@@ -188,6 +189,7 @@ function init() {
 		document.getElementById(""+i).style.cursor = "pointer";
 	}
 	mapboxgl.accessToken = 'pk.eyJ1IjoiZGFuYmlybWFuOTk4IiwiYSI6ImNrNW1xaHh6ODEyYzgzZGx2b2pxb21zcDcifQ.blmfpeZjUvm9dG0wh2k7hg';
+	showArea(7);
 }
 
 window.onload = init;
