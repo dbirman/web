@@ -286,5 +286,17 @@
 	<image:image>
 		<image:loc>https://danbirman.com/images/ss/crosstown.jpg</image:loc>
 	</image:image>
+	<image:image>
+		<image:loc>https://danbirman.com/images/ss/the_lions.jpg</image:loc>
+	</image:image>
+	<image:image>
+		<image:loc>https://danbirman.com/images/ss/jolly.jpg</image:loc>
+	</image:image>
+	<image:image>
+		<image:loc>https://danbirman.com/images/ss/mt_si_spring20.jpg</image:loc>
+	</image:image>
+	<image:image>
+		<image:loc>https://danbirman.com/images/ss/prusik.jpg</image:loc>
+	</image:image>
 </url>
 </urlset>
