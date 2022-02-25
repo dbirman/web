@@ -314,10 +314,13 @@
 		<image:loc>https://danbirman.com/images/ss/baker2021.jpg</image:loc>
 	</image:image>
 	<image:image>
-		<image:loc>https://danbirman.com/images/ss/lab_serene.jpg</image:loc>
+		<image:loc>https://danbirman.com/images/ss/lake_serene.jpg</image:loc>
 	</image:image>
 	<image:image>
 		<image:loc>https://danbirman.com/images/ss/mterie.jpg</image:loc>
+	</image:image>
+	<image:image>
+		<image:loc>https://danbirman.com/images/ss/epictail.jpg</image:loc>
 	</image:image>
 </url>
 </urlset>
