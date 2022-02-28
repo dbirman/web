@@ -1,4 +1,4 @@
-baseURL = "https://danbirman.com/"
+baseURL = "https://danbirman.com/blog/public/"
 languageCode = "en-us"
 title = "Minimal"
 theme = "minimal"
