@@ -1,13 +1,13 @@
 baseURL = "https://danbirman.com/blog/public/"
 languageCode = "en-us"
-title = "Minimal"
+title = "2022 Cascade Volcanoes"
 theme = "minimal"
 
 [params]
     author = "Dan Birman"
     description = "Volcano Blog"
     githubUsername = "#"
-    accent = "red"
+    accent = "#F7342B"
     showBorder = true
     backgroundColor = "white"
     font = "Raleway" # should match the name on Google Fonts!
