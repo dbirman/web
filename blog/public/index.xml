@@ -13,12 +13,7 @@
       <pubDate>Sun, 06 Feb 2022 00:00:00 +0000</pubDate>
       
       <guid>https://danbirman.com/blog/public/post/2022_02_06_helens/</guid>
-      <description>Map Step 1. Install Hugo Goto hugo releases and download the appropriate version for your os and architecture.
-Save it somewhere specific as we will be using it in the next step.
-More complete instructions are available at installing hugo
-Step 2. Build the Docs Hugo has its own example site which happens to also be the documentation site you are reading right now.
-Follow the following steps:
- Clone the hugo repository Go into the repo Run hugo in server mode and build the docs Open your browser to http://localhost:1313  Corresponding pseudo commands:</description>
+      <description>We had a blast of warm weather at the beginning of February which Greg, Allison, and I took advantage of to take a quick trip up Mt St Helens. We left on a Friday night and camped out at the trailhead (with the other hundred or so people who were there), then got up around 5am for a 6am departure. Because we were car camping we even got to have our favorite breakfast of coffee yogurt (and blueberries) before leaving.</description>
     </item>
     
     <item>
