@@ -1,11 +1,11 @@
 baseURL = "https://danbirman.com/blog/public/"
 languageCode = "en-us"
-title = "2022 Cascade Volcanoes"
+title = "Lava Cake Expedition"
 theme = "singular"
 
 [params]
     author = "Dan Birman"
-    description = "Volcano Blog"
+    description = "One lava cake for each volcano"
     githubUsername = "#"
     accent = "#F7342B"
     showBorder = true
@@ -14,6 +14,8 @@ theme = "singular"
     highlight = true
     highlightStyle = "default"
     highlightLanguages = ["go", "haskell", "kotlin", "scala", "swift"]
+    [params.logo]
+        url = "/static/Volcano_Blog.gif"
 
 [[menu.main]]
     url = "/"
