@@ -1,7 +1,7 @@
 baseURL = "https://danbirman.com/blog/public/"
 languageCode = "en-us"
 title = "2022 Cascade Volcanoes"
-theme = "minimal"
+theme = "singular"
 
 [params]
     author = "Dan Birman"
