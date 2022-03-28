@@ -322,5 +322,23 @@
 	<image:image>
 		<image:loc>https://danbirman.com/images/ss/epictail.jpg</image:loc>
 	</image:image>
+	<image:image>
+		<image:loc>https://danbirman.com/images/ss/lassen.jpg</image:loc>
+	</image:image>
+	<image:image>
+		<image:loc>https://danbirman.com/images/ss/mt_st_helens22.jpg</image:loc>
+	</image:image>
+	<image:image>
+		<image:loc>https://danbirman.com/images/ss/there_and_back_again.jpg</image:loc>
+	</image:image>
+	<image:image>
+		<image:loc>https://danbirman.com/images/ss/tunnel_vision_2022.jpg</image:loc>
+	</image:image>
+	<image:image>
+		<image:loc>https://danbirman.com/images/ss/stifflers.jpg</image:loc>
+	</image:image>
+	<image:image>
+		<image:loc>https://danbirman.com/images/ss/newyears_summit.jpg</image:loc>
+	</image:image>
 </url>
 </urlset>
