@@ -352,5 +352,8 @@
 	<image:image>
 		<image:loc>https://danbirman.com/images/ss/IMG_1334.jpg</image:loc>
 	</image:image>
+	<image:image>
+		<image:loc>https://danbirman.com/images/ss/l2h_telescope.jpg</image:loc>
+	</image:image>
 </url>
 </urlset>
