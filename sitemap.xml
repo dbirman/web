@@ -370,5 +370,11 @@
 	<image:image>
 		<image:loc>https://danbirman.com/images/ss/shasta.jpg</image:loc>
 	</image:image>
+	<image:image>
+		<image:loc>https://danbirman.com/images/ss/bachelor.jpg</image:loc>
+	</image:image>
+	<image:image>
+		<image:loc>https://danbirman.com/images/ss/bailey.jpg</image:loc>
+	</image:image>
 </url>
 </urlset>
