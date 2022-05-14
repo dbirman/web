@@ -376,5 +376,14 @@
 	<image:image>
 		<image:loc>https://danbirman.com/images/ss/bailey.jpg</image:loc>
 	</image:image>
+	<image:image>
+		<image:loc>https://danbirman.com/images/ss/baker22.jpg</image:loc>
+	</image:image>
+	<image:image>
+		<image:loc>https://danbirman.com/images/ss/kauai_falls.jpg</image:loc>
+	</image:image>
+	<image:image>
+		<image:loc>https://danbirman.com/images/ss/kauai_waimea.jpg</image:loc>
+	</image:image>
 </url>
 </urlset>
