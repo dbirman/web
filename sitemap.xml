@@ -385,5 +385,14 @@
 	<image:image>
 		<image:loc>https://danbirman.com/images/ss/kauai_waimea.jpg</image:loc>
 	</image:image>
+	<image:image>
+		<image:loc>https://danbirman.com/images/ss/rainier_muir_23.jpg</image:loc>
+	</image:image>
+	<image:image>
+		<image:loc>https://danbirman.com/images/ss/slot_couloir.jpg</image:loc>
+	</image:image>
+	<image:image>
+		<image:loc>https://danbirman.com/images/ss/excalibur.jpg</image:loc>
+	</image:image>
 </url>
 </urlset>
